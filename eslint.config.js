@@ -8,15 +8,35 @@ import react from 'eslint-plugin-react';
 import preferArrow from "eslint-plugin-prefer-arrow";
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import eslintPluginAstro from 'eslint-plugin-astro';
+import preferSrcAlias from './eslint-rules/prefer-src-alias.js';
+
+const localRules = {
+    rules: {
+        'prefer-src-alias': preferSrcAlias,
+    },
+};
 
 export default defineConfig([
     globalIgnores(['dist']),
     ...eslintPluginAstro.configs.recommended,
     {
+        files: ['**/*.astro'],
+        plugins: {
+            local: localRules,
+        },
+        rules: {
+            "object-curly-spacing": ["error", "always"],
+            "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+            "semi": ["error", "always"],
+            "local/prefer-src-alias": ['error'],
+        },
+    },
+    {
         plugins: {
             react,
             unicorn: eslintPluginUnicorn,
             "prefer-arrow": preferArrow,
+            local: localRules,
         },
         files: ['**/*.{ts,tsx}'],
         extends: [
@@ -46,6 +66,7 @@ export default defineConfig([
             "@typescript-eslint/no-explicit-any": ["off"],
             "unicorn/prevent-abbreviations": ["off"],
             "react-refresh/only-export-components": ["off"],
+            "local/prefer-src-alias": ['error'],
 
             "prefer-arrow/prefer-arrow-functions": [
                 "error",

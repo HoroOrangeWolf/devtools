@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "preview": "astro preview",
     "astro": "astro"
   },
