@@ -49,7 +49,7 @@ export const UuidContainer = () => {
 	};
 
 	return (
-		<div className={cn('flex','flex-col', 'gap-2')}>
+		<div className={cn('flex','flex-col', 'gap-2', 'max-h-[64vh]')}>
 			<div className={cn('grid', 'grid-cols-2', 'gap-2')}>
 				<SelectWrapper<GeneratorType>
 					defaultValue={generatorType}
@@ -74,9 +74,10 @@ export const UuidContainer = () => {
 					Export
 				</Button>
 			</div>
-			<ul>
-				{generatedValues.map((val)=>(
-					<li key={val}>
+			<ul className={cn('overflow-y-auto')}>
+				{generatedValues.map((val, index)=>(
+					<li key={val} className={cn('flex', 'gap-2')}>
+						<span>{index + 1}.</span>
 						{val}
 					</li>
 				))}
