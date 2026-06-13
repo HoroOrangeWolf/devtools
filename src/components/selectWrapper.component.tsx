@@ -5,24 +5,32 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select.tsx';
+import { FieldDescription } from '@/components/ui/field.tsx';
 
 export type OptionType<T = string> = {
     value: T;
     label: string;
+	tooltip?: string;
 }
 
 type PropsType<T = string> = {
+	id?: string;
     placeholder?: string;
-    defaultValue?: string;
+    defaultValue?: string | boolean;
 	onChange?: (value: T) => void;
     options?: OptionType<T>[];
 }
 
-export const SelectWrapper = <T = string,>({ options = [], defaultValue, placeholder, onChange }: PropsType<T>) => {
+export const SelectWrapper = <T,>({ id,options = [], defaultValue, placeholder, onChange }: PropsType<T>) => {
 	const renderOptions = () => {
-		return options.map(({ label, value }) => (
+		return options.map(({ label, value, tooltip }) => (
 			<SelectItem value={value as string} key={value as string}>
 				{label}
+				{tooltip && (
+					<FieldDescription>
+						{tooltip}
+					</FieldDescription>
+				)}
 			</SelectItem>
 		));
 	};
@@ -30,9 +38,9 @@ export const SelectWrapper = <T = string,>({ options = [], defaultValue, placeho
 	return (
 		<Select
 			onValueChange={onChange as any}
-			defaultValue={defaultValue}
+			defaultValue={defaultValue as any}
 		>
-			<SelectTrigger className="w-full">
+			<SelectTrigger id={id} className="w-full">
 				<SelectValue placeholder={placeholder} />
 			</SelectTrigger>
 			<SelectContent>
