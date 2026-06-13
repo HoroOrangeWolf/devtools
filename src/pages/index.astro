@@ -1,11 +1,44 @@
 ---
-import Welcome from '@/components/Welcome.astro';
 import Layout from '@/layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Dev Utils">
+	<section class="space-y-8">
+		<div class="max-w-3xl space-y-3">
+			<p class="text-primary text-sm font-medium">Static developer toolbox</p>
+			<h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Small utilities for everyday dev work.</h2>
+			<p class="text-muted-foreground text-base">
+				Generate IDs, prepare export files, and keep common data transformations close at hand.
+			</p>
+		</div>
+
+		<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+			<a
+				href="/uuid"
+				class="border-border bg-card text-card-foreground hover:border-primary/50 block rounded-lg border p-5 transition-colors"
+			>
+				<span class="bg-primary/10 text-primary inline-flex rounded-full px-2.5 py-1 text-xs font-medium">Ready</span>
+				<h3 class="mt-4 text-lg font-semibold">UUID Generator</h3>
+				<p class="text-muted-foreground mt-2 text-sm">
+					Create UUID v1, v4, v6, and v7 values, then export them as CSV.
+				</p>
+			</a>
+
+			<div class="border-border bg-card text-card-foreground rounded-lg border p-5 opacity-70">
+				<span class="bg-muted text-muted-foreground inline-flex rounded-full px-2.5 py-1 text-xs font-medium">Soon</span>
+				<h3 class="mt-4 text-lg font-semibold">CSV Tools</h3>
+				<p class="text-muted-foreground mt-2 text-sm">
+					Format, inspect, and prepare tabular data for local workflows.
+				</p>
+			</div>
+
+			<div class="border-border bg-card text-card-foreground rounded-lg border p-5 opacity-70">
+				<span class="bg-muted text-muted-foreground inline-flex rounded-full px-2.5 py-1 text-xs font-medium">Soon</span>
+				<h3 class="mt-4 text-lg font-semibold">JSON Tools</h3>
+				<p class="text-muted-foreground mt-2 text-sm">
+					Validate and transform JSON without sending data to external services.
+				</p>
+			</div>
+		</div>
+	</section>
 </Layout>

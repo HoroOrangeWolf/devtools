@@ -1,0 +1,89 @@
+---
+const navItems = [
+	{
+		href: '/uuid',
+		label: 'UUID',
+		description: 'Generate UUID values',
+		isReady: true,
+	},
+	{
+		href: '#',
+		label: 'CSV',
+		description: 'Format and export data',
+		isReady: false,
+	},
+	{
+		href: '#',
+		label: 'JSON',
+		description: 'Inspect and transform JSON',
+		isReady: false,
+	},
+	{
+		href: '#',
+		label: 'Hash',
+		description: 'Create checksums',
+		isReady: false,
+	},
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<aside class="border-sidebar-border bg-sidebar/80 text-sidebar-foreground flex h-full flex-col border-r backdrop-blur">
+	<a href="/" class="border-sidebar-border flex items-center gap-3 border-b px-5 py-5">
+		<span class="bg-sidebar-primary text-sidebar-primary-foreground grid size-9 place-items-center rounded-lg text-sm font-semibold">
+			DU
+		</span>
+		<span class="min-w-0">
+			<span class="block text-sm font-semibold tracking-tight">Dev Utils</span>
+			<span class="text-muted-foreground block text-xs">Static developer tools</span>
+		</span>
+	</a>
+
+	<nav aria-label="Developer tools" class="flex flex-1 flex-col gap-1 p-3">
+		{navItems.map((item) => {
+			const isActive = item.href !== '#' && currentPath.startsWith(item.href);
+
+			return item.isReady ? (
+				<a
+					href={item.href}
+					aria-current={isActive ? 'page' : undefined}
+					class:list={[
+						'group rounded-lg px-3 py-2.5 transition-colors',
+						isActive
+							? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-sm'
+							: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+					]}
+				>
+					<span class="flex items-center justify-between gap-3">
+						<span class="font-medium">{item.label}</span>
+						<span class:list={[
+							'rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide',
+							isActive ? 'bg-sidebar-primary-foreground/15' : 'bg-muted text-muted-foreground',
+						]}>
+							Tool
+						</span>
+					</span>
+					<span class:list={[
+						'mt-1 block text-xs',
+						isActive ? 'text-sidebar-primary-foreground/75' : 'text-muted-foreground',
+					]}>
+						{item.description}
+					</span>
+				</a>
+			) : (
+				<div class="text-muted-foreground rounded-lg px-3 py-2.5 opacity-70">
+					<span class="flex items-center justify-between gap-3">
+						<span class="font-medium">{item.label}</span>
+						<span class="bg-muted rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide">Soon</span>
+					</span>
+					<span class="mt-1 block text-xs">{item.description}</span>
+				</div>
+			);
+		})}
+	</nav>
+
+	<div class="border-sidebar-border text-muted-foreground border-t p-4 text-xs">
+		Tools run locally in the browser.
+	</div>
+</aside>

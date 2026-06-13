@@ -1,28 +1,65 @@
 ---
 import '@/styles/global.css';
+import SiteSidebar from '@/components/SiteSidebar.astro';
+
+interface Props {
+	title?: string;
+}
+
+const { title = 'Dev Utils' } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<meta
+			name="description"
+			content="A static collection of small developer utilities."
+		/>
+		<title>{title}</title>
 	</head>
-	<body class="flex align-middle justify-center">
-		<div class="w-1/2">
-			<slot />
+	<body class="bg-background text-foreground min-h-screen">
+		<div class="grid min-h-screen lg:grid-cols-[17rem_1fr]">
+			<div class="hidden lg:block">
+				<SiteSidebar />
+			</div>
+
+			<div class="flex min-w-0 flex-col">
+				<header class="border-border bg-background/85 sticky top-0 z-20 border-b backdrop-blur">
+					<div class="flex min-h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+						<a href="/" class="flex items-center gap-3 lg:hidden">
+							<span class="bg-primary text-primary-foreground grid size-8 place-items-center rounded-lg text-xs font-semibold">
+								DU
+							</span>
+							<span class="font-semibold">Dev Utils</span>
+						</a>
+
+						<div class="hidden lg:block">
+							<p class="text-muted-foreground text-xs uppercase tracking-[0.18em]">Developer toolbox</p>
+							<h1 class="text-lg font-semibold tracking-tight">Dev Utils</h1>
+						</div>
+
+						<nav aria-label="Mobile tools" class="flex items-center gap-2 lg:hidden">
+							<a
+								href="/uuid"
+								class="bg-secondary text-secondary-foreground rounded-lg px-3 py-1.5 text-sm font-medium"
+							>
+								UUID
+							</a>
+						</nav>
+					</div>
+				</header>
+
+				<main class="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+					<div class="mx-auto w-full max-w-5xl">
+						<slot />
+					</div>
+				</main>
+			</div>
 		</div>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
