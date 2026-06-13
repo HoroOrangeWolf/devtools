@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { GeneratorType, UuidService } from '@/service/uuid.service.ts';
 import { cn } from '@/lib/utils.ts';
 import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
@@ -25,20 +25,21 @@ const generators: OptionType<GeneratorType>[] = [
 	}
 ];
 
+const defaultGeneratorType: GeneratorType = 'V_4';
+const defaultCount = 1;
+
 export const UuidContainer = () => {
-	const [generatedValues, setGeneratedValues] = useState<string[]>([]);
-	const [generatorType, setGeneratorType] = useState<GeneratorType>('V_4');
-	const [count, setCount] = useState<number>(1);
+	const [generatedValues, setGeneratedValues] = useState<string[]>(() =>
+		UuidService.generateValues(defaultGeneratorType, defaultCount)
+	);
+	const [generatorType, setGeneratorType] = useState<GeneratorType>(defaultGeneratorType);
+	const [count, setCount] = useState<number>(defaultCount);
 
 	const generateValues = () => {
 		const values = UuidService.generateValues(generatorType, count);
 
 		setGeneratedValues(values);
 	};
-
-	useEffect(()=>{
-		generateValues();
-	},[]);
 
 	const generateCSV = () => {
 		const entries = generatedValues.map((val)=>({
@@ -63,7 +64,7 @@ export const UuidContainer = () => {
 					onChange={(event) => {
 						setCount(Number(event.target.value));
 					}}
-					defaultValue={1}
+					defaultValue={defaultCount}
 				/>
 			</div>
 			<div className={cn('flex','flex-row', 'gap-2', 'justify-end')}>
@@ -74,9 +75,12 @@ export const UuidContainer = () => {
 					Export
 				</Button>
 			</div>
-			<ul className={cn('overflow-y-auto')}>
+			<ul
+				className={cn('overflow-y-auto', 'divide-y', 'divide-border')}
+				role="list"
+			>
 				{generatedValues.map((val, index)=>(
-					<li key={val} className={cn('flex', 'gap-2')}>
+					<li key={val} className={cn('flex', 'gap-2', 'py-1')}>
 						<span>{index + 1}.</span>
 						{val}
 					</li>
