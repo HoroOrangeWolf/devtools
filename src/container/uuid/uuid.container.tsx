@@ -49,7 +49,7 @@ export const UuidContainer = () => {
 	};
 
 	return (
-		<div className={cn('flex','flex-col', 'gap-2', 'max-h-[64vh]')}>
+		<div className={cn('flex','flex-col', 'gap-2', 'max-h-[64dvh]')}>
 			<div className={cn('grid', 'grid-cols-2', 'gap-2')}>
 				<SelectWrapper<GeneratorType>
 					defaultValue={generatorType}
