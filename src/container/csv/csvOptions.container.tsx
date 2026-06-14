@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input.tsx';
 import { Field, FieldContent, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Checkbox } from '@/components/ui/checkbox';
 import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
-import {  UnparseConfig } from 'papaparse';
+import { UnparseConfig } from 'papaparse';
 
 const skipMode: OptionType<'greedy' | boolean>[] = [
 	{
@@ -52,7 +52,6 @@ export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
 	const [quote, setQuote] = useState<boolean>(false);
 	const [skipEmptyLines, setSkipEmptyLines] = useState<boolean | 'greedy'>(false);
 	const [quoteChar, setQuoteChar] = useState<string>('"');
-	const [header, setHeader] = useState<boolean>(false);
 	const [newlineSequence, setNewlineSequence] = useState<NewlineOptionType>('\r\n');
 
 	useEffect(()=>{
@@ -61,14 +60,28 @@ export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
 			skipEmptyLines,
 			quotes: quote,
 			quoteChar: quote ? quoteChar : undefined,
-			header,
 			newline: newlineSequence
 		});
-	},[delimiter, quote, skipEmptyLines, quoteChar, header, newlineSequence, onSettingsChange]);
+	},[delimiter, quote, skipEmptyLines, quoteChar, newlineSequence, onSettingsChange]);
 
 	return (
 		<div className={cn('mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-16 gap-y-4')}>
 			<div className={cn('flex flex-col gap-4')}>
+				<Field>
+					<FieldLabel htmlFor="delimiter">
+						Delimiter
+					</FieldLabel>
+					<Input id="delimiter" defaultValue={delimiter} onChange={(e)=>setDelimiter(e.target.value)} />
+				</Field>
+				<Field>
+					<FieldLabel htmlFor="quoteChar">
+						Quote Char
+					</FieldLabel>
+					<Input disabled={!quote} id="quoteChar" defaultValue={quoteChar} onChange={(e)=>setQuoteChar(e.target.value)}  />
+					<FieldDescription>
+						If quote is checked, you can use this option to pick your own quote char
+					</FieldDescription>
+				</Field>
 				<Field orientation="horizontal">
 					<Checkbox id="quote" checked={quote} onCheckedChange={(e)=>setQuote(Boolean(e))} />
 					<FieldContent>
@@ -80,34 +93,8 @@ export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
 						</FieldDescription>
 					</FieldContent>
 				</Field>
-				<Field>
-					<FieldLabel htmlFor="quoteChar">
-						Quote Char
-					</FieldLabel>
-					<Input disabled={!quote} id="quoteChar" defaultValue={quoteChar} onChange={(e)=>setQuoteChar(e.target.value)}  />
-					<FieldDescription>
-						If quote is checked, you can use this option to pick your own quote char
-					</FieldDescription>
-				</Field>
-				<Field>
-					<FieldLabel htmlFor="delimiter">
-						Delimiter
-					</FieldLabel>
-					<Input id="delimiter" defaultValue={delimiter} onChange={(e)=>setDelimiter(e.target.value)} />
-				</Field>
 			</div>
 			<div className={cn('flex flex-col gap-4')}>
-				<Field orientation="horizontal">
-					<Checkbox id="header" checked={header} onCheckedChange={(e)=>setHeader(Boolean(e))} />
-					<FieldContent>
-						<FieldLabel htmlFor="header">
-							Header
-						</FieldLabel>
-						<FieldDescription>
-							If false, it will remove header from csv.
-						</FieldDescription>
-					</FieldContent>
-				</Field>
 				<Field >
 					<FieldLabel htmlFor="newLine">
 						The new line sequence

@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import { HardDriveUploadIcon, DownloadIcon } from 'lucide-react';
 import { CsvService } from '@/service/csv.service.ts';
 import { CsvOptionsContainer } from '@/container/csv/csvOptions.container.tsx';
-import {  UnparseConfig } from 'papaparse';
 import { CsvFormatsConstant, CsvFormatsType } from '@/service/constant/csvFormats.constant.ts';
 import { ErrorList, ErrorModel } from '@/components/errorList.component.tsx';
 import { FileService } from '@/service/file.service.ts';
+import { UnparseConfig } from 'papaparse';
 
 const formatOptions: OptionType<CsvFormatsType>[] = [
 	{

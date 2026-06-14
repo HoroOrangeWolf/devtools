@@ -23,8 +23,8 @@ type PropsType<T = string> = {
 
 export const SelectWrapper = <T,>({ id,options = [], defaultValue, placeholder, onChange }: PropsType<T>) => {
 	const renderOptions = () => {
-		return options.map(({ label, value, tooltip }) => (
-			<SelectItem value={value as string} key={value as string}>
+		return options.map(({ label, value, tooltip }, index) => (
+			<SelectItem value={value as string} key={`option-${index}-${label}-${value}`}>
 				{label}
 				{tooltip && (
 					<FieldDescription>
