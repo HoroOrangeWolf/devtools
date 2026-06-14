@@ -20,17 +20,17 @@ type ResultType = {
 	errors: ParseError[];
 }
 
-const parseCSV = async (sourceFormat: CsvFormatsType, targetFormat: CsvFormatsType, content: string, config: UnparseConfig): Promise<ResultType> => {
+const parseCSV = async (targetFormat: CsvFormatsType, content: string, config: UnparseConfig): Promise<ResultType> => {
 	let entries: object[] = [];
 	let errors: ParseError[] = [];
 
-	if (sourceFormat === CsvFormatsConstant.CSV) {
+	try {
+		entries = JSON.parse(content);
+	} catch {
 		const result = Papaparse.parse(content);
 
 		entries = result.data as object[];
 		errors = result.errors ?? [];
-	} else {
-		entries = JSON.parse(content);
 	}
 
 	return {

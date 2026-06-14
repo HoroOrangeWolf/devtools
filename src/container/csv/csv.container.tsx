@@ -35,7 +35,7 @@ export const CsvContainer = () => {
 
 		const fn = async () => {
 			try {
-				const result = await	CsvService.parseCSV('CSV', fileFormat, csvContent, config);
+				const result = await	CsvService.parseCSV(fileFormat, csvContent, config);
 
 				setTargetContent(result.content);
 
