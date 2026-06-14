@@ -1,31 +1,5 @@
 ---
-const navItems = [
-	{
-		href: '/uuid',
-		label: 'UUID',
-		description: 'Generate UUID values',
-		isReady: true,
-	},
-	{
-		href: '/csv',
-		label: 'CSV',
-		description: 'Format and export data',
-		isReady: true,
-	},
-	{
-		href: '#',
-		label: 'JSON',
-		description: 'Inspect and transform JSON',
-		isReady: false,
-	},
-	{
-		href: '#',
-		label: 'Hash',
-		description: 'Create checksums',
-		isReady: false,
-	},
-];
-
+import { NavItems } from '@/constant/sites.contant.ts';
 const currentPath = Astro.url.pathname;
 ---
 
@@ -41,7 +15,7 @@ const currentPath = Astro.url.pathname;
 	</a>
 
 	<nav aria-label="Developer tools" class="flex flex-1 flex-col gap-1 p-3">
-		{navItems.map((item) => {
+		{NavItems.map((item) => {
 			const isActive = item.href !== '#' && currentPath.startsWith(item.href);
 
 			return item.isReady ? (
