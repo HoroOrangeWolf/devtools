@@ -4,9 +4,32 @@ import SiteSidebar from '@/components/SiteSidebar.astro';
 
 interface Props {
 	title?: string;
+	description?: string;
+	keywords?: string[];
+	canonicalPath?: string;
+	ogImage?: string;
+	structuredData?: Record<string, unknown>;
 }
 
-const { title = 'Dev Utils' } = Astro.props;
+const {
+	title = 'Dev Utils',
+	description = 'A static collection of small developer utilities that run locally in your browser.',
+	keywords = [
+		'developer tools',
+		'browser developer utilities',
+		'local dev tools',
+		'static developer toolbox',
+	],
+	canonicalPath = Astro.url.pathname,
+	ogImage,
+	structuredData,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const canonicalUrl = new URL(canonicalPath, siteUrl).toString();
+const pageUrl = canonicalUrl;
+const imageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
+const metaTitle = title.includes('Dev Utils') ? title : `${title} | Dev Utils`;
 ---
 <!doctype html>
 <html lang="en" class="dark">
@@ -16,12 +39,25 @@ const { title = 'Dev Utils' } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<meta
-			name="description"
-			content="A static collection of small developer utilities."
-		/>
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords.join(', ')} />
+		<meta name="robots" content="index, follow, max-image-preview:large" />
+		<link rel="canonical" href={canonicalUrl} />
 		<meta name="theme-color" content="#1f1d1b" />
-		<title>{title}</title>
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Dev Utils" />
+		<meta property="og:title" content={metaTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		{imageUrl && <meta property="og:image" content={imageUrl} />}
+		<meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+		<meta name="twitter:title" content={metaTitle} />
+		<meta name="twitter:description" content={description} />
+		{imageUrl && <meta name="twitter:image" content={imageUrl} />}
+		{structuredData && (
+			<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+		)}
+		<title>{metaTitle}</title>
 	</head>
 	<body class="bg-background text-foreground min-h-screen">
 		<div class="grid min-h-screen lg:grid-cols-[17rem_1fr]">

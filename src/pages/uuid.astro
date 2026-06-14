@@ -1,8 +1,50 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { UuidContainer } from '@/container/uuid/uuid.container.tsx';
+
+const title = 'UUID Generator and CSV Export Tool | Dev Utils';
+const description =
+	'Generate UUID v1, v4, v6, and v7 values locally in your browser, create batches, and export the generated identifiers as CSV.';
+const keywords = [
+	'UUID generator',
+	'UUID v4 generator',
+	'UUID v7 generator',
+	'GUID generator',
+	'batch UUID generator',
+	'local UUID tool',
+	'UUID CSV export',
+	'developer ID generator',
+];
 ---
-<Layout title="UUID Generator | Dev Utils">
+<Layout
+	title={title}
+	description={description}
+	keywords={keywords}
+	canonicalPath="/uuid"
+	structuredData={{
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'UUID Generator and CSV Export Tool',
+		applicationCategory: 'DeveloperApplication',
+		operatingSystem: 'Any',
+		browserRequirements: 'Requires a modern browser with JavaScript enabled.',
+		description,
+		url: new URL('/uuid', Astro.site ?? Astro.url.origin).toString(),
+		isAccessibleForFree: true,
+		featureList: [
+			'Generate UUID v1, v4, v6, and v7 values',
+			'Create batches of unique identifiers',
+			'Run generation locally in the browser',
+			'Export generated UUID values as CSV',
+			'Use generated IDs in development, testing, and data fixtures',
+		],
+		offers: {
+			'@type': 'Offer',
+			price: '0',
+			priceCurrency: 'USD',
+		},
+	}}
+>
 	<section class="space-y-6">
 		<div class="space-y-2">
 			<p class="text-primary text-sm font-medium">Generator</p>
