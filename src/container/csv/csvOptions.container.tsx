@@ -117,7 +117,7 @@ export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
 						options={skipMode}
 					/>
 					<FieldDescription>
-						Determines how empty lines should be handled while parsing CSV.
+						Determines how empty lines should be handled while creating CSV
 					</FieldDescription>
 				</Field>
 			</div>

@@ -33,8 +33,13 @@ const parseCSV = async (targetFormat: CsvFormatsType, content: string, config: U
 		errors = result.errors ?? [];
 	}
 
+	const result = Papaparse.parse(Papaparse.unparse(entries, {
+		...config,
+		delimiter: '"'
+	}));
+
 	return {
-		content: targetFormat === CsvFormatsConstant.CSV ? Papaparse.unparse(entries, config) : JSON.stringify(entries),
+		content: targetFormat === CsvFormatsConstant.CSV ? Papaparse.unparse(entries, config) : JSON.stringify(result.data, null, 2),
 		errors
 	};
 };
