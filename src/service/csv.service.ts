@@ -1,4 +1,5 @@
-import Papaparse from 'papaparse';
+import Papaparse, { ParseError, UnparseConfig } from 'papaparse';
+import { CsvFormatsConstant, CsvFormatsType } from '@/service/constant/csvFormats.constant.ts';
 
 const downloadCSV = (fileName: string, value: object[]) => {
 	const csv = Papaparse.unparse(value, {});
@@ -39,4 +40,28 @@ const uploadCSV = async (): Promise<string> =>
 		input.click();
 	});
 
-export const CsvService = { downloadCSV, uploadCSV };
+type ResultType = {
+	content: string;
+	errors: ParseError[];
+}
+
+const parseCSV = async (sourceFormat: CsvFormatsType, targetFormat: CsvFormatsType, content: string, config: UnparseConfig): Promise<ResultType> => {
+	let entries: object[] = [];
+	let errors: ParseError[] = [];
+
+	if (sourceFormat === CsvFormatsConstant.CSV) {
+		const result = Papaparse.parse(content);
+
+		entries = result.data as object[];
+		errors = result.errors ?? [];
+	} else {
+		entries = JSON.parse(content);
+	}
+
+	return {
+		content: targetFormat === CsvFormatsConstant.CSV ? Papaparse.unparse(entries, config) : JSON.stringify(entries),
+		errors
+	};
+};
+
+export const CsvService = { downloadCSV, uploadCSV, parseCSV };

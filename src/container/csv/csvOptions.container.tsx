@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils.ts';
 import { Input } from '@/components/ui/input.tsx';
 import { Field, FieldContent, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Checkbox } from '@/components/ui/checkbox';
 import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
+import {  UnparseConfig } from 'papaparse';
 
 const skipMode: OptionType<'greedy' | boolean>[] = [
 	{
@@ -21,9 +22,9 @@ const skipMode: OptionType<'greedy' | boolean>[] = [
 	}
 ];
 
-type NewLineOptionType = '\r' | '\n' | '\r\n'
+type NewlineOptionType = '\r' | '\n' | '\r\n'
 
-const newLineOptions: OptionType<NewLineOptionType | undefined>[] = [
+const newlineOptions: OptionType<NewlineOptionType | undefined>[] = [
 	{
 		label: 'Auto',
 		value: undefined,
@@ -42,16 +43,34 @@ const newLineOptions: OptionType<NewLineOptionType | undefined>[] = [
 	}
 ];
 
-export const CsvOptionsContainer = () => {
-	const [delimeter, setDelimeter] = useState<string>();
-	const [quote, setQuote] = useState<boolean>();
-	const [skipEmptyLines, setSkipEmptyLines] = useState<boolean>();
+type PropsType = {
+	onSettingsChange: (options: UnparseConfig) => void;
+}
+
+export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
+	const [delimiter, setDelimiter] = useState<string>(',');
+	const [quote, setQuote] = useState<boolean>(false);
+	const [skipEmptyLines, setSkipEmptyLines] = useState<boolean | 'greedy'>(false);
+	const [quoteChar, setQuoteChar] = useState<string>('"');
+	const [header, setHeader] = useState<boolean>(false);
+	const [newlineSequence, setNewlineSequence] = useState<NewlineOptionType>('\r\n');
+
+	useEffect(()=>{
+		onSettingsChange({
+			delimiter,
+			skipEmptyLines,
+			quotes: quote,
+			quoteChar: quote ? quoteChar : undefined,
+			header,
+			newline: newlineSequence
+		});
+	},[delimiter, quote, skipEmptyLines, quoteChar, header, newlineSequence, onSettingsChange]);
 
 	return (
 		<div className={cn('mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-16 gap-y-4')}>
 			<div className={cn('flex flex-col gap-4')}>
 				<Field orientation="horizontal">
-					<Checkbox id="quote" />
+					<Checkbox id="quote" checked={quote} onCheckedChange={(e)=>setQuote(Boolean(e))} />
 					<FieldContent>
 						<FieldLabel htmlFor="quote">
 							Quote
@@ -65,7 +84,7 @@ export const CsvOptionsContainer = () => {
 					<FieldLabel htmlFor="quoteChar">
 						Quote Char
 					</FieldLabel>
-					<Input disabled={quote === undefined} id="quoteChar" defaultValue='"' />
+					<Input disabled={!quote} id="quoteChar" defaultValue={quoteChar} onChange={(e)=>setQuoteChar(e.target.value)}  />
 					<FieldDescription>
 						If quote is checked, you can use this option to pick your own quote char
 					</FieldDescription>
@@ -74,12 +93,12 @@ export const CsvOptionsContainer = () => {
 					<FieldLabel htmlFor="delimiter">
 						Delimiter
 					</FieldLabel>
-					<Input id="delimiter" defaultValue="" />
+					<Input id="delimiter" defaultValue={delimiter} onChange={(e)=>setDelimiter(e.target.value)} />
 				</Field>
 			</div>
 			<div className={cn('flex flex-col gap-4')}>
 				<Field orientation="horizontal">
-					<Checkbox id="header" checked={true} />
+					<Checkbox id="header" checked={header} onCheckedChange={(e)=>setHeader(Boolean(e))} />
 					<FieldContent>
 						<FieldLabel htmlFor="header">
 							Header
@@ -95,7 +114,9 @@ export const CsvOptionsContainer = () => {
 					</FieldLabel>
 					<SelectWrapper
 						id="newLine"
-						options={newLineOptions}
+						defaultValue={newlineSequence}
+						onChange={(e)=> e && setNewlineSequence(e)}
+						options={newlineOptions}
 					/>
 				</Field>
 				<Field>
@@ -104,7 +125,8 @@ export const CsvOptionsContainer = () => {
 					</FieldLabel>
 					<SelectWrapper
 						id="skip"
-						defaultValue={false}
+						defaultValue={skipEmptyLines}
+						onChange={(e)=> e && setSkipEmptyLines(e)}
 						options={skipMode}
 					/>
 					<FieldDescription>
