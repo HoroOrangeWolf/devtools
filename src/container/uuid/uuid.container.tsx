@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GeneratorType, UuidService } from '@/service/uuid.service.ts';
 import { cn } from '@/lib/utils.ts';
 import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
@@ -29,11 +29,13 @@ const defaultGeneratorType: GeneratorType = 'V_4';
 const defaultCount = 1;
 
 export const UuidContainer = () => {
-	const [generatedValues, setGeneratedValues] = useState<string[]>(() =>
-		UuidService.generateValues(defaultGeneratorType, defaultCount)
-	);
+	const [generatedValues, setGeneratedValues] = useState<string[]>([]);
 	const [generatorType, setGeneratorType] = useState<GeneratorType>(defaultGeneratorType);
 	const [count, setCount] = useState<number>(defaultCount);
+
+	useEffect(() => {
+		setGeneratedValues(UuidService.generateValues(defaultGeneratorType, defaultCount));
+	}, []);
 
 	const generateValues = () => {
 		const values = UuidService.generateValues(generatorType, count);
@@ -53,6 +55,7 @@ export const UuidContainer = () => {
 		<div className={cn('flex','flex-col', 'gap-2', 'max-h-[64dvh]')}>
 			<div className={cn('grid', 'grid-cols-2', 'gap-2')}>
 				<SelectWrapper<GeneratorType>
+					ariaLabel="UUID version"
 					defaultValue={generatorType}
 					onChange={setGeneratorType}
 					options={generators}

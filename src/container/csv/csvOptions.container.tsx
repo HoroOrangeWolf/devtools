@@ -100,6 +100,7 @@ export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
 						The new line sequence
 					</FieldLabel>
 					<SelectWrapper
+						ariaLabel="New line sequence"
 						id="newLine"
 						defaultValue={newlineSequence}
 						onChange={(e)=> e && setNewlineSequence(e)}
@@ -111,6 +112,7 @@ export const CsvOptionsContainer = ({ onSettingsChange }: PropsType) => {
 						Skip empty lines
 					</FieldLabel>
 					<SelectWrapper
+						ariaLabel="Skip empty lines"
 						id="skip"
 						defaultValue={skipEmptyLines}
 						onChange={(e)=> e && setSkipEmptyLines(e)}
