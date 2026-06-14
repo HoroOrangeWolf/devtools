@@ -5,6 +5,7 @@ const uuidV4Pattern = /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-
 const uuidV7Pattern = /^[\da-f]{8}-[\da-f]{4}-7[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/;
 
 const getGeneratedValues = () => cy.get('ul[role="list"] li');
+const getUuidFromListItem = (text: string, index: number) => text.trim().replace(`${index + 1}.`, '').trim();
 
 describe('UUID generator page', () => {
 	beforeEach(() => {
@@ -36,8 +37,8 @@ describe('UUID generator page', () => {
 	});
 
 	it('switches UUID version and exports generated values as CSV', () => {
-		cy.get('[aria-label="UUID version"]').click();
-		cy.contains('[role="option"]', 'V7').click();
+		getGeneratedValues().should('have.length', 1);
+		cy.get('[aria-label="UUID version"]').focus().type('{downArrow}{downArrow}{downArrow}{enter}');
 		cy.get('[aria-label="Generate Values Count"]').clear().type('2');
 		cy.contains('button', 'Generate').click();
 
@@ -58,5 +59,24 @@ describe('UUID generator page', () => {
 			expect(lines[1]).to.match(uuidPattern);
 			expect(lines[2]).to.match(uuidPattern);
 		});
+	});
+
+	it('exports the visible generated UUID values', () => {
+		cy.get('[aria-label="Generate Values Count"]').clear().type('4');
+		cy.contains('button', 'Generate').click();
+
+		getGeneratedValues()
+			.should('have.length', 4)
+			.then(($items) => {
+				const visibleValues = [...$items].map((item, index) => getUuidFromListItem(item.textContent ?? '', index));
+
+				cy.contains('button', 'Export').click();
+
+				cy.readFile('cypress/downloads/generated_values.csv').then((content: string) => {
+					const [, ...exportedValues] = content.trim().split(/\r?\n/);
+
+					expect(exportedValues).to.deep.equal(visibleValues);
+				});
+			});
 	});
 });

@@ -48,6 +48,27 @@ describe('CSV utilities page', () => {
 		});
 	});
 
+	it('loads CSV content from a dropped file', () => {
+		cy.get('[aria-label="CSV file dropzone"]').selectFile({
+			contents: Cypress.Buffer.from('name,age\nAda,37'),
+			fileName: 'people.csv',
+			mimeType: 'text/csv',
+		}, {
+			action: 'drag-drop',
+		});
+
+		sourceContent().should('have.value', 'name,age\nAda,37');
+		cy.get('[aria-label="Output format"]').click();
+		cy.contains('[role="option"]', 'JSON').click();
+
+		convertedContent().should(($textarea) => {
+			expect(JSON.parse($textarea.val() as string)).to.deep.equal([
+				['name', 'age'],
+				['Ada', '37'],
+			]);
+		});
+	});
+
 	it('exports converted CSV content', () => {
 		sourceContent().type('[["name","age"],["Ada","37"]]', {
 			parseSpecialCharSequences: false,

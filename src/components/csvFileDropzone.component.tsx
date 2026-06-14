@@ -13,7 +13,7 @@ type CsvFileDropzoneProps = {
 };
 
 const hasFiles = (event: DragEvent<HTMLDivElement>) =>
-	Array.from(event.dataTransfer.types).includes('Files');
+	Array.from(event.dataTransfer?.types ?? []).includes('Files');
 
 export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFileDropzoneProps) => {
 	const [isActive, setIsActive] = useState(false);
@@ -21,6 +21,8 @@ export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFil
 
 	return (
 		<div
+			aria-label="CSV file dropzone"
+			role="region"
 			onDragEnter={(event) => {
 				if (!hasFiles(event)) {
 					return;
