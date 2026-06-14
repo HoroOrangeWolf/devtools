@@ -15,6 +15,8 @@ const downloadFile = (fileName: string, content: string, format: ContentFormat) 
 	URL.revokeObjectURL(url);
 };
 
+const readFileContent = async (file: File): Promise<string> => file.text();
+
 const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promise<string> =>
 	new Promise((resolve, reject) => {
 		const input = document.createElement('input');
@@ -31,7 +33,7 @@ const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promi
 			}
 
 			try {
-				resolve(await file.text());
+				resolve(await readFileContent(file));
 			} catch (error) {
 				reject(error);
 			}
@@ -43,4 +45,5 @@ const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promi
 export const FileService = {
 	downloadFile,
 	getFileContent,
+	readFileContent,
 };

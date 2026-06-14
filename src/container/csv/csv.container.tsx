@@ -10,6 +10,7 @@ import { CsvFormatsConstant, CsvFormatsType } from '@/service/constant/csvFormat
 import { ErrorList, ErrorModel } from '@/components/errorList.component.tsx';
 import { FileService } from '@/service/file.service.ts';
 import { UnparseConfig } from 'papaparse';
+import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
 
 const formatOptions: OptionType<CsvFormatsType>[] = [
 	{
@@ -69,6 +70,16 @@ export const CsvContainer = () => {
 		setCsvContent(uploadedContent);
 	};
 
+	const handleFileDrop = async (file: File) => {
+		const uploadedContent = await FileService.readFileContent(file);
+
+		if (!uploadedContent) {
+			return;
+		}
+
+		setCsvContent(uploadedContent);
+	};
+
 	const download = () => {
 		FileService.downloadFile(
 			`export${fileFormat === CsvFormatsConstant.CSV ? '.csv' : '.json'}`,
@@ -80,14 +91,16 @@ export const CsvContainer = () => {
 	return (
 		<div className={cn('flex flex-col gap-2')}>
 			<div className={cn('grid grid-cols-2 gap-2 max-h-64')}>
-				<Textarea
-					placeholder="Paste csv content or upload file..."
-					value={csvContent}
-					className="max-h-64"
-					onChange={(event) => {
-						setCsvContent(event.target.value);
-					}}
-				/>
+				<FileDropzone onDropFile={handleFileDrop} className="max-h-64">
+					<Textarea
+						placeholder="Paste csv content or upload file..."
+						value={csvContent}
+						className="max-h-64 w-full"
+						onChange={(event) => {
+							setCsvContent(event.target.value);
+						}}
+					/>
+				</FileDropzone>
 				<Textarea
 					readOnly={true}
 					value={targetContent}
