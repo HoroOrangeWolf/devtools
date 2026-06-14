@@ -1,6 +1,6 @@
-type ContentFormat = 'text/csv' | 'application/json';
+export type ContentFormat = 'text/csv' | 'application/json';
 
-type FileExtension = '.csv' | '.json';
+export type FileExtension = '.csv' | '.json';
 
 const downloadFile = (fileName: string, content: string, format: ContentFormat) => {
 	const blob = new Blob([content], { type: `${format};charset=utf-8;` });
@@ -16,6 +16,12 @@ const downloadFile = (fileName: string, content: string, format: ContentFormat) 
 };
 
 const readFileContent = async (file: File): Promise<string> => file.text();
+
+const isAcceptedFile = (file: File, formats: (FileExtension | ContentFormat)[]) => {
+	const extension = file.name.includes('.') ? `.${file.name.split('.').pop()?.toLowerCase()}` : '';
+
+	return formats.some((format) => format === file.type || format === extension);
+};
 
 const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promise<string> =>
 	new Promise((resolve, reject) => {
@@ -45,5 +51,6 @@ const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promi
 export const FileService = {
 	downloadFile,
 	getFileContent,
+	isAcceptedFile,
 	readFileContent,
 };

@@ -3,8 +3,10 @@ import { useState } from 'react';
 import { UploadIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils.ts';
+import { ContentFormat, FileExtension, FileService } from '@/service/file.service.ts';
 
 type CsvFileDropzoneProps = {
+	accept: (FileExtension | ContentFormat)[];
 	onDropFile: (file: File) => void | Promise<void>;
 	children: ReactNode;
 	className?: string;
@@ -13,7 +15,7 @@ type CsvFileDropzoneProps = {
 const hasFiles = (event: DragEvent<HTMLDivElement>) =>
 	Array.from(event.dataTransfer.types).includes('Files');
 
-export const FileDropzone = ({ onDropFile, children, className }: CsvFileDropzoneProps) => {
+export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFileDropzoneProps) => {
 	const [isActive, setIsActive] = useState(false);
 	const [, setDragDepth] = useState(0);
 
@@ -65,7 +67,7 @@ export const FileDropzone = ({ onDropFile, children, className }: CsvFileDropzon
 
 				const file = event.dataTransfer.files?.[0];
 
-				if (!file) {
+				if (!file || !FileService.isAcceptedFile(file, accept)) {
 					return;
 				}
 

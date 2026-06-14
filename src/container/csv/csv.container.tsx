@@ -8,7 +8,7 @@ import { CsvService } from '@/service/csv.service.ts';
 import { CsvOptionsContainer } from '@/container/csv/csvOptions.container.tsx';
 import { CsvFormatsConstant, CsvFormatsType } from '@/service/constant/csvFormats.constant.ts';
 import { ErrorList, ErrorModel } from '@/components/errorList.component.tsx';
-import { FileService } from '@/service/file.service.ts';
+import { ContentFormat, FileExtension, FileService } from '@/service/file.service.ts';
 import { UnparseConfig } from 'papaparse';
 import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
 
@@ -22,6 +22,14 @@ const formatOptions: OptionType<CsvFormatsType>[] = [
 		value: 'CSV',
 	}
 ];
+
+const acceptableFiles: (ContentFormat | FileExtension)[] = [
+	'.json',
+	'.csv',
+	'application/json',
+	'text/csv'
+];
+
 export const CsvContainer = () => {
 	const [fileFormat, setFileFormat] = useState<CsvFormatsType>(CsvFormatsConstant.CSV);
 	const [config, setConfig] = useState<UnparseConfig>({});
@@ -61,7 +69,7 @@ export const CsvContainer = () => {
 	},[config, fileFormat, csvContent]);
 
 	const handleUpload = async () => {
-		const uploadedContent = await FileService.getFileContent(['text/csv', '.json', '.csv', 'application/json']);
+		const uploadedContent = await FileService.getFileContent(acceptableFiles);
 
 		if (!uploadedContent) {
 			return;
@@ -91,7 +99,7 @@ export const CsvContainer = () => {
 	return (
 		<div className={cn('flex flex-col gap-2')}>
 			<div className={cn('grid grid-cols-2 gap-2 max-h-64')}>
-				<FileDropzone onDropFile={handleFileDrop} className="max-h-64">
+				<FileDropzone accept={acceptableFiles} onDropFile={handleFileDrop} className="max-h-64">
 					<Textarea
 						placeholder="Paste csv content or upload file..."
 						value={csvContent}
