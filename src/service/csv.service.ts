@@ -15,31 +15,6 @@ const downloadCSV = (fileName: string, value: object[]) => {
 	URL.revokeObjectURL(url);
 };
 
-const uploadCSV = async (): Promise<string> =>
-	new Promise((resolve, reject) => {
-		const input = document.createElement('input');
-
-		input.type = 'file';
-		input.accept = '.csv,text/csv';
-
-		input.addEventListener('change', async (event) => {
-			const file = (event.target as HTMLInputElement).files?.[0];
-
-			if (!file) {
-				resolve('');
-				return;
-			}
-
-			try {
-				resolve(await file.text());
-			} catch (error) {
-				reject(error);
-			}
-		});
-
-		input.click();
-	});
-
 type ResultType = {
 	content: string;
 	errors: ParseError[];
@@ -64,4 +39,4 @@ const parseCSV = async (sourceFormat: CsvFormatsType, targetFormat: CsvFormatsTy
 	};
 };
 
-export const CsvService = { downloadCSV, uploadCSV, parseCSV };
+export const CsvService = { downloadCSV, parseCSV };

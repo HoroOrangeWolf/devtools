@@ -9,6 +9,7 @@ import { CsvOptionsContainer } from '@/container/csv/csvOptions.container.tsx';
 import {  UnparseConfig } from 'papaparse';
 import { CsvFormatsConstant, CsvFormatsType } from '@/service/constant/csvFormats.constant.ts';
 import { ErrorList, ErrorModel } from '@/components/errorList.component.tsx';
+import { FileService } from '@/service/file.service.ts';
 
 const formatOptions: OptionType<CsvFormatsType>[] = [
 	{
@@ -59,7 +60,7 @@ export const CsvContainer = () => {
 	},[config, fileFormat, csvContent]);
 
 	const handleUpload = async () => {
-		const uploadedContent = await CsvService.uploadCSV();
+		const uploadedContent = await FileService.getFileContent(['.csv,text/csv', '.json']);
 
 		if (!uploadedContent) {
 			return;
