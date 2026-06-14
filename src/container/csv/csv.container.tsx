@@ -60,13 +60,21 @@ export const CsvContainer = () => {
 	},[config, fileFormat, csvContent]);
 
 	const handleUpload = async () => {
-		const uploadedContent = await FileService.getFileContent(['.csv,text/csv', '.json']);
+		const uploadedContent = await FileService.getFileContent(['text/csv', '.json', '.csv', 'application/json']);
 
 		if (!uploadedContent) {
 			return;
 		}
 
 		setCsvContent(uploadedContent);
+	};
+
+	const download = () => {
+		FileService.downloadFile(
+			`export${fileFormat === CsvFormatsConstant.CSV ? '.csv' : '.json'}`,
+			targetContent,
+			fileFormat === CsvFormatsConstant.CSV ? 'text/csv' : 'application/json'
+		);
 	};
 
 	return (
@@ -97,7 +105,9 @@ export const CsvContainer = () => {
 						onChange={setFileFormat}
 						options={formatOptions}
 					/>
-					<Button>
+					<Button
+						onClick={download}
+					>
 						<DownloadIcon />
 						Export
 					</Button>

@@ -1,7 +1,21 @@
+type ContentFormat = 'text/csv' | 'application/json';
 
-type Formats = '.csv,text/csv' | '.json';
+type FileExtension = '.csv' | '.json';
 
-const getFileContent = async (formats: Formats[]): Promise<string> =>
+const downloadFile = (fileName: string, content: string, format: ContentFormat) => {
+	const blob = new Blob([content], { type: `${format};charset=utf-8;` });
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement('a');
+
+	link.href = url;
+	link.download = fileName;
+	document.body.append(link);
+	link.click();
+	link.remove();
+	URL.revokeObjectURL(url);
+};
+
+const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promise<string> =>
 	new Promise((resolve, reject) => {
 		const input = document.createElement('input');
 
@@ -27,5 +41,6 @@ const getFileContent = async (formats: Formats[]): Promise<string> =>
 	});
 
 export const FileService = {
+	downloadFile,
 	getFileContent,
 };
