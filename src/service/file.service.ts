@@ -1,4 +1,4 @@
-export type ContentFormat = 'text/csv' | 'application/json';
+export type ContentFormat = 'text/csv' | 'application/json' | 'text/plain';
 
 export type FileExtension = '.csv' | '.json';
 

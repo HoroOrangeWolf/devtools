@@ -6,8 +6,10 @@ import { BaseVariant, BaseVariantConstant } from '@/service/constant/baseVariant
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
-import { Label } from 'radix-ui';
 import { BaseService } from '@/service/base.service.ts';
+import { ErrorBanner } from '@/components/error.component.tsx';
+import { FileService } from '@/service/file.service.ts';
+import { DownloadIcon } from 'lucide-react';
 
 const BASE_VARIANTS: OptionType<BaseVariant>[] = [
 	{
@@ -34,8 +36,8 @@ export const Base64Container = () => {
 
 				const result = method(sourceText, baseVariant);
 
-				setTargetText(result);
 				setIsEncodingError(false);
+				setTargetText(result);
 			} catch (error) {
 				console.error('Failed to',error);
 				setIsEncodingError(true);
@@ -52,6 +54,10 @@ export const Base64Container = () => {
 
 	const switchDecodeMode = () => {
 		setIsEncodeMode(false);
+	};
+
+	const download = () => {
+		FileService.downloadFile(`${isEncodeMode ? 'encode' : 'decode'}_result.txt`, targetText, 'text/plain');
 	};
 
 	return (
@@ -88,6 +94,23 @@ export const Base64Container = () => {
 					className={cn('h-64')}
 				/>
 			</div>
+			{isEncodingError && (
+				<ErrorBanner
+					title="Error"
+				>
+					Failed to {isEncodeMode ? 'encode' : 'decode'} value...
+				</ErrorBanner>
+			)}
+			{targetText && (
+				<div className={cn('flex flex-row justify-end')}>
+					<Button
+						onClick={download}
+					>
+						<DownloadIcon />
+						Download Result
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 };

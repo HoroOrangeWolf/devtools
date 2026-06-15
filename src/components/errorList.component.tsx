@@ -1,6 +1,5 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
-import { AlertCircleIcon } from 'lucide-react';
 import { cn } from '@/lib/utils.ts';
+import { ErrorBanner } from '@/components/error.component.tsx';
 
 export type ErrorModel = {
     error: string;
@@ -19,17 +18,12 @@ export const ErrorList = ({ errors }: PropsType) => {
 		<div className={cn('grid w-full gap-2 max-h-64 overflow-y-auto')}>
 			{
 				errors.map((error, index) => (
-					<Alert
+					<ErrorBanner
 						key={`error-${index}-${error.error}`}
-						variant="destructive"
-						className="w-full"
+						title="Failed to parse"
 					>
-						<AlertCircleIcon />
-						<AlertTitle>Failed to parse</AlertTitle>
-						<AlertDescription>
-							{error.error}
-						</AlertDescription>
-					</Alert>
+						{error.error}
+					</ErrorBanner>
 				))
 			}
 		</div>
