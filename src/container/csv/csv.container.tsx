@@ -104,7 +104,7 @@ export const CsvContainer = () => {
 						aria-label="Source content"
 						placeholder="Paste csv content or upload file..."
 						value={csvContent}
-						className="max-h-64 w-full"
+						className="h-64 w-full"
 						onChange={(event) => {
 							setCsvContent(event.target.value);
 						}}
@@ -114,7 +114,7 @@ export const CsvContainer = () => {
 					aria-label="Converted content"
 					readOnly={true}
 					value={targetContent}
-					className="max-h-64"
+					className="h-64"
 				/>
 			</div>
 			<div className={cn('flex flex-row justify-between')}>
