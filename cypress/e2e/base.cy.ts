@@ -48,4 +48,17 @@ describe('Base64 utilities page', () => {
 			expect(content).to.equal('SGVsbG8gRGV2IFV0aWxzIQ==');
 		});
 	});
+
+	it('copies the converted result to clipboard', () => {
+		sourceContent().type('Hello Dev Utils!');
+		convertedContent().should('have.value', 'SGVsbG8gRGV2IFV0aWxzIQ==');
+
+		cy.window().then((window) => {
+			cy.stub(window.navigator.clipboard, 'writeText').as('writeClipboard');
+		});
+
+		cy.contains('button', 'Copy to clipboard').click();
+
+		cy.get('@writeClipboard').should('have.been.calledOnceWith', 'SGVsbG8gRGV2IFV0aWxzIQ==');
+	});
 });
