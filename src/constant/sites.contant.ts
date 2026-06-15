@@ -12,6 +12,12 @@ export const NavItems = [
 		isReady: true,
 	},
 	{
+		href: '/base',
+		label: 'Base64',
+		description: 'Encode and decode Base64',
+		isReady: true,
+	},
+	{
 		href: '#',
 		label: 'JSON',
 		description: 'Inspect and transform JSON',
