@@ -9,7 +9,9 @@ import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { BaseService } from '@/service/base.service.ts';
 import { ErrorBanner } from '@/components/error.component.tsx';
 import { FileService } from '@/service/file.service.ts';
-import { DownloadIcon } from 'lucide-react';
+import { ClipboardCopy, DownloadIcon } from 'lucide-react';
+import { ToastUtils } from '@/utils/toast.utils.ts';
+import { Toaster } from '@/components/ui/sonner.tsx';
 
 const BASE_VARIANTS: OptionType<BaseVariant>[] = [
 	{
@@ -58,10 +60,22 @@ export const Base64Container = () => {
 
 	const download = () => {
 		FileService.downloadFile(`${isEncodeMode ? 'encode' : 'decode'}_result.txt`, targetText, 'text/plain');
+		ToastUtils.info('Download complete');
+	};
+
+	const copyToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(targetText);
+			ToastUtils.info('Copied to clipboard');
+		} catch (error) {
+			console.error('Failed to copy to clipboard', error);
+			ToastUtils.error('Could not copy to clipboard');
+		}
 	};
 
 	return (
 		<div className={cn('flex flex-col gap-2')}>
+			<Toaster position="bottom-left" />
 			<div className={cn('w-48')}>
 				<Field>
 					<FieldLabel htmlFor="base_variant">
@@ -69,6 +83,7 @@ export const Base64Container = () => {
 					</FieldLabel>
 					<SelectWrapper
 						id="base_variant"
+						ariaLabel="Base64 variant"
 						options={BASE_VARIANTS}
 						defaultValue={baseVariant}
 						onChange={setBaseVariant}
@@ -77,6 +92,7 @@ export const Base64Container = () => {
 			</div>
 			<div className={cn('flex flex-col gap-2')}>
 				<Textarea
+					aria-label="Source content"
 					className={cn('h-64')}
 					onChange={(e)=>setSourceText(e.target.value)}
 					placeholder={`Type here value to ${isEncodeMode ? 'encode' : 'decode'}...`}
@@ -88,6 +104,7 @@ export const Base64Container = () => {
 					</ButtonGroup>
 				</div>
 				<Textarea
+					aria-label="Converted content"
 					placeholder={isEncodeMode ? 'Encoding results...' : 'Decoding results...'}
 					value={targetText}
 					readOnly={true}
@@ -102,7 +119,14 @@ export const Base64Container = () => {
 				</ErrorBanner>
 			)}
 			{targetText && (
-				<div className={cn('flex flex-row justify-end')}>
+				<div className={cn('flex flex-row gap-2 justify-end')}>
+					<Button
+						variant="outline"
+						onClick={copyToClipboard}
+					>
+						<ClipboardCopy />
+						Copy to clipboard
+					</Button>
 					<Button
 						onClick={download}
 					>
