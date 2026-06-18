@@ -30,26 +30,3 @@ rtk --version
 rtk gain
 which rtk
 ```
-
-## Cypress
-
-Use Linux Node from NVM in this repo:
-
-```bash
-export PATH=/home/kalerxx66/.nvm/versions/node/v24.17.0/bin:$PATH
-export XDG_CONFIG_HOME=/tmp/codex-astro-config
-```
-
-Start app server:
-
-```bash
-rtk pnpm dev
-```
-
-Run Cypress in separate shell:
-
-```bash
-rtk pnpm exec cypress run
-```
-
-If Codex sandbox blocks localhost bind or access, request unsandboxed run for both `rtk pnpm dev` and `rtk pnpm exec cypress run`.
