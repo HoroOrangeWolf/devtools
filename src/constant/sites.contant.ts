@@ -18,10 +18,10 @@ export const NavItems = [
 		isReady: true,
 	},
 	{
-		href: '#',
-		label: 'JSON',
-		description: 'Inspect and transform JSON',
-		isReady: false,
+		href: '/jsonformatter',
+		label: 'JSON/XML',
+		description: 'Format and beautify JSON and XML',
+		isReady: true,
 	},
 	{
 		href: '#',
