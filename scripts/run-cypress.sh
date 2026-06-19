@@ -32,26 +32,50 @@ fi
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-/tmp/codex-astro-config}"
 
 SERVER_PID=""
+CYPRESS_EXIT_CODE=1
+SERVER_READY=0
 
 cleanup() {
-	if [ -n "${SERVER_PID}" ] && kill -0 "${SERVER_PID}" 2>/dev/null; then
-		kill "${SERVER_PID}" 2>/dev/null || true
-		wait "${SERVER_PID}" 2>/dev/null || true
+	if [ -z "${SERVER_PID}" ]; then
+		return
 	fi
+
+	# Astro is a grandchild of rtk/pnpm, so stop the server's whole process group.
+	kill -TERM -- "-${SERVER_PID}" 2>/dev/null || true
+
+	for _ in $(seq 1 20); do
+		if ! kill -0 -- "-${SERVER_PID}" 2>/dev/null; then
+			wait "${SERVER_PID}" 2>/dev/null || true
+			return
+		fi
+		sleep 0.1
+	done
+
+	kill -KILL -- "-${SERVER_PID}" 2>/dev/null || true
+	wait "${SERVER_PID}" 2>/dev/null || true
 }
 
 trap cleanup EXIT INT TERM
 
 cd "${ROOT_DIR}"
 
+if curl --silent --fail --max-time 1 "${BASE_URL}" >/dev/null 2>&1; then
+	echo "a server is already running at ${BASE_URL}; stop it before running Cypress" >&2
+	exit 1
+fi
+
 : > "${SERVER_LOG}"
-rtk pnpm dev >"${SERVER_LOG}" 2>&1 &
+setsid rtk pnpm exec astro dev --host 127.0.0.1 --port "${PORT}" >"${SERVER_LOG}" 2>&1 &
 SERVER_PID=$!
 
 for _ in $(seq 1 60); do
-	if curl --silent --fail "${BASE_URL}" >/dev/null 2>&1; then
-		rtk pnpm exec cypress run "$@"
-		exit $?
+	if curl --silent --fail --max-time 1 "${BASE_URL}" >/dev/null 2>&1; then
+		SERVER_READY=1
+		set +e
+		rtk pnpm exec cypress run --config "baseUrl=${BASE_URL}" "$@"
+		CYPRESS_EXIT_CODE=$?
+		set -e
+		break
 	fi
 
 	if ! kill -0 "${SERVER_PID}" 2>/dev/null; then
@@ -62,6 +86,10 @@ for _ in $(seq 1 60); do
 
 	sleep 1
 done
+
+if [ "${SERVER_READY}" -eq 1 ]; then
+	exit "${CYPRESS_EXIT_CODE}"
+fi
 
 echo "timed out waiting for dev server at ${BASE_URL}" >&2
 tail -n 50 "${SERVER_LOG}" >&2 || true
