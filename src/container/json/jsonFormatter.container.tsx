@@ -3,7 +3,7 @@
 import { JsonEditorContainer } from '@/container/json/jsonEditor.container.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useState } from 'react';
-import { ButtonSelectOption, ButtonSelectWrapper } from '@/components/select/buttonGroupWrapper.component.tsx';
+import {  ButtonSelectWrapper } from '@/components/select/buttonGroupWrapper.component.tsx';
 import {
 	JsonPrettyViewModeConstant,
 	JsonPrettyViewModeType
@@ -65,17 +65,32 @@ const convertOptions: OptionType<ViewDataType>[] = [
 	}
 ];
 
+const tabs: OptionType<number>[] = Array.from({ length: 3 }, ()=>null)
+	.map((_, index): OptionType<number> => ({
+		label: `Tab ${index + 1}`,
+		value: index + 1
+	}));
+
 export const JsonFormatterContainer = () => {
 	const [value, setValue] = useState<string>(exp);
 
 	return (
-		<div className={cn('grid md:grid-cols-[1fr_1fr_1fr] grid-cols-1 grid-rows-3 md:grid-rows-1 gap-2')}>
+		<div className={cn('md:grid md:grid-cols-[minmax(0,1fr)_13rem_minmax(0,1fr)] flex flex-col md:grid-rows-1 gap-2 w-full')}>
 			<JsonEditorContainer value={value} onChange={({ value }) => setValue(value)} />
 			<div className={cn('flex flex-col gap-2')}>
 				<ButtonSelectWrapper
 					defaultValue={JsonPrettyViewModeConstant.BEAUTIFIED}
 					options={options}
 				/>
+				<Field>
+					<FieldLabel>
+						JSON tabs
+					</FieldLabel>
+					<SelectWrapper
+						options={tabs}
+						defaultValue={2}
+					/>
+				</Field>
 				<Field>
 					<FieldLabel>
 						Transform to
@@ -90,6 +105,7 @@ export const JsonFormatterContainer = () => {
 				</Button>
 			</div>
 			<JsonEditorContainer
+				className={cn('max-w-full')}
 				readOnly={true}
 				value={value}
 			/>

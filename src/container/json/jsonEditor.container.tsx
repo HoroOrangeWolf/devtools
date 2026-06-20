@@ -1,4 +1,4 @@
-import { ButtonSelectOption, ButtonSelectWrapper } from '@/components/select/buttonGroupWrapper.component.tsx';
+import {  ButtonSelectWrapper } from '@/components/select/buttonGroupWrapper.component.tsx';
 import { ErrorBanner } from '@/components/error.component.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
@@ -8,6 +8,7 @@ import { JsonTreeSettings, JsonTreeView, JsonValue } from '@/container/json/view
 import { cn } from '@/lib/utils.ts';
 import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { OptionType } from '@/components/selectWrapper.component.tsx';
 
 export type JsonEditorChange = {
 	value: string;
@@ -22,7 +23,7 @@ type PropsType = {
 	className?: string;
 }
 
-const options: ButtonSelectOption<ViewType>[] = [
+const options: OptionType<ViewType>[] = [
 	{
 		label: <CodeXml aria-label="Code view" />,
 		value: ViewTypeConstant.CODE,

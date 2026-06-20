@@ -18,7 +18,7 @@ type PropsType<T = string> = {
 	id?: string;
 	ariaLabel?: string;
     placeholder?: string;
-    defaultValue?: string | boolean;
+    defaultValue?: string | number | boolean;
 	onChange?: (value: T) => void;
     options?: OptionType<T>[];
 }
