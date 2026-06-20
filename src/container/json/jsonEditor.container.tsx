@@ -1,13 +1,13 @@
 import {  ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { ErrorBanner } from '@/components/error.component.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
-import { ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
+import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { ViewType, ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
 import { CodeView } from '@/container/json/view/codeView.component.tsx';
 import { JsonTreeSettings, JsonTreeView, JsonValue } from '@/container/json/view/jsonTreeView.component.tsx';
 import { cn } from '@/lib/utils.ts';
 import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
 
 export type JsonEditorChange = {
@@ -20,8 +20,9 @@ type PropsType = {
 	onChange?: (change: JsonEditorChange) => void;
 	readOnly?: boolean;
 	treeSettings?: JsonTreeSettings;
+	tabCount?: number;
+	targetTransform?: ViewDataType;
 	className?: string;
-	forceView?: ViewType;
 }
 
 const parseJson = (value: string): { data?: JsonValue; errorMessage?: string } => {
@@ -43,7 +44,7 @@ export const JsonEditorContainer = ({
 	onChange,
 	readOnly = false,
 	treeSettings,
-	forceView,
+	targetTransform,
 	className,
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
@@ -63,6 +64,13 @@ export const JsonEditorContainer = ({
 	};
 
 	const viewOptions = useMemo((): OptionType<ViewType>[] => {
+		const supportedModes = new Set<ViewType>([
+			ViewTypeConstant.RAW,
+			ViewTypeConstant.CODE
+		]);
+
+		const isSupportedDataType = targetTransform && targetTransform !== ViewDataTypeConstant.JSON;
+
 		return [
 			{
 				label: <CodeXml aria-label="Code view" />,
@@ -78,10 +86,19 @@ export const JsonEditorContainer = ({
 			},
 		].map((opt) => ({
 			...opt,
-			tooltip: forceView && forceView !== opt.value ? 'This data type is only supported by the JSON' : undefined,
-			isDisabled: forceView && forceView !== opt.value
-		}));
-	}, [forceView]);
+			tooltip: isSupportedDataType && !supportedModes.has(opt.value) ? 'This data type is only supported by the JSON' : undefined,
+			isDisabled: isSupportedDataType && !supportedModes.has(opt.value)
+ 		}));
+	}, [targetTransform]);
+
+	useEffect(() => {
+		if (!targetTransform || targetTransform === ViewDataTypeConstant.JSON) {
+			return;
+		}
+
+		// eslint-disable-next-line react-hooks/set-state-in-effect
+		setJsonViewType(ViewTypeConstant.RAW);
+	}, [targetTransform]);
 
 	const getView = () => {
 		switch (jsonViewType) {
@@ -135,7 +152,7 @@ export const JsonEditorContainer = ({
 			<div className="flex flex-row justify-start">
 				<ButtonSelectWrapper
 					options={viewOptions}
-					value={forceView ?? jsonViewType}
+					value={jsonViewType}
 					onClick={setJsonViewType}
 				/>
 			</div>

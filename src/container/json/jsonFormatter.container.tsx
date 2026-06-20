@@ -13,6 +13,7 @@ import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/vi
 import { Button } from '@/components/ui/button.tsx';
 import { DownloadIcon } from 'lucide-react';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
+import { ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
 
 const exp = `{
   "employees": {
@@ -73,6 +74,8 @@ const tabs: OptionType<number>[] = Array.from({ length: 3 }, ()=>null)
 
 export const JsonFormatterContainer = () => {
 	const [value, setValue] = useState<string>(exp);
+	const [targetTransform, setTargetTransform] = useState<ViewDataType>(ViewDataTypeConstant.JSON);
+	const [tabCount, setTabCount] = useState<number>(2);
 
 	return (
 		<div className={cn('md:grid md:grid-cols-[minmax(0,1fr)_13rem_minmax(0,1fr)] flex flex-col md:grid-rows-1 gap-2 w-full')}>
@@ -88,6 +91,7 @@ export const JsonFormatterContainer = () => {
 					</FieldLabel>
 					<SelectWrapper
 						options={tabs}
+						onChange={setTabCount}
 						defaultValue={2}
 					/>
 				</Field>
@@ -98,6 +102,7 @@ export const JsonFormatterContainer = () => {
 					<SelectWrapper
 						defaultValue={ViewDataTypeConstant.JSON}
 						options={convertOptions}
+						onChange={setTargetTransform}
 					/>
 				</Field>
 				<Button>
@@ -108,7 +113,7 @@ export const JsonFormatterContainer = () => {
 				className={cn('max-w-full')}
 				readOnly={true}
 				value={value}
-				forceView="CODE"
+				targetTransform={targetTransform}
 			/>
 		</div>
 	);
