@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
 import { Button } from '@/components/ui/button.tsx';
-
-export type ButtonSelectOption<T = string> = {
-    label: React.ReactNode;
-    value: T;
-}
+import { OptionType } from '@/components/selectWrapper.component.tsx';
 
 type PropsType<T> = {
-    options?: ButtonSelectOption<T>[];
+    options?: OptionType<T>[];
 	value?: T;
+	defaultValue?: T;
 	onClick?: (val: T) => void;
 }
 
-export const ButtonSelectWrapper = <T = string,>({ options = [], onClick, value }: PropsType<T>) => {
-	const [currentValue, setCurrentValue] = useState<T>();
+export const ButtonSelectWrapper = <T = string,>({ options = [], onClick, value, defaultValue }: PropsType<T>) => {
+	const [currentValue, setCurrentValue] = useState<T>(defaultValue as T);
 
 	if (options.length === 0) {
 		return null;

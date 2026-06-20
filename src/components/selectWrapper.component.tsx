@@ -6,10 +6,11 @@ import {
 	SelectValue
 } from '@/components/ui/select.tsx';
 import { FieldDescription } from '@/components/ui/field.tsx';
+import React from 'react';
 
 export type OptionType<T = string> = {
     value: T;
-    label: string;
+    label: React.ReactNode;
 	tooltip?: string;
 }
 
