@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils.ts';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
+import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { useEffect, useState } from 'react';
 import { HardDriveUploadIcon, DownloadIcon } from 'lucide-react';
 import { CsvService } from '@/service/csv.service.ts';

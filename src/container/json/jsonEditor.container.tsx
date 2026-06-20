@@ -1,4 +1,4 @@
-import {  ButtonSelectWrapper } from '@/components/select/buttonGroupWrapper.component.tsx';
+import {  ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { ErrorBanner } from '@/components/error.component.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
@@ -8,7 +8,7 @@ import { JsonTreeSettings, JsonTreeView, JsonValue } from '@/container/json/view
 import { cn } from '@/lib/utils.ts';
 import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { OptionType } from '@/components/selectWrapper.component.tsx';
+import { OptionType } from '@/components/select/selectWrapper.component.tsx';
 
 export type JsonEditorChange = {
 	value: string;
@@ -21,22 +21,8 @@ type PropsType = {
 	readOnly?: boolean;
 	treeSettings?: JsonTreeSettings;
 	className?: string;
+	forceView?: ViewType;
 }
-
-const options: OptionType<ViewType>[] = [
-	{
-		label: <CodeXml aria-label="Code view" />,
-		value: ViewTypeConstant.CODE,
-	},
-	{
-		label: <TextAlignStart aria-label="Raw view" />,
-		value: ViewTypeConstant.RAW,
-	},
-	{
-		label: <LucideListTree aria-label="Tree view" />,
-		value: ViewTypeConstant.TREE,
-	},
-];
 
 const parseJson = (value: string): { data?: JsonValue; errorMessage?: string } => {
 	if (value.trim() === '') {
@@ -57,6 +43,7 @@ export const JsonEditorContainer = ({
 	onChange,
 	readOnly = false,
 	treeSettings,
+	forceView,
 	className,
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
@@ -74,6 +61,27 @@ export const JsonEditorContainer = ({
 	const handleTreeChange = (nextValue: JsonValue) => {
 		onChange?.({ value: JSON.stringify(nextValue) });
 	};
+
+	const viewOptions = useMemo((): OptionType<ViewType>[] => {
+		return [
+			{
+				label: <CodeXml aria-label="Code view" />,
+				value: ViewTypeConstant.CODE,
+			},
+			{
+				label: <TextAlignStart aria-label="Raw view" />,
+				value: ViewTypeConstant.RAW,
+			},
+			{
+				label: <LucideListTree aria-label="Tree view" />,
+				value: ViewTypeConstant.TREE,
+			},
+		].map((opt) => ({
+			...opt,
+			tooltip: forceView && forceView !== opt.value ? 'This data type is only supported by the JSON' : undefined,
+			isDisabled: forceView && forceView !== opt.value
+		}));
+	}, [forceView]);
 
 	const getView = () => {
 		switch (jsonViewType) {
@@ -126,8 +134,8 @@ export const JsonEditorContainer = ({
 		<div className={cn('flex flex-col gap-1', className)}>
 			<div className="flex flex-row justify-start">
 				<ButtonSelectWrapper
-					options={options}
-					value={jsonViewType}
+					options={viewOptions}
+					value={forceView ?? jsonViewType}
 					onClick={setJsonViewType}
 				/>
 			</div>

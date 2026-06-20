@@ -11,6 +11,7 @@ import React from 'react';
 export type OptionType<T = string> = {
     value: T;
     label: React.ReactNode;
+	isDisabled?: boolean;
 	tooltip?: string;
 }
 
@@ -25,8 +26,8 @@ type PropsType<T = string> = {
 
 export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, placeholder, onChange }: PropsType<T>) => {
 	const renderOptions = () => {
-		return options.map(({ label, value, tooltip }, index) => (
-			<SelectItem value={value as string} key={`option-${index}-${label}-${value}`}>
+		return options.map(({ label, value, tooltip, isDisabled }, index) => (
+			<SelectItem disabled={isDisabled} value={value as string} key={`option-${index}-${label}-${value}`}>
 				{label}
 				{tooltip && (
 					<FieldDescription>

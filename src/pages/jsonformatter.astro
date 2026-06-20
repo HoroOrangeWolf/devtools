@@ -1,6 +1,6 @@
 ---
+import { JsonFormatterRoot } from '@/container/json/jsonFormatter.root';
 import Layout from '@/layouts/Layout.astro';
-import { JsonFormatterContainer } from '@/container/json/jsonFormatter.container.tsx';
 
 const title = 'Base64 Encoder and Decoder Tool | Dev Utils';
 const description =
@@ -55,7 +55,7 @@ const keywords = [
         </div>
 
         <div class="border-border bg-card text-card-foreground rounded-lg border p-4 sm:p-6">
-            <JsonFormatterContainer client:load />
+            <JsonFormatterRoot client:load />
         </div>
     </section>
 </Layout>

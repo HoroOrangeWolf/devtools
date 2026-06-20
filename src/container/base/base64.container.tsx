@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils.ts';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { useEffect, useState } from 'react';
-import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
+import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { BaseVariant, BaseVariantConstant } from '@/service/constant/baseVariant.constant.ts';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
@@ -11,7 +11,6 @@ import { ErrorBanner } from '@/components/error.component.tsx';
 import { FileService } from '@/service/file.service.ts';
 import { ClipboardCopy, DownloadIcon } from 'lucide-react';
 import { ToastUtils } from '@/utils/toast.utils.ts';
-import { Toaster } from '@/components/ui/sonner.tsx';
 import { HydratedMarker } from '@/components/hydratedMarker.component.tsx';
 
 const BASE_VARIANTS: OptionType<BaseVariant>[] = [
@@ -78,7 +77,6 @@ export const Base64Container = () => {
 		<>
 			<HydratedMarker />
 			<div className={cn('flex flex-col gap-2')}>
-				<Toaster position="bottom-left" />
 				<div className={cn('w-48')}>
 					<Field>
 						<FieldLabel htmlFor="base_variant">

@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils.ts';
 import { Input } from '@/components/ui/input.tsx';
 import { Field, FieldContent, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Checkbox } from '@/components/ui/checkbox';
-import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
+import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { UnparseConfig } from 'papaparse';
 
 const skipMode: OptionType<'greedy' | boolean>[] = [

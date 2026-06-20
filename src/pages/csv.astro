@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { CsvContainer } from '@/container/csv/csv.container.tsx';
+import { CsvRoot } from '@/container/csv/csv.root';
 
 const title = 'CSV Parser and JSON Export Tool | Dev Utils';
 const description =
@@ -55,7 +55,7 @@ const keywords = [
         </div>
 
         <div class="border-border bg-card text-card-foreground rounded-lg border p-4 sm:p-6">
-            <CsvContainer client:load />
+            <CsvRoot client:load />
         </div>
     </section>
 </Layout>

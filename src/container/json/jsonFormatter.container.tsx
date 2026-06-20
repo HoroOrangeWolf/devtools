@@ -3,12 +3,12 @@
 import { JsonEditorContainer } from '@/container/json/jsonEditor.container.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useState } from 'react';
-import {  ButtonSelectWrapper } from '@/components/select/buttonGroupWrapper.component.tsx';
+import {  ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import {
 	JsonPrettyViewModeConstant,
 	JsonPrettyViewModeType
 } from '@/container/json/constant/jsonPrettyViewMode.constant.ts';
-import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
+import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { DownloadIcon } from 'lucide-react';
@@ -108,6 +108,7 @@ export const JsonFormatterContainer = () => {
 				className={cn('max-w-full')}
 				readOnly={true}
 				value={value}
+				forceView="CODE"
 			/>
 		</div>
 	);

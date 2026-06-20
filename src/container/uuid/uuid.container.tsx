@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GeneratorType, UuidService } from '@/service/uuid.service.ts';
 import { cn } from '@/lib/utils.ts';
-import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.tsx';
+import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button';
 import { CsvService } from '@/service/csv.service.ts';

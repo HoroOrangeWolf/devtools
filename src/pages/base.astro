@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { Base64Container } from '@/container/base/base64.container.tsx';
+import { Base64Root } from '@/container/base/base64.root';
 
 const title = 'Base64 Encoder and Decoder Tool | Dev Utils';
 const description =
@@ -55,7 +55,7 @@ const keywords = [
 		</div>
 
 		<div class="border-border bg-card text-card-foreground rounded-lg border p-4 sm:p-6">
-			<Base64Container client:load />
+			<Base64Root client:load />
 		</div>
 	</section>
 </Layout>
