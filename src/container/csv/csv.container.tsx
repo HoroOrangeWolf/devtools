@@ -101,7 +101,7 @@ export const CsvContainer = () => {
 		<>
 			<HydratedMarker />
 			<div className={cn('flex flex-col gap-2')}>
-				<div className={cn('grid grid-cols-2 gap-2 max-h-64')}>
+				<div className={cn('grid md:grid-rows-1 md:grid-cols-2 grid-rows-2 grid-cols-1 gap-2')}>
 					<FileDropzone accept={acceptableFiles} onDropFile={handleFileDrop} className="max-h-64">
 						<Textarea
 							aria-label="Source content"
@@ -114,6 +114,7 @@ export const CsvContainer = () => {
 						/>
 					</FileDropzone>
 					<Textarea
+						placeholder="Results..."
 						aria-label="Converted content"
 						readOnly={true}
 						value={targetContent}
