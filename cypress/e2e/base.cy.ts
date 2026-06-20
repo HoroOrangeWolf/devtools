@@ -11,7 +11,7 @@ describe('Base64 utilities page', () => {
 	});
 
 	it('encodes plain text to Base64 by default', () => {
-		cy.contains('h2', 'Utils').should('be.visible');
+		cy.contains('h2', 'Base64 Encoder').should('be.visible');
 
 		sourceContent().type('Hello Dev Utils!');
 
