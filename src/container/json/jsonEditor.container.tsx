@@ -9,6 +9,10 @@ import { cn } from '@/lib/utils.ts';
 import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
+import {
+	JsonPrettyViewModeConstant,
+	JsonPrettyViewModeType
+} from '@/container/json/constant/jsonPrettyViewMode.constant.ts';
 
 export type JsonEditorChange = {
 	value: string;
@@ -22,6 +26,7 @@ type PropsType = {
 	treeSettings?: JsonTreeSettings;
 	tabCount?: number;
 	targetTransform?: ViewDataType;
+	displayMode?: JsonPrettyViewModeType;
 	className?: string;
 }
 
@@ -45,6 +50,8 @@ export const JsonEditorContainer = ({
 	readOnly = false,
 	treeSettings,
 	targetTransform,
+	tabCount = 2,
+	displayMode,
 	className,
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
@@ -100,12 +107,21 @@ export const JsonEditorContainer = ({
 		setJsonViewType(ViewTypeConstant.RAW);
 	}, [targetTransform]);
 
+	const formatJson = () => {
+		try {
+			return JSON.stringify(JSON.parse(value), null, displayMode === JsonPrettyViewModeConstant.COMPACT ? 0 : tabCount);
+		} catch (error) {
+			console.error('Failed to parse json', error);
+			return value;
+		}
+	};
+
 	const getView = () => {
 		switch (jsonViewType) {
 			case ViewTypeConstant.CODE: {
 				return (
 					<CodeView type={ViewDataTypeConstant.JSON}>
-						{value}
+						{formatJson()}
 					</CodeView>
 				);
 			}
@@ -113,7 +129,7 @@ export const JsonEditorContainer = ({
 				return (
 					<div className="flex flex-col gap-2">
 						<Textarea
-							value={value}
+							value={formatJson()}
 							readOnly={readOnly}
 							aria-invalid={Boolean(parsedJson.errorMessage)}
 							onChange={(event) => handleRawChange(event.target.value)}

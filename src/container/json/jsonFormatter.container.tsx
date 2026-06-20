@@ -13,7 +13,6 @@ import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/vi
 import { Button } from '@/components/ui/button.tsx';
 import { DownloadIcon } from 'lucide-react';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
-import { ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
 
 const exp = `{
   "employees": {
@@ -75,6 +74,7 @@ const tabs: OptionType<number>[] = Array.from({ length: 3 }, ()=>null)
 export const JsonFormatterContainer = () => {
 	const [value, setValue] = useState<string>(exp);
 	const [targetTransform, setTargetTransform] = useState<ViewDataType>(ViewDataTypeConstant.JSON);
+	const [jsonPrettyMode, setJsonPrettyMode] = useState<JsonPrettyViewModeType>(JsonPrettyViewModeConstant.BEAUTIFIED);
 	const [tabCount, setTabCount] = useState<number>(2);
 
 	return (
@@ -82,7 +82,8 @@ export const JsonFormatterContainer = () => {
 			<JsonEditorContainer value={value} onChange={({ value }) => setValue(value)} />
 			<div className={cn('flex flex-col gap-2')}>
 				<ButtonSelectWrapper
-					defaultValue={JsonPrettyViewModeConstant.BEAUTIFIED}
+					onClick={setJsonPrettyMode}
+					value={jsonPrettyMode}
 					options={options}
 				/>
 				<Field>
@@ -92,7 +93,7 @@ export const JsonFormatterContainer = () => {
 					<SelectWrapper
 						options={tabs}
 						onChange={setTabCount}
-						defaultValue={2}
+						defaultValue={tabCount}
 					/>
 				</Field>
 				<Field>
@@ -112,6 +113,7 @@ export const JsonFormatterContainer = () => {
 			<JsonEditorContainer
 				className={cn('max-w-full')}
 				readOnly={true}
+				displayMode={jsonPrettyMode}
 				value={value}
 				targetTransform={targetTransform}
 			/>
