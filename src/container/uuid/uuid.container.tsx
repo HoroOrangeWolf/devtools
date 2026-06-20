@@ -5,6 +5,7 @@ import { OptionType, SelectWrapper } from '@/components/selectWrapper.component.
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button';
 import { CsvService } from '@/service/csv.service.ts';
+import { HydratedMarker } from '@/components/hydratedMarker.component.tsx';
 
 const generators: OptionType<GeneratorType>[] = [
 	{
@@ -52,43 +53,46 @@ export const UuidContainer = () => {
 	};
 
 	return (
-		<div className={cn('flex','flex-col', 'gap-2', 'max-h-[64dvh]')}>
-			<div className={cn('grid', 'grid-cols-2', 'gap-2')}>
-				<SelectWrapper<GeneratorType>
-					ariaLabel="UUID version"
-					defaultValue={generatorType}
-					onChange={setGeneratorType}
-					options={generators}
-					placeholder="Select Generator..."
-				/>
-				<Input
-					aria-label="Generate Values Count"
-					type="number"
-					onChange={(event) => {
-						setCount(Number(event.target.value));
-					}}
-					defaultValue={defaultCount}
-				/>
+		<>
+			<HydratedMarker />
+			<div className={cn('flex','flex-col', 'gap-2', 'max-h-[64dvh]')}>
+				<div className={cn('grid', 'grid-cols-2', 'gap-2')}>
+					<SelectWrapper<GeneratorType>
+						ariaLabel="UUID version"
+						defaultValue={generatorType}
+						onChange={setGeneratorType}
+						options={generators}
+						placeholder="Select Generator..."
+					/>
+					<Input
+						aria-label="Generate Values Count"
+						type="number"
+						onChange={(event) => {
+							setCount(Number(event.target.value));
+						}}
+						defaultValue={defaultCount}
+					/>
+				</div>
+				<div className={cn('flex','flex-row', 'gap-2', 'justify-end')}>
+					<Button onClick={generateValues}>
+						Generate
+					</Button>
+					<Button  onClick={generateCSV}>
+						Export
+					</Button>
+				</div>
+				<ul
+					className={cn('overflow-y-auto', 'divide-y', 'divide-border')}
+					role="list"
+				>
+					{generatedValues.map((val, index)=>(
+						<li key={val} className={cn('flex', 'gap-2', 'py-1')}>
+							<span>{index + 1}.</span>
+							{val}
+						</li>
+					))}
+				</ul>
 			</div>
-			<div className={cn('flex','flex-row', 'gap-2', 'justify-end')}>
-				<Button onClick={generateValues}>
-					Generate
-				</Button>
-				<Button  onClick={generateCSV}>
-					Export
-				</Button>
-			</div>
-			<ul
-				className={cn('overflow-y-auto', 'divide-y', 'divide-border')}
-				role="list"
-			>
-				{generatedValues.map((val, index)=>(
-					<li key={val} className={cn('flex', 'gap-2', 'py-1')}>
-						<span>{index + 1}.</span>
-						{val}
-					</li>
-				))}
-			</ul>
-		</div>
+		</>
 	);
 };

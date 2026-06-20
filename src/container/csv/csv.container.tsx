@@ -11,6 +11,7 @@ import { ErrorList, ErrorModel } from '@/components/errorList.component.tsx';
 import { ContentFormat, FileExtension, FileService } from '@/service/file.service.ts';
 import { UnparseConfig } from 'papaparse';
 import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
+import { HydratedMarker } from '@/components/hydratedMarker.component.tsx';
 
 const formatOptions: OptionType<CsvFormatsType>[] = [
 	{
@@ -97,48 +98,51 @@ export const CsvContainer = () => {
 	};
 
 	return (
-		<div className={cn('flex flex-col gap-2')}>
-			<div className={cn('grid grid-cols-2 gap-2 max-h-64')}>
-				<FileDropzone accept={acceptableFiles} onDropFile={handleFileDrop} className="max-h-64">
+		<>
+			<HydratedMarker />
+			<div className={cn('flex flex-col gap-2')}>
+				<div className={cn('grid grid-cols-2 gap-2 max-h-64')}>
+					<FileDropzone accept={acceptableFiles} onDropFile={handleFileDrop} className="max-h-64">
+						<Textarea
+							aria-label="Source content"
+							placeholder="Paste csv content or upload file..."
+							value={csvContent}
+							className="h-64 w-full"
+							onChange={(event) => {
+								setCsvContent(event.target.value);
+							}}
+						/>
+					</FileDropzone>
 					<Textarea
-						aria-label="Source content"
-						placeholder="Paste csv content or upload file..."
-						value={csvContent}
-						className="h-64 w-full"
-						onChange={(event) => {
-							setCsvContent(event.target.value);
-						}}
+						aria-label="Converted content"
+						readOnly={true}
+						value={targetContent}
+						className="h-64"
 					/>
-				</FileDropzone>
-				<Textarea
-					aria-label="Converted content"
-					readOnly={true}
-					value={targetContent}
-					className="h-64"
-				/>
-			</div>
-			<div className={cn('flex flex-row justify-between')}>
-				<Button onClick={handleUpload}>
-					<HardDriveUploadIcon />
-					Upload
-				</Button>
-				<div className={cn('flex flex-row gap-2')}>
-					<SelectWrapper<CsvFormatsType>
-						ariaLabel="Output format"
-						defaultValue={fileFormat}
-						onChange={setFileFormat}
-						options={formatOptions}
-					/>
-					<Button
-						onClick={download}
-					>
-						<DownloadIcon />
-						Export
-					</Button>
 				</div>
+				<div className={cn('flex flex-row justify-between')}>
+					<Button onClick={handleUpload}>
+						<HardDriveUploadIcon />
+						Upload
+					</Button>
+					<div className={cn('flex flex-row gap-2')}>
+						<SelectWrapper<CsvFormatsType>
+							ariaLabel="Output format"
+							defaultValue={fileFormat}
+							onChange={setFileFormat}
+							options={formatOptions}
+						/>
+						<Button
+							onClick={download}
+						>
+							<DownloadIcon />
+							Export
+						</Button>
+					</div>
+				</div>
+				<CsvOptionsContainer onSettingsChange={setConfig} />
+				<ErrorList errors={errors} />
 			</div>
-			<CsvOptionsContainer onSettingsChange={setConfig} />
-			<ErrorList errors={errors} />
-		</div>
+		</>
 	);
 };

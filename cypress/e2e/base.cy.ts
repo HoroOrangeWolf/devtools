@@ -8,6 +8,7 @@ describe('Base64 utilities page', () => {
 		cy.task('clearDownloads');
 		cy.visit('/base');
 		cy.get('astro-island[component-export="Base64Container"]').should('not.have.attr', 'ssr');
+		cy.get('[data-ishydrated=true').should('exist');
 	});
 
 	it('encodes plain text to Base64 by default', () => {

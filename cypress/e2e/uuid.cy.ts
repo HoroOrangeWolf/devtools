@@ -11,6 +11,7 @@ describe('UUID generator page', () => {
 	beforeEach(() => {
 		cy.task('clearDownloads');
 		cy.visit('/uuid');
+		cy.get('[data-ishydrated=true').should('exist');
 	});
 
 	it('generates the requested amount of UUID v4 values by default', () => {

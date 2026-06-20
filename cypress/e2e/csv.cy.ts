@@ -7,6 +7,7 @@ describe('CSV utilities page', () => {
 	beforeEach(() => {
 		cy.task('clearDownloads');
 		cy.visit('/csv');
+		cy.get('[data-ishydrated=true').should('exist');
 	});
 
 	it('converts pasted CSV content to formatted JSON', () => {
