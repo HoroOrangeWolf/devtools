@@ -13,7 +13,7 @@ import {
 	Trash2,
 } from 'lucide-react';
 import { ContextMenu, DropdownMenu } from 'radix-ui';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -396,7 +396,7 @@ const JsonTreeNode = ({
 		currentType: type,
 		onEditKey: () => setIsEditingKey(true),
 		onEditValue: () => setIsEditingValue(true),
-		onChangeType: (nextType) => onUpdate(path, getDefaultValue(value,nextType)),
+		onChangeType: (nextType) => onUpdate(path, getDefaultValue(value, nextType)),
 		onAddChild: () => {
 			if (Array.isArray(value)) onUpdate(path, [...value, null]);
 			if (isObject(value)) onUpdate(path, { ...value, [getUniqueKey(value)]: null });
@@ -432,149 +432,154 @@ const JsonTreeNode = ({
 		</>
 	);
 
-	if (!isCollection) {
-		let valueContent: React.ReactNode;
-
-		if (isEditingValue && (typeof value === 'string' || typeof value === 'number')) {
-			valueContent = (
-				<InlineEditor
-					value={String(value)}
-					type={typeof value}
-					onCancel={() => setIsEditingValue(false)}
-					onCommit={(draft) => {
-						if (typeof value === 'number') {
-							const jsonNumberPattern = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/;
-							const number = Number(draft);
-							if (!jsonNumberPattern.test(draft) || !Number.isFinite(number)) return 'Enter a valid JSON number.';
-							onUpdate(path, number);
-						} else {
-							onUpdate(path, draft);
-						}
-						setIsEditingValue(false);
-						return;
-					}}
-				/>
-			);
-		} else if (isEditingValue && typeof value === 'boolean') {
-			valueContent = (
-				<select
-					autoFocus
-					value={String(value)}
-					aria-label="Boolean value"
-					className="h-6 rounded border border-input bg-background px-1 font-mono text-xs"
-					onBlur={() => setIsEditingValue(false)}
-					onChange={(event) => {
-						onUpdate(path, event.target.value === 'true');
-						setIsEditingValue(false);
-					}}
-					onKeyDown={(event) => {
-						if (event.key === 'Escape') setIsEditingValue(false);
+	if (isCollection) {
+		const entries = Array.isArray(value) ? value : Object.entries(value);
+		const openingCharacter = Array.isArray(value) ? '[' : '{';
+		const closingCharacter = Array.isArray(value) ? ']' : '}';
+		const countLabel = `${entries.length} ${Array.isArray(value) ? 'items' : 'properties'}`;
+		const header = (
+			<div
+				className="group/node flex min-h-6 items-start whitespace-nowrap px-1 font-mono text-xs leading-6 hover:bg-muted/60"
+			>
+				<button
+					type="button"
+					aria-label={isExpanded ? 'Collapse JSON node' : 'Expand JSON node'}
+					className="mr-1 inline-flex size-4 shrink-0 items-center justify-center self-center text-muted-foreground hover:text-foreground"
+					onClick={(e) => {
+						e.stopPropagation();
+						setIsExpanded((expanded) => !expanded);
 					}}
 				>
-					<option value="true">true</option>
-					<option value="false">false</option>
-				</select>
-			);
-		} else {
-			valueContent = (
-				<span
-					className={cn(getValueColor(value), !readOnly && value !== null && 'cursor-text')}
-					onDoubleClick={() => !readOnly && value !== null && setIsEditingValue(true)}
-				>
-					{getDisplayValue(value)}
-				</span>
-			);
-		}
-
-		const row = (
-			<div className="group/node flex min-h-6 items-start whitespace-nowrap px-1 font-mono text-xs leading-6 hover:bg-muted/60">
-				<span className="mr-1 inline-block size-4 shrink-0" />
-				<span>{keyLabel}{valueContent}{!isLast && <span className="text-muted-foreground">,</span>}</span>
+					{isExpanded ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />}
+				</button>
+				<span>{keyLabel}<span className="text-muted-foreground">{openingCharacter}</span></span>
+				{!isExpanded && <span onClick={()=>setIsExpanded(true)} className="ml-1 rounded bg-muted px-1 text-[10px] text-muted-foreground">{countLabel}</span>}
+				{!isExpanded && <span className="text-muted-foreground">{closingCharacter}{!isLast && ','}</span>}
 				{!readOnly && <NodeMenu actions={actions} />}
 			</div>
 		);
 
-		return <ContextualRow actions={actions} readOnly={readOnly}>{row}</ContextualRow>;
+		return (
+			<div>
+				<ContextualRow actions={actions} readOnly={readOnly}>{header}</ContextualRow>
+				{isExpanded && (
+					<>
+						<div className="ml-3 border-l border-border/70 pl-2">
+							{Array.isArray(value) ? value.map((item, index) => (
+								<JsonTreeNode
+									key={index}
+									value={item}
+									name={index}
+									path={[...path, index]}
+									depth={depth + 1}
+									defaultExpandedDepth={defaultExpandedDepth}
+									readOnly={readOnly}
+									isLast={index === value.length - 1}
+									onUpdate={onUpdate}
+									onDelete={() => onUpdate(path, value.filter((_, itemIndex) => itemIndex !== index))}
+									onDuplicate={() => {
+										const nextValue = [...value];
+										nextValue.splice(index + 1, 0, item);
+										onUpdate(path, nextValue);
+									}}
+								/>
+							)) : Object.entries(value).map(([key, item], index, objectEntries) => (
+								<JsonTreeNode
+									key={key}
+									value={item}
+									name={key}
+									path={[...path, key]}
+									depth={depth + 1}
+									defaultExpandedDepth={defaultExpandedDepth}
+									readOnly={readOnly}
+									isLast={index === objectEntries.length - 1}
+									siblingKeys={Object.keys(value)}
+									onUpdate={onUpdate}
+									onRename={(nextKey) => onUpdate(path, Object.fromEntries(Object.entries(value).map(([entryKey, entryValue]) => (
+										entryKey === key ? [nextKey, entryValue] : [entryKey, entryValue]
+									))))}
+									onDelete={() => onUpdate(path, Object.fromEntries(Object.entries(value).filter(([entryKey]) => entryKey !== key)))}
+									onDuplicate={() => {
+										const duplicateKey = getUniqueKey(value, `${key}Copy`);
+										const nextEntries = Object.entries(value).flatMap(([entryKey, entryValue]) => (
+											entryKey === key ? [[entryKey, entryValue], [duplicateKey, entryValue]] : [[entryKey, entryValue]]
+										));
+										onUpdate(path, Object.fromEntries(nextEntries));
+									}}
+								/>
+							))}
+						</div>
+						<div className="min-h-6 px-1 pl-6 font-mono text-xs leading-6 text-muted-foreground">
+							{closingCharacter}{!isLast && ','}
+						</div>
+					</>
+				)}
+			</div>
+		);
 	}
 
-	const entries = Array.isArray(value) ? value : Object.entries(value);
-	const openingCharacter = Array.isArray(value) ? '[' : '{';
-	const closingCharacter = Array.isArray(value) ? ']' : '}';
-	const countLabel = `${entries.length} ${Array.isArray(value) ? 'items' : 'properties'}`;
-	const header = (
-		<div className="group/node flex min-h-6 items-start whitespace-nowrap px-1 font-mono text-xs leading-6 hover:bg-muted/60">
-			<button
-				type="button"
-				aria-label={isExpanded ? 'Collapse JSON node' : 'Expand JSON node'}
-				className="mr-1 inline-flex size-4 shrink-0 items-center justify-center self-center text-muted-foreground hover:text-foreground"
-				onClick={() => setIsExpanded((expanded) => !expanded)}
+	let valueContent: React.ReactNode;
+
+	if (isEditingValue && (typeof value === 'string' || typeof value === 'number')) {
+		valueContent = (
+			<InlineEditor
+				value={String(value)}
+				type={typeof value === 'string' ? 'string' : 'number'}
+				onCancel={() => setIsEditingValue(false)}
+				onCommit={(draft) => {
+					if (typeof value === 'number') {
+						const jsonNumberPattern = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/;
+						const number = Number(draft);
+						if (!jsonNumberPattern.test(draft) || !Number.isFinite(number)) return 'Enter a valid JSON number.';
+						onUpdate(path, number);
+					} else {
+						onUpdate(path, draft);
+					}
+					setIsEditingValue(false);
+					return;
+				}}
+			/>
+		);
+	} else if (isEditingValue && typeof value === 'boolean') {
+		valueContent = (
+			<select
+				autoFocus
+				value={String(value)}
+				aria-label="Boolean value"
+				className="h-6 rounded border border-input bg-background px-1 font-mono text-xs"
+				onBlur={() => setIsEditingValue(false)}
+				onChange={(event) => {
+					onUpdate(path, event.target.value === 'true');
+					setIsEditingValue(false);
+				}}
+				onKeyDown={(event) => {
+					if (event.key === 'Escape') setIsEditingValue(false);
+				}}
 			>
-				{isExpanded ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />}
-			</button>
-			<span>{keyLabel}<span className="text-muted-foreground">{openingCharacter}</span></span>
-			{!isExpanded && <span className="ml-1 rounded bg-muted px-1 text-[10px] text-muted-foreground">{countLabel}</span>}
-			{!isExpanded && <span className="text-muted-foreground">{closingCharacter}{!isLast && ','}</span>}
+				<option value="true">true</option>
+				<option value="false">false</option>
+			</select>
+		);
+	} else {
+		valueContent = (
+			<span
+				className={cn(getValueColor(value), !readOnly && value !== null && 'cursor-text')}
+				onDoubleClick={() => !readOnly && value !== null && setIsEditingValue(true)}
+			>
+				{getDisplayValue(value)}
+			</span>
+		);
+	}
+
+	const row = (
+		<div className="group/node flex min-h-6 items-start whitespace-nowrap px-1 font-mono text-xs leading-6 hover:bg-muted/60">
+			<span className="mr-1 inline-block size-4 shrink-0" />
+			<span>{keyLabel}{valueContent}{!isLast && <span className="text-muted-foreground">,</span>}</span>
 			{!readOnly && <NodeMenu actions={actions} />}
 		</div>
 	);
 
-	return (
-		<div>
-			<ContextualRow actions={actions} readOnly={readOnly}>{header}</ContextualRow>
-			{isExpanded && (
-				<>
-					<div className="ml-3 border-l border-border/70 pl-2">
-						{Array.isArray(value) ? value.map((item, index) => (
-							<JsonTreeNode
-								key={index}
-								value={item}
-								name={index}
-								path={[...path, index]}
-								depth={depth + 1}
-								defaultExpandedDepth={defaultExpandedDepth}
-								readOnly={readOnly}
-								isLast={index === value.length - 1}
-								onUpdate={onUpdate}
-								onDelete={() => onUpdate(path, value.filter((_, itemIndex) => itemIndex !== index))}
-								onDuplicate={() => {
-									const nextValue = [...value];
-									nextValue.splice(index + 1, 0, item);
-									onUpdate(path, nextValue);
-								}}
-							/>
-						)) : Object.entries(value).map(([key, item], index, objectEntries) => (
-							<JsonTreeNode
-								key={key}
-								value={item}
-								name={key}
-								path={[...path, key]}
-								depth={depth + 1}
-								defaultExpandedDepth={defaultExpandedDepth}
-								readOnly={readOnly}
-								isLast={index === objectEntries.length - 1}
-								siblingKeys={Object.keys(value)}
-								onUpdate={onUpdate}
-								onRename={(nextKey) => onUpdate(path, Object.fromEntries(Object.entries(value).map(([entryKey, entryValue]) => (
-									entryKey === key ? [nextKey, entryValue] : [entryKey, entryValue]
-								))))}
-								onDelete={() => onUpdate(path, Object.fromEntries(Object.entries(value).filter(([entryKey]) => entryKey !== key)))}
-								onDuplicate={() => {
-									const duplicateKey = getUniqueKey(value, `${key}Copy`);
-									const nextEntries = Object.entries(value).flatMap(([entryKey, entryValue]) => (
-										entryKey === key ? [[entryKey, entryValue], [duplicateKey, entryValue]] : [[entryKey, entryValue]]
-									));
-									onUpdate(path, Object.fromEntries(nextEntries));
-								}}
-							/>
-						))}
-					</div>
-					<div className="min-h-6 px-1 pl-6 font-mono text-xs leading-6 text-muted-foreground">
-						{closingCharacter}{!isLast && ','}
-					</div>
-				</>
-			)}
-		</div>
-	);
+	return <ContextualRow actions={actions} readOnly={readOnly}>{row}</ContextualRow>;
 };
 
 export const JsonTreeView = ({ value, readOnly = false, settings, onChange }: PropsType) => {
