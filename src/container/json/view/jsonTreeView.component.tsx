@@ -83,7 +83,8 @@ const getValueType = (value: JsonValue): JsonValueType => {
 
 const getDefaultValue = (val: JsonValue,type: JsonValueType): JsonValue => {
 	switch (type) {
-		case 'string': { return JSON.stringify(val);
+		case 'string': {
+			return JSON.stringify(val);
 		}
 		case 'number': {
 			const parsed = Number(val);
@@ -324,7 +325,7 @@ const InlineEditor = ({
 	onCommit: (value: string) => string | undefined;
 	onCancel: () => void;
 }) => {
-	const [draft, setDraft] = useState(value);
+	const [draft, setDraft] = useState<string>(value);
 	const [error, setError] = useState<string>();
 	const skipBlur = useRef(false);
 
