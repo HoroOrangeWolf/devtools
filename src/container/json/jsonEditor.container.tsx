@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/textarea.tsx';
 import { ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { ViewType, ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
 import { CodeView } from '@/container/json/view/codeView.component.tsx';
-import { JsonTreeView, JsonValue } from '@/container/json/view/jsonTreeView.component.tsx';
+import { JsonTreeSettings, JsonTreeView, JsonValue } from '@/container/json/view/jsonTreeView.component.tsx';
 import { cn } from '@/lib/utils.ts';
 import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -18,6 +18,7 @@ type PropsType = {
 	value?: string;
 	onChange?: (change: JsonEditorChange) => void;
 	readOnly?: boolean;
+	treeSettings?: JsonTreeSettings;
 	className?: string;
 }
 
@@ -54,6 +55,7 @@ export const JsonEditorContainer = ({
 	value = '',
 	onChange,
 	readOnly = false,
+	treeSettings,
 	className,
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
@@ -111,6 +113,7 @@ export const JsonEditorContainer = ({
 					<JsonTreeView
 						value={parsedJson.data}
 						readOnly={readOnly}
+						settings={treeSettings}
 						onChange={handleTreeChange}
 					/>
 				);
