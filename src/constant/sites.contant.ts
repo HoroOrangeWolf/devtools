@@ -19,8 +19,8 @@ export const NavItems = [
 	},
 	{
 		href: '/jsonformatter',
-		label: 'JSON/XML',
-		description: 'Format and beautify JSON and XML',
+		label: 'JSON',
+		description: 'Format and beautify JSON',
 		isReady: true,
 	},
 	{
