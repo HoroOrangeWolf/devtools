@@ -7,7 +7,7 @@ const localStorageKey = 'side-bar-local-storage-visibility';
 
 ---
 <aside class="border-sidebar-border bg-sidebar/80 text-sidebar-foreground flex h-full flex-col border-r backdrop-blur">
-	<div class="flex flex-row border-sidebar-border border-b">
+	<div class="flex flex-row min-h-16">
 		<a id="side-bar-hidde-element" href="/" class="flex items-center gap-3 px-5 py-5">
 			<span class="bg-sidebar-primary text-sidebar-primary-foreground grid size-9 place-items-center rounded-lg text-sm font-semibold">
 				DU
@@ -23,7 +23,7 @@ const localStorageKey = 'side-bar-local-storage-visibility';
 			client:load
 		/>
 	</div>
-	<nav id="side-bar-hidde-element-nav" aria-label="Developer tools" class="flex flex-1 flex-col gap-1 p-3 hidden">
+	<nav id="side-bar-hidde-element-nav" aria-label="Developer tools" class="flex flex-1 flex-col gap-1 p-3 hidden border-t border-sidebar-border">
 		{NavItems.map((item) => {
 			const isActive = item.href !== '#' && currentPath.startsWith(item.href);
 
