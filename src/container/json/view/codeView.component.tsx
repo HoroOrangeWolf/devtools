@@ -19,6 +19,8 @@ const languageByType: Record<ViewDataType, string> = {
 	[ViewDataTypeConstant.CSV]: 'csv',
 };
 
+const editorTextClassName = 'font-mono text-sm leading-6';
+
 export const CodeView = ({
 	type,
 	value,
@@ -48,16 +50,25 @@ export const CodeView = ({
 				className
 			)}
 		>
-			<div ref={highlightedCodeRef} aria-hidden="true" className="pointer-events-none absolute inset-0">
+			<div
+				ref={highlightedCodeRef}
+				aria-hidden="true"
+				className={cn('pointer-events-none absolute inset-0', editorTextClassName)}
+			>
 				<SyntaxHighlighter
 					language={languageByType[type]}
 					style={vscDarkPlus}
 					customStyle={{
 						background: 'transparent',
+						fontFamily: 'var(--font-mono)',
+						fontSize: '0.875rem',
 						height: '100%',
+						lineHeight: '1.5rem',
 						margin: 0,
 						overflow: 'auto',
 						padding: '1rem',
+						tabSize: 2,
+						whiteSpace: 'pre',
 					}}
 					codeTagProps={{
 						style: {
@@ -75,7 +86,11 @@ export const CodeView = ({
 				aria-label={`${type} code editor`}
 				aria-invalid={invalid || undefined}
 				data-language={languageByType[type]}
-				className="absolute inset-0 size-full resize-none overflow-auto bg-transparent p-4 font-mono text-sm leading-6 text-transparent caret-slate-100 outline-none selection:bg-cyan-500/35 selection:text-transparent disabled:cursor-not-allowed disabled:opacity-70"
+				className={cn(
+					'absolute inset-0 size-full resize-none overflow-auto bg-transparent p-4 text-transparent caret-slate-100 outline-none selection:bg-cyan-500/35 selection:text-transparent disabled:cursor-not-allowed disabled:opacity-70',
+					editorTextClassName
+				)}
+				style={{ tabSize: 2 }}
 				value={value}
 				readOnly={readOnly}
 				spellCheck={false}
