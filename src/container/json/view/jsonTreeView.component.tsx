@@ -588,7 +588,7 @@ export const JsonTreeView = ({ value, readOnly = false, settings, onChange }: Pr
 	const updateValue = (path: Path, nextValue: JsonValue) => onChange(updateAtPath(value, path, nextValue));
 
 	return (
-		<div className="overflow-auto rounded-lg border bg-background p-2 text-foreground">
+		<div className="overflow-auto rounded-lg border bg-background p-2 text-foreground h-full">
 			<JsonTreeNode
 				value={value}
 				path={[]}

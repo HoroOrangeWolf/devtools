@@ -74,7 +74,6 @@ const transformContentToJson = (content: string, format: ContentFormat): object 
 
 const readFileAsJson = async (file: File): Promise<object> => {
 	const fileExtension = file.name.split('.', 2)[1];
-
 	const result = await file.text();
 
 	switch (fileExtension) {
@@ -82,8 +81,15 @@ const readFileAsJson = async (file: File): Promise<object> => {
 			return JSON.parse(result);
 		}
 		case 'csv': {
-			return Papaparse.parse(result)
-				.data;
+			const val = Papaparse.parse(result);
+
+			if (val.data.length > 0) {
+				return val.data;
+			}
+
+			const errorMessage = val.errors.map(({ message, row }) => `${row ? `${row}: ` : ''}${message}`).join(',');
+
+			throw new Error(`${errorMessage}`);
 		}
 		case 'xml': {
 			const parser = new XMLParser();
@@ -112,7 +118,7 @@ const transformJsonToTarget = (content: object, format: ContentFormat, options?:
 			return builder.build(content);
 		}
 		case 'text/csv': {
-			return Papaparse.unparse(content as any, {});
+			return Papaparse.unparse(content as any);
 		}
 		default: {
 			throw new Error(`Unsupported file extension: ${format}`);

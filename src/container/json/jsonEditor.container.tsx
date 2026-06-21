@@ -14,6 +14,7 @@ import {
 } from '@/container/json/constant/jsonPrettyViewMode.constant.ts';
 import { FileService } from '@/service/file.service.ts';
 import { FileDataTypeExtensionMapConstant } from '@/container/json/constant/fileDataTypeExtensionMap.constant.ts';
+import { useDebounceValue } from '@/hooks/useDebounce.hook.ts';
 
 type PropsType = {
 	value?: string;
@@ -52,26 +53,22 @@ export const JsonEditorContainer = ({
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
 	const [targetValue, setTargetValue] = useState<string>(value);
+	const lazyValue = useDebounceValue(value,250);
 	const dataType = targetTransform ?? ViewDataTypeConstant.JSON;
 
 	useEffect(() => {
-		const fn = async () => {
+		setTargetValue((val)=>{
 			try {
-				const result = FileService.transformJsonToTarget(parseJson(value), FileDataTypeExtensionMapConstant[dataType], {
+				return FileService.transformJsonToTarget(JSON.parse(lazyValue), FileDataTypeExtensionMapConstant[dataType], {
 					tabs: displayMode === JsonPrettyViewModeConstant.BEAUTIFIED ? tabCount : undefined
 				});
-
-				setTargetValue(result);
 			} catch (error) {
 				console.error('Failed to parse json editor.', error);
 				onError?.(error as Error);
-				throw error;
+				return val;
 			}
-		};
-
-		fn()
-			.catch(console.error);
-	}, [dataType, value, tabCount, displayMode]);
+		});
+	}, [dataType, lazyValue, tabCount, displayMode]);
 
 	const handleTextChange = (nextValue: string) => {
 		onChange?.(nextValue);
@@ -127,25 +124,22 @@ export const JsonEditorContainer = ({
 		switch (jsonViewType) {
 			case ViewTypeConstant.CODE: {
 				return (
-					<div className="flex flex-col gap-2">
-						<CodeView
-							type={dataType}
-							value={targetValue}
-							readOnly={readOnly}
-							onChange={handleTextChange}
-						/>
-					</div>
+					<CodeView
+						className={className}
+						type={dataType}
+						value={targetValue}
+						readOnly={readOnly}
+						onChange={handleTextChange}
+					/>
 				);
 			}
 			case ViewTypeConstant.RAW: {
 				return (
-					<div className="flex flex-col gap-2">
-						<Textarea
-							value={targetValue}
-							readOnly={readOnly}
-							onChange={(event) => handleTextChange(event.target.value)}
-						/>
-					</div>
+					<Textarea
+						value={targetValue}
+						readOnly={readOnly}
+						onChange={(event) => handleTextChange(event.target.value)}
+					/>
 				);
 			}
 			case ViewTypeConstant.TREE: {
