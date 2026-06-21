@@ -136,6 +136,7 @@ export const JsonEditorContainer = ({
 			case ViewTypeConstant.RAW: {
 				return (
 					<Textarea
+						className={className}
 						value={targetValue}
 						readOnly={readOnly}
 						onChange={(event) => handleTextChange(event.target.value)}
