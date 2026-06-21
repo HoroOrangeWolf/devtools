@@ -125,6 +125,7 @@ export const JsonFormatterContainer = () => {
 		setErrorMessage(error?.message ?? 'Unknown error');
 	};
 
+	// TODO: Code edition improved [{ new lines.
 	return (
 		<div className={cn('flex flex-col gap-2')}>
 			<div className={cn('xl:grid xl:grid-cols-[minmax(0,1fr)_13rem_minmax(0,1fr)] flex flex-col xl:grid-rows-1 gap-2 w-full min-h-[calc(100dvh-25rem)] overflow-y-auto')}>
