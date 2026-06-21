@@ -57,8 +57,12 @@ export const JsonEditorContainer = ({
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
 	const parsedJson = useMemo(() => parseJson(value), [value]);
 
-	const handleRawChange = (nextValue: string) => {
-		const { errorMessage } = parseJson(nextValue);
+	const dataType = targetTransform ?? ViewDataTypeConstant.JSON;
+
+	const handleTextChange = (nextValue: string) => {
+		const errorMessage = dataType === ViewDataTypeConstant.JSON
+			? parseJson(nextValue).errorMessage
+			: undefined;
 
 		onChange?.({
 			value: nextValue,
@@ -103,8 +107,9 @@ export const JsonEditorContainer = ({
 			return;
 		}
 
-		// eslint-disable-next-line react-hooks/set-state-in-effect
-		setJsonViewType(ViewTypeConstant.RAW);
+		setJsonViewType((currentViewType) => currentViewType === ViewTypeConstant.TREE
+			? ViewTypeConstant.CODE
+			: currentViewType);
 	}, [targetTransform]);
 
 	const formatJson = () => {
@@ -119,24 +124,40 @@ export const JsonEditorContainer = ({
 	const getView = () => {
 		switch (jsonViewType) {
 			case ViewTypeConstant.CODE: {
+				const codeValue = readOnly && dataType === ViewDataTypeConstant.JSON ? formatJson() : value;
+				const errorMessage = dataType === ViewDataTypeConstant.JSON ? parsedJson.errorMessage : undefined;
+
 				return (
-					<CodeView type={ViewDataTypeConstant.JSON}>
-						{formatJson()}
-					</CodeView>
+					<div className="flex flex-col gap-2">
+						<CodeView
+							type={dataType}
+							value={codeValue}
+							readOnly={readOnly}
+							invalid={Boolean(errorMessage)}
+							onChange={handleTextChange}
+						/>
+						{errorMessage && (
+							<ErrorBanner title="Invalid JSON">
+								{errorMessage}
+							</ErrorBanner>
+						)}
+					</div>
 				);
 			}
 			case ViewTypeConstant.RAW: {
+				const errorMessage = dataType === ViewDataTypeConstant.JSON ? parsedJson.errorMessage : undefined;
+
 				return (
 					<div className="flex flex-col gap-2">
 						<Textarea
 							value={formatJson()}
 							readOnly={readOnly}
-							aria-invalid={Boolean(parsedJson.errorMessage)}
-							onChange={(event) => handleRawChange(event.target.value)}
+							aria-invalid={Boolean(errorMessage)}
+							onChange={(event) => handleTextChange(event.target.value)}
 						/>
-						{parsedJson.errorMessage && (
+						{errorMessage && (
 							<ErrorBanner title="Invalid JSON">
-								{parsedJson.errorMessage}
+								{errorMessage}
 							</ErrorBanner>
 						)}
 					</div>

@@ -78,7 +78,7 @@ export const JsonFormatterContainer = () => {
 	const [tabCount, setTabCount] = useState<number>(2);
 
 	return (
-		<div className={cn('md:grid md:grid-cols-[minmax(0,1fr)_13rem_minmax(0,1fr)] flex flex-col md:grid-rows-1 gap-2 w-full')}>
+		<div className={cn('lg:grid lg:grid-cols-[minmax(0,1fr)_13rem_minmax(0,1fr)] flex flex-col lg:grid-rows-1 gap-2 w-full')}>
 			<JsonEditorContainer value={value} onChange={({ value }) => setValue(value)} />
 			<div className={cn('flex flex-col gap-2')}>
 				<ButtonSelectWrapper
