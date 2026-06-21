@@ -60,7 +60,7 @@ const metaTitle = title.includes('Dev Utils') ? title : `${title} | Dev Utils`;
 		<title>{metaTitle}</title>
 	</head>
 	<body class="bg-background text-foreground min-h-screen">
-		<div class="grid min-h-screen lg:grid-cols-[17rem_1fr]">
+		<div class="grid min-h-screen lg:flex lg:flex-row">
 			<div class="hidden lg:block">
 				<SiteSidebar />
 			</div>
@@ -98,5 +98,28 @@ const metaTitle = title.includes('Dev Utils') ? title : `${title} | Dev Utils`;
 				</main>
 			</div>
 		</div>
+		<script is:inline>
+			const applySidebarVisibility = () => {
+				try {
+					const isSidebarHidden = window.localStorage.getItem('dev-utils:sidebar-hidden') === 'true';
+					document.documentElement.dataset.sidebarHidden = isSidebarHidden ? 'true' : 'false';
+				} catch {
+					document.documentElement.dataset.sidebarHidden = 'false';
+				}
+			};
+
+			applySidebarVisibility();
+			window.addEventListener('storage', applySidebarVisibility);
+			window.addEventListener('devutils:sidebar-visibility', applySidebarVisibility);
+		</script>
+		<style is:global>
+			html[data-sidebar-hidden='true'] .site-shell {
+				grid-template-columns: minmax(0, 1fr);
+			}
+
+			html[data-sidebar-hidden='true'] .site-sidebar-shell {
+				display: none;
+			}
+		</style>
 	</body>
 </html>
