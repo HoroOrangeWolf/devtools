@@ -1,5 +1,4 @@
 import {  ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
-import { ErrorBanner } from '@/components/error.component.tsx';
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { ViewType, ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
@@ -13,34 +12,30 @@ import {
 	JsonPrettyViewModeConstant,
 	JsonPrettyViewModeType
 } from '@/container/json/constant/jsonPrettyViewMode.constant.ts';
-
-export type JsonEditorChange = {
-	value: string;
-	errorMessage?: string;
-};
+import { FileService } from '@/service/file.service.ts';
+import { FileDataTypeExtensionMapConstant } from '@/container/json/constant/fileDataTypeExtensionMap.constant.ts';
 
 type PropsType = {
 	value?: string;
-	onChange?: (change: JsonEditorChange) => void;
+	onChange?: (change: string) => void;
 	readOnly?: boolean;
 	treeSettings?: JsonTreeSettings;
+	onError?: (e: Error) => void;
 	tabCount?: number;
 	targetTransform?: ViewDataType;
 	displayMode?: JsonPrettyViewModeType;
 	className?: string;
 }
 
-const parseJson = (value: string): { data?: JsonValue; errorMessage?: string } => {
+const parseJson = (value: string) => {
 	if (value.trim() === '') {
 		return { errorMessage: 'JSON input cannot be empty.' };
 	}
 
 	try {
-		return { data: JSON.parse(value) as JsonValue };
-	} catch (error) {
-		return {
-			errorMessage: error instanceof Error ? error.message : 'Invalid JSON.',
-		};
+		return JSON.parse(value);
+	} catch {
+		return {};
 	}
 };
 
@@ -52,26 +47,42 @@ export const JsonEditorContainer = ({
 	targetTransform,
 	tabCount = 2,
 	displayMode,
+	onError,
 	className,
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
-	const parsedJson = useMemo(() => parseJson(value), [value]);
-
+	const [targetValue, setTargetValue] = useState<string>(value);
 	const dataType = targetTransform ?? ViewDataTypeConstant.JSON;
 
-	const handleTextChange = (nextValue: string) => {
-		const errorMessage = dataType === ViewDataTypeConstant.JSON
-			? parseJson(nextValue).errorMessage
-			: undefined;
+	useEffect(() => {
+		const fn = async () => {
+			try {
+				const result = FileService.transformJsonToTarget(parseJson(value), FileDataTypeExtensionMapConstant[dataType], {
+					tabs: displayMode === JsonPrettyViewModeConstant.BEAUTIFIED ? tabCount : undefined
+				});
 
-		onChange?.({
-			value: nextValue,
-			...(errorMessage ? { errorMessage } : {}),
-		});
+				setTargetValue(result);
+			} catch (error) {
+				console.error('Failed to parse json editor.', error);
+				onError?.(error as Error);
+				throw error;
+			}
+		};
+
+		fn()
+			.catch(console.error);
+	}, [dataType, value, tabCount, displayMode]);
+
+	const handleTextChange = (nextValue: string) => {
+		onChange?.(nextValue);
+		setTargetValue(nextValue);
 	};
 
 	const handleTreeChange = (nextValue: JsonValue) => {
-		onChange?.({ value: JSON.stringify(nextValue) });
+		const target = JSON.stringify(nextValue);
+
+		onChange?.(target);
+		setTargetValue(target);
 	};
 
 	const viewOptions = useMemo((): OptionType<ViewType>[] => {
@@ -112,69 +123,35 @@ export const JsonEditorContainer = ({
 			: currentViewType);
 	}, [targetTransform]);
 
-	const formatJson = () => {
-		try {
-			return JSON.stringify(JSON.parse(value), null, displayMode === JsonPrettyViewModeConstant.COMPACT ? 0 : tabCount);
-		} catch (error) {
-			console.error('Failed to parse json', error);
-			return value;
-		}
-	};
-
 	const getView = () => {
 		switch (jsonViewType) {
 			case ViewTypeConstant.CODE: {
-				const codeValue = readOnly && dataType === ViewDataTypeConstant.JSON ? formatJson() : value;
-				const errorMessage = dataType === ViewDataTypeConstant.JSON ? parsedJson.errorMessage : undefined;
-
 				return (
 					<div className="flex flex-col gap-2">
 						<CodeView
 							type={dataType}
-							value={codeValue}
+							value={targetValue}
 							readOnly={readOnly}
-							invalid={Boolean(errorMessage)}
 							onChange={handleTextChange}
 						/>
-						{errorMessage && (
-							<ErrorBanner title="Invalid JSON">
-								{errorMessage}
-							</ErrorBanner>
-						)}
 					</div>
 				);
 			}
 			case ViewTypeConstant.RAW: {
-				const errorMessage = dataType === ViewDataTypeConstant.JSON ? parsedJson.errorMessage : undefined;
-
 				return (
 					<div className="flex flex-col gap-2">
 						<Textarea
-							value={formatJson()}
+							value={targetValue}
 							readOnly={readOnly}
-							aria-invalid={Boolean(errorMessage)}
 							onChange={(event) => handleTextChange(event.target.value)}
 						/>
-						{errorMessage && (
-							<ErrorBanner title="Invalid JSON">
-								{errorMessage}
-							</ErrorBanner>
-						)}
 					</div>
 				);
 			}
 			case ViewTypeConstant.TREE: {
-				if (parsedJson.errorMessage || parsedJson.data === undefined) {
-					return (
-						<ErrorBanner title="Invalid JSON">
-							{parsedJson.errorMessage ?? 'Unable to parse JSON.'}
-						</ErrorBanner>
-					);
-				}
-
 				return (
 					<JsonTreeView
-						value={parsedJson.data}
+						value={parseJson(targetValue)}
 						readOnly={readOnly}
 						settings={treeSettings}
 						onChange={handleTreeChange}

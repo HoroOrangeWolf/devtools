@@ -1,6 +1,10 @@
-export type ContentFormat = 'text/csv' | 'application/json' | 'text/plain';
+import Papaparse from 'papaparse';
+import { XMLParser } from 'fast-xml-parser';
+import XMLBuilder from 'fast-xml-builder';
 
-export type FileExtension = '.csv' | '.json';
+export type ContentFormat = 'text/csv' | 'application/json' | 'text/plain' | 'application/xml';
+
+export type FileExtension = '.csv' | '.json' | '.xml';
 
 const downloadFile = (fileName: string, content: string, format: ContentFormat) => {
 	const blob = new Blob([content], { type: `${format};charset=utf-8;` });
@@ -48,9 +52,80 @@ const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promi
 		input.click();
 	});
 
+const transformContentToJson = (content: string, format: ContentFormat): object => {
+	switch (format) {
+		case 'application/json': {
+			return JSON.parse(content);
+		}
+		case 'text/csv': {
+			return Papaparse.parse(content)
+				.data;
+		}
+		case 'application/xml': {
+			const parser = new XMLParser();
+
+			return parser.parse(content);
+		}
+		default: {
+			throw new Error(`Unsupported file extension: ${format}`);
+		}
+	}
+};
+
+const readFileAsJson = async (file: File): Promise<object> => {
+	const fileExtension = file.name.split('.', 2)[1];
+
+	const result = await file.text();
+
+	switch (fileExtension) {
+		case 'json': {
+			return JSON.parse(result);
+		}
+		case 'csv': {
+			return Papaparse.parse(result)
+				.data;
+		}
+		case 'xml': {
+			const parser = new XMLParser();
+
+			return parser.parse(result);
+		}
+		default: {
+			throw new Error(`Unsupported file extension: ${fileExtension}`);
+		}
+	}
+};
+
+type FormatOptions = {
+	// Doesn't work for csv and for xml it only enables formating
+	tabs?: number;
+}
+
+const transformJsonToTarget = (content: object, format: ContentFormat, options?: FormatOptions) => {
+	switch (format) {
+		case 'application/json': {
+			return JSON.stringify(content, null, options?.tabs);
+		}
+		case 'application/xml': {
+			const builder = new XMLBuilder({ format: !!options?.tabs });
+
+			return builder.build(content);
+		}
+		case 'text/csv': {
+			return Papaparse.unparse(content as any, {});
+		}
+		default: {
+			throw new Error(`Unsupported file extension: ${format}`);
+		}
+	}
+};
+
 export const FileService = {
 	downloadFile,
 	getFileContent,
 	isAcceptedFile,
 	readFileContent,
+	readFileAsJson,
+	transformContentToJson,
+	transformJsonToTarget,
 };
