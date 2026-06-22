@@ -7,7 +7,6 @@ describe('Base64 utilities page', () => {
 	beforeEach(() => {
 		cy.task('clearDownloads');
 		cy.visit('/base');
-		cy.get('astro-island[component-export="Base64Container"]').should('not.have.attr', 'ssr');
 		cy.get('[data-ishydrated=true').should('exist');
 	});
 

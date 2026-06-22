@@ -1,6 +1,6 @@
 import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { cn } from '@/lib/utils.ts';
-import { UIEvent, useRef } from 'react';
+import { KeyboardEvent, UIEvent, useRef } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -20,6 +20,11 @@ const languageByType: Record<ViewDataType, string> = {
 };
 
 const editorTextClassName = 'font-mono text-sm leading-6';
+const indentUnit = '  ';
+const openingToClosingCharacter: Partial<Record<string, string>> = {
+	'{': '}',
+	'[': ']',
+};
 
 export const CodeView = ({
 	type,
@@ -30,6 +35,7 @@ export const CodeView = ({
 	invalid = false,
 }: PropsType) => {
 	const highlightedCodeRef = useRef<HTMLDivElement>(null);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	const syncScroll = (event: UIEvent<HTMLTextAreaElement>) => {
 		const highlightedCode = highlightedCodeRef.current?.querySelector('pre');
@@ -40,6 +46,54 @@ export const CodeView = ({
 
 		highlightedCode.scrollTop = event.currentTarget.scrollTop;
 		highlightedCode.scrollLeft = event.currentTarget.scrollLeft;
+	};
+
+	const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+		if (
+			event.key !== 'Enter' ||
+			readOnly ||
+			type !== ViewDataTypeConstant.JSON ||
+			!onChange ||
+			!value.includes('\n')
+		) {
+			return;
+		}
+
+		const textarea = event.currentTarget;
+		const { selectionStart, selectionEnd } = textarea;
+
+		if (selectionStart !== selectionEnd) {
+			return;
+		}
+
+		const previousCharacter = value[selectionStart - 1];
+		const closingCharacter = previousCharacter ? openingToClosingCharacter[previousCharacter] : undefined;
+
+		if (!closingCharacter) {
+			return;
+		}
+
+		const lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1;
+		const currentLine = value.slice(lineStart, selectionStart);
+		const currentIndent = currentLine.match(/^\s*/)?.[0] ?? '';
+		const nextIndent = `${currentIndent}${indentUnit}`;
+		const insertion = `\n${nextIndent}\n${currentIndent}${closingCharacter}`;
+		const nextValue = `${value.slice(0, selectionStart)}${insertion}${value.slice(selectionEnd)}`;
+		const nextCaretPosition = selectionStart + 1 + nextIndent.length;
+
+		event.preventDefault();
+		onChange(nextValue);
+
+		requestAnimationFrame(() => {
+			const target = textareaRef.current;
+
+			if (!target) {
+				return;
+			}
+
+			target.selectionStart = nextCaretPosition;
+			target.selectionEnd = nextCaretPosition;
+		});
 	};
 
 	return (
@@ -83,6 +137,7 @@ export const CodeView = ({
 				</SyntaxHighlighter>
 			</div>
 			<textarea
+				ref={textareaRef}
 				aria-label={`${type} code editor`}
 				aria-invalid={invalid || undefined}
 				data-language={languageByType[type]}
@@ -96,6 +151,7 @@ export const CodeView = ({
 				spellCheck={false}
 				wrap="off"
 				onChange={(event) => onChange?.(event.target.value)}
+				onKeyDown={handleKeyDown}
 				onScroll={syncScroll}
 			/>
 		</div>
