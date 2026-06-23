@@ -2,7 +2,6 @@ import {  ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.co
 import { Textarea } from '@/components/ui/textarea.tsx';
 import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { ViewType, ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
-import { CodeView } from '@/container/json/view/codeView.component.tsx';
 import { JsonTreeSettings, JsonTreeView, JsonValue } from '@/container/json/view/jsonTreeView.component.tsx';
 import { cn } from '@/lib/utils.ts';
 import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
@@ -15,6 +14,9 @@ import {
 import { FileService } from '@/service/file.service.ts';
 import { FileDataTypeExtensionMapConstant } from '@/container/json/constant/fileDataTypeExtensionMap.constant.ts';
 import { useDebounceValue } from '@/hooks/useDebounce.hook.ts';
+import ReactCodeMirror from '@uiw/react-codemirror';
+import { json } from '@codemirror/lang-json';
+import { xml } from '@codemirror/lang-xml';
 
 type PropsType = {
 	value?: string;
@@ -124,12 +126,12 @@ export const JsonEditorContainer = ({
 		switch (jsonViewType) {
 			case ViewTypeConstant.CODE: {
 				return (
-					<CodeView
+					<ReactCodeMirror
 						className={className}
-						type={dataType}
 						value={targetValue}
+						onChange={(e) => handleTextChange(e)}
 						readOnly={readOnly}
-						onChange={handleTextChange}
+						extensions={[dataType === ViewDataTypeConstant.JSON ? json() : xml()]}
 					/>
 				);
 			}
