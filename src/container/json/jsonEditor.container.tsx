@@ -55,8 +55,25 @@ export const JsonEditorContainer = ({
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
 	const [targetValue, setTargetValue] = useState<string>(value);
+	const [lastKnowValidJson, setLastKnowValidJson] = useState<string>(value);
 	const lazyValue = useDebounceValue(value,250);
+	const lazyTargetValue = useDebounceValue(targetValue,250);
 	const dataType = targetTransform ?? ViewDataTypeConstant.JSON;
+
+	// TODO: Move to another component
+	useEffect(() => {
+		if (!lazyTargetValue) {
+			return;
+		}
+
+		try {
+			JSON.parse(lazyTargetValue);
+			setLastKnowValidJson(lazyTargetValue);
+			onChange?.(lazyTargetValue);
+		} catch (error) {
+			console.error('Failed to parse ignoring target value',error);
+		}
+	}, [lazyTargetValue]);
 
 	useEffect(() => {
 		setTargetValue((val)=>{
@@ -73,14 +90,11 @@ export const JsonEditorContainer = ({
 	}, [dataType, lazyValue, tabCount, displayMode]);
 
 	const handleTextChange = (nextValue: string) => {
-		onChange?.(nextValue);
 		setTargetValue(nextValue);
 	};
 
 	const handleTreeChange = (nextValue: JsonValue) => {
 		const target = JSON.stringify(nextValue);
-
-		onChange?.(target);
 		setTargetValue(target);
 	};
 
@@ -128,7 +142,8 @@ export const JsonEditorContainer = ({
 				return (
 					<ReactCodeMirror
 						className={className}
-						value={targetValue}
+						value={lastKnowValidJson}
+						theme="dark"
 						onChange={(e) => handleTextChange(e)}
 						readOnly={readOnly}
 						extensions={[dataType === ViewDataTypeConstant.JSON ? json() : xml()]}
