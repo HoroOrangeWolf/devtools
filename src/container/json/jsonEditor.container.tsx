@@ -141,7 +141,6 @@ export const JsonEditorContainer = ({
 	const lazyValue = useDebounceValue(value,250);
 	const lazyTargetValue = useDebounceValue(targetValue,250);
 
-	// TODO: Move to another component
 	useEffect(() => {
 		if (!lazyTargetValue) {
 			return;
