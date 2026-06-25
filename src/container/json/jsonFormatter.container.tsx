@@ -144,21 +144,26 @@ export const JsonFormatterContainer = () => {
 					/>
 				</FileDropzone>
 				<div className={cn('flex flex-col gap-2')}>
-					<ButtonSelectWrapper
-						onClick={setJsonPrettyMode}
-						value={jsonPrettyMode}
-						options={options}
-					/>
-					<Field>
-						<FieldLabel>
-							JSON tabs
-						</FieldLabel>
-						<SelectWrapper
-							options={tabs}
-							onChange={setTabCount}
-							defaultValue={tabCount}
+					{targetTransform === ViewDataTypeConstant.CSV || (
+						 <ButtonSelectWrapper
+							onClick={setJsonPrettyMode}
+							value={jsonPrettyMode}
+							options={options}
 						/>
-					</Field>
+					)
+					}
+					{targetTransform === ViewDataTypeConstant.JSON && (
+						<Field>
+							<FieldLabel>
+								JSON tabs
+							</FieldLabel>
+							<SelectWrapper
+								options={tabs}
+								onChange={setTabCount}
+								defaultValue={tabCount}
+							/>
+						</Field>
+					)}
 					<Field>
 						<FieldLabel>
 							Transform to
