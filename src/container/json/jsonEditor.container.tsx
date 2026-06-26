@@ -55,6 +55,7 @@ const SUPPORTED_MODES: Record<ViewDataType, ViewType[]> = {
 	]
 };
 
+// TODO: Dalej ten problem z tym value.
 export const JsonEditorContainer = ({
 	value = '',
 	onChange,
