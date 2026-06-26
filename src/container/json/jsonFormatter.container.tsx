@@ -154,19 +154,18 @@ export const JsonFormatterContainer = () => {
 					/>
 				</FileDropzone>
 				<div className={cn('flex flex-col gap-2')}>
-					<Button
-						onClick={handleUpload}
-					>
-						<UploadIcon /> Upload
-					</Button>
 					{targetTransform === ViewDataTypeConstant.CSV || (
 						 <ButtonSelectWrapper
 							onClick={setJsonPrettyMode}
 							value={jsonPrettyMode}
 							options={options}
 						/>
-					)
-					}
+					)}
+					<Button
+						onClick={handleUpload}
+					>
+						<UploadIcon /> Upload
+					</Button>
 					{targetTransform === ViewDataTypeConstant.JSON && (
 						<Field>
 							<FieldLabel>
