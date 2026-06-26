@@ -27,31 +27,6 @@ const isAcceptedFile = (file: File, formats: (FileExtension | ContentFormat)[]) 
 	return formats.some((format) => format === file.type || format === extension);
 };
 
-const getFileContent = async (formats: (FileExtension | ContentFormat)[]): Promise<string> =>
-	new Promise((resolve, reject) => {
-		const input = document.createElement('input');
-
-		input.type = 'file';
-		input.accept = formats.join(',');
-
-		input.addEventListener('change', async (event) => {
-			const file = (event.target as HTMLInputElement).files?.[0];
-
-			if (!file) {
-				resolve('');
-				return;
-			}
-
-			try {
-				resolve(await readFileContent(file));
-			} catch (error) {
-				reject(error);
-			}
-		});
-
-		input.click();
-	});
-
 const transformContentToJson = (content: string, format: ContentFormat): object => {
 	switch (format) {
 		case 'application/json': {
@@ -106,6 +81,38 @@ type FormatOptions = {
 	// Doesn't work for csv and for xml it only enables formating
 	tabs?: number;
 }
+
+const getFileContent = async <T extends boolean>(
+	formats: (FileExtension | ContentFormat)[], readAsJson?: T
+): Promise<T extends true ? object : string> =>
+	new Promise((resolve, reject) => {
+		const input = document.createElement('input');
+
+		input.type = 'file';
+		input.accept = formats.join(',');
+
+		input.addEventListener('change', async (event) => {
+			const file = (event.target as HTMLInputElement).files?.[0];
+
+			if (!file) {
+				resolve('' as any);
+				return;
+			}
+
+			try {
+				if (readAsJson) {
+					resolve(await readFileAsJson(file) as any);
+					return;
+				}
+
+				resolve(await readFileContent(file) as any);
+			} catch (error) {
+				reject(error);
+			}
+		});
+
+		input.click();
+	});
 
 const transformJsonToTarget = (content: object, format: ContentFormat, options?: FormatOptions) => {
 	switch (format) {

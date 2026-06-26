@@ -9,7 +9,7 @@ import {
 import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/viewDataType.constant.ts';
 import { Button } from '@/components/ui/button.tsx';
-import { DownloadIcon } from 'lucide-react';
+import { DownloadIcon, UploadIcon } from 'lucide-react';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
 import { ContentFormat, FileExtension, FileService } from '@/service/file.service.ts';
@@ -121,6 +121,16 @@ export const JsonFormatterContainer = () => {
 		}
 	};
 
+	const handleUpload = async () => {
+		const uploadedContent = await FileService.getFileContent(acceptableFiles, true);
+
+		if (!uploadedContent) {
+			return;
+		}
+
+		setValue(JSON.stringify(uploadedContent));
+	};
+
 	const onError = (error: Error) => {
 		setErrorMessage(error?.message ?? 'Unknown error');
 	};
@@ -144,6 +154,11 @@ export const JsonFormatterContainer = () => {
 					/>
 				</FileDropzone>
 				<div className={cn('flex flex-col gap-2')}>
+					<Button
+						onClick={handleUpload}
+					>
+						<UploadIcon /> Upload
+					</Button>
 					{targetTransform === ViewDataTypeConstant.CSV || (
 						 <ButtonSelectWrapper
 							onClick={setJsonPrettyMode}
