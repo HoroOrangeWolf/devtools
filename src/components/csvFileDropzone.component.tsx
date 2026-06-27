@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils.ts';
 import { ContentFormat, FileExtension, FileService } from '@/service/file.service.ts';
 
 type CsvFileDropzoneProps = {
-	accept: (FileExtension | ContentFormat)[];
+	accept?: (FileExtension | ContentFormat)[];
 	onDropFile: (file: File) => void | Promise<void>;
 	children: ReactNode;
 	className?: string;
@@ -69,7 +69,7 @@ export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFil
 
 				const file = event.dataTransfer.files?.[0];
 
-				if (!file || !FileService.isAcceptedFile(file, accept)) {
+				if (!file || (!accept ||!FileService.isAcceptedFile(file, accept))) {
 					return;
 				}
 

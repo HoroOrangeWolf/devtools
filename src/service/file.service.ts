@@ -83,13 +83,15 @@ type FormatOptions = {
 }
 
 const getFileContent = async <T extends boolean>(
-	formats: (FileExtension | ContentFormat)[], readAsJson?: T
+	formats?: (FileExtension | ContentFormat)[], readAsJson?: T
 ): Promise<T extends true ? object : string> =>
 	new Promise((resolve, reject) => {
 		const input = document.createElement('input');
 
 		input.type = 'file';
-		input.accept = formats.join(',');
+		if (formats) {
+			input.accept = formats.join(',');
+		}
 
 		input.addEventListener('change', async (event) => {
 			const file = (event.target as HTMLInputElement).files?.[0];

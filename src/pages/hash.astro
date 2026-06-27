@@ -1,0 +1,61 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { HashRoot } from '@/container/hash/hash.root.tsx';
+
+const title = 'Base64 Encoder and Decoder Tool | Dev Utils';
+const description =
+    'Encode and decode Base64 or URL-safe Base64 text locally in your browser without uploading data.';
+const keywords = [
+    'Base64 encoder',
+    'Base64 decoder',
+    'Base64 converter',
+    'URL-safe Base64',
+    'local Base64 tool',
+    'browser Base64 utility',
+    'developer encoding tool',
+    'text encoder decoder',
+];
+---
+<Layout
+        title={title}
+        description={description}
+        keywords={keywords}
+        canonicalPath="/base"
+        structuredData={{
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: 'Base64 Encoder and Decoder Tool',
+            applicationCategory: 'DeveloperApplication',
+            operatingSystem: 'Any',
+            browserRequirements: 'Requires a modern browser with JavaScript enabled.',
+            description,
+            url: new URL('/base', Astro.site ?? Astro.url.origin).toString(),
+            isAccessibleForFree: true,
+            featureList: [
+                'Encode text as Base64 in the browser',
+                'Decode Base64 text locally',
+                'Switch between standard and URL-safe Base64 variants',
+                'Process text locally without server upload',
+                'Use encoded output in development, testing, and data workflows',
+            ],
+            offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+            },
+        }}
+>
+    <section class="space-y-6">
+        <div class="space-y-2">
+            <p class="text-primary text-sm font-medium">Encoder TODO</p>
+            <h2 class="text-2xl font-semibold tracking-tight">Base64 Encoder</h2>
+            <p class="text-muted-foreground text-sm">
+                Encode and decode Base64 text locally in your browser.
+            </p>
+        </div>
+
+        <div class="border-border bg-card text-card-foreground rounded-lg border p-4 sm:p-6">
+            <HashRoot client:load />
+        </div>
+    </section>
+</Layout>
