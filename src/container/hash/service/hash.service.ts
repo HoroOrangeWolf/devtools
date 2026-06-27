@@ -14,8 +14,8 @@ import {
 	IArgon2Options
 } from 'hash-wasm';
 
-type ExcludedBcrypt = Omit<BcryptOptions, 'password'>;
-type ExcludedArgon = Omit<IArgon2Options, 'password'>;
+export type ExcludedBcrypt = Omit<BcryptOptions, 'password'>;
+export type ExcludedArgon = Omit<IArgon2Options, 'password'>;
 
 type ExcludedOptionType = Exclude<HashType, 'ARGON2D' | 'ARGON2I' | 'ARGON2ID' | 'BCRYPT'>;
 

@@ -9,6 +9,8 @@ import { FileService } from '@/service/file.service.ts';
 import { HashType, HashTypesConstant } from '@/container/hash/constant/hashTypes.constant.ts';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { useDebounceValue } from '@/hooks/useDebounce.hook.ts';
+import { HashOptionTypes } from '@/container/hash/service/hash.service.ts';
+import { HashOptionsContainer } from '@/container/hash/hashOptions.container.tsx';
 
 const options: OptionType<HashType>[] = Object.keys(HashTypesConstant)
 	.map((value): OptionType<HashType> => ({
@@ -21,6 +23,7 @@ export const HashContainer  = () => {
 	const debouncedValue = useDebounceValue(value, 250);
 	const [hashValue, setHashValue] = useState<string>('');
 	const [hashType, setHashType] = useState<HashType>(HashTypesConstant.SHA_256);
+	const [hashOptions, setHashOptions] = useState<HashOptionTypes>();
 
 	const handleFileDrop = async (file: File) => {
 		const result  = await file.text();
@@ -30,7 +33,11 @@ export const HashContainer  = () => {
 
 	useEffect(() => {
 		const fn = async () => {
-			setHashValue('');
+			try {
+				setHashValue('');
+			} catch (error) {
+				console.error('Failed to load hash', error);
+			}
 		};
 
 		fn()
@@ -80,6 +87,7 @@ export const HashContainer  = () => {
 				>
 					<DownloadIcon /> Download
 				</Button>
+				<HashOptionsContainer onChange={()=>{}} />
 			</div>
 			<Textarea
 				className={cn('h-64')}
