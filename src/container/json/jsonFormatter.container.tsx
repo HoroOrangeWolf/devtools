@@ -146,6 +146,7 @@ export const JsonFormatterContainer = () => {
 					<JsonEditorContainer
 						className={cn('max-h-full h-full')}
 						value={value}
+						onError={onError}
 						displayMode={JsonPrettyViewModeConstant.BEAUTIFIED}
 						onChange={(value) => {
 							setErrorMessage(undefined);
@@ -199,7 +200,6 @@ export const JsonFormatterContainer = () => {
 					className={cn('max-w-full h-full')}
 					readOnly={true}
 					displayMode={jsonPrettyMode}
-					onError={onError}
 					value={value}
 					tabCount={tabCount}
 					targetTransform={targetTransform}

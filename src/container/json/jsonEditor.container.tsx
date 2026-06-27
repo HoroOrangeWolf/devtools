@@ -94,6 +94,7 @@ export const JsonEditorContainer = ({
 				return lazyTargetValue;
 			} catch (error) {
 				console.error('Failed to parse ignoring target value',error);
+				onError?.(error as Error);
 				return val;
 			}
 		});
