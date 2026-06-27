@@ -55,7 +55,6 @@ const SUPPORTED_MODES: Record<ViewDataType, ViewType[]> = {
 	]
 };
 
-// TODO: Dalej ten problem z tym value.
 export const JsonEditorContainer = ({
 	value = '',
 	onChange,
@@ -70,33 +69,43 @@ export const JsonEditorContainer = ({
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
 	const [targetValue, setTargetValue] = useState<string>(value);
 	const [lastKnowValidJson, setLastKnowValidJson] = useState<string>(value);
-	const lazyValue = useDebounceValue(value,250);
-	const lazyTargetValue = useDebounceValue(targetValue,250);
+	const lazyValue = useDebounceValue(value,500);
+	const lazyTargetValue = useDebounceValue(targetValue,500);
+	const [isFocused, setIsFocused] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!lazyTargetValue) {
 			return;
 		}
 
-		try {
-			if (targetTransform === ViewDataTypeConstant.JSON) {
-				JSON.parse(lazyTargetValue);
-			} else {
-				console.warn('Only JSON data type is supported.');
-			}
+		setLastKnowValidJson((val) => {
+			try {
 
-			setLastKnowValidJson(lazyTargetValue);
-			if (!readOnly) {
-				onChange?.(lazyTargetValue);
+				if (targetTransform === ViewDataTypeConstant.JSON) {
+					JSON.parse(lazyTargetValue);
+				} else {
+					console.warn('Only JSON data type is supported.');
+				}
+
+				if (!readOnly) {
+					onChange?.(lazyTargetValue);
+				}
+
+				return lazyTargetValue;
+			} catch (error) {
+				console.error('Failed to parse ignoring target value',error);
+				return val;
 			}
-		} catch (error) {
-			console.error('Failed to parse ignoring target value',error);
-		}
+		});
 	}, [lazyTargetValue, readOnly]);
 
 	useEffect(() => {
 		setTargetValue((val)=>{
 			try {
+				if (targetTransform === ViewDataTypeConstant.JSON && isFocused) {
+					return lazyValue;
+				}
+
 				return FileService.transformJsonToTarget(JSON.parse(lazyValue), FileDataTypeExtensionMapConstant[targetTransform], {
 					tabs: displayMode === JsonPrettyViewModeConstant.BEAUTIFIED ? tabCount : undefined
 				});
@@ -106,7 +115,7 @@ export const JsonEditorContainer = ({
 				return val;
 			}
 		});
-	}, [targetTransform, lazyValue, tabCount, displayMode]);
+	}, [targetTransform, lazyValue, tabCount, displayMode, isFocused]);
 
 	const handleTextChange = (nextValue: string) => {
 		setTargetValue(nextValue);
@@ -183,7 +192,15 @@ export const JsonEditorContainer = ({
 	};
 
 	return (
-		<div className={cn('flex flex-col gap-1', className)}>
+		<div
+			className={cn('flex flex-col gap-1', className)}
+			onFocus={() => {
+				setIsFocused(true);
+			}}
+			onBlur={() => {
+				setIsFocused(false);
+			}}
+		>
 			<div className="flex flex-row justify-start">
 				<ButtonSelectWrapper
 					options={viewOptions}
