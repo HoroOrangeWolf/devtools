@@ -23,7 +23,7 @@ type HashOptionMapType = {
     ARGON2D: ExcludedArgon;
     ARGON2I: ExcludedArgon;
     ARGON2ID: ExcludedArgon;
-    BCRYPT: BcryptOptions;
+    BCRYPT: ExcludedBcrypt;
 } & {
     [x in ExcludedOptionType]: never
 }
