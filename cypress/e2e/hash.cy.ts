@@ -6,8 +6,16 @@ type HashCase = {
 	type: 'plain' | 'bcrypt' | 'argon';
 };
 
+type OptionCase = {
+	name: string;
+	field: string;
+	value: string;
+	expected: string;
+};
+
 const content = 'abc';
 const salt = '1234567890abcdef';
+const otherSalt = 'abcdef1234567890';
 
 const hashCases: HashCase[] = [
 	{
@@ -77,11 +85,44 @@ const hashCases: HashCase[] = [
 	},
 ];
 
+const argonOptionCases: OptionCase[] = [
+	{
+		name: 'hash length',
+		field: 'Hash Length',
+		value: '24',
+		expected: '08cacbbaeffd298824aa1adb598eef3dccf458bb334e14be',
+	},
+	{
+		name: 'iterations',
+		field: 'Iterations',
+		value: '2',
+		expected: '948048358c0cca81167a6e3839247393',
+	},
+	{
+		name: 'memory size',
+		field: 'Memory Size',
+		value: '32',
+		expected: 'ef7c7f23cd1f8e4a1f5218cad7829623',
+	},
+	{
+		name: 'parallelism',
+		field: 'Parallelism',
+		value: '2',
+		expected: 'd7e8323c5bd76596aa1d89416fbf9f96',
+	},
+	{
+		name: 'salt',
+		field: 'Salt',
+		value: otherSalt,
+		expected: '3c8c601da5ed3425bd57a279e428f8e8',
+	},
+];
+
 const sourceContent = () => cy.get('textarea[placeholder="Type or drop file here..."]');
 const hashResult = () => cy.get('textarea[placeholder="Result..."]');
 
 const setField = (label: string, value: string) => {
-	cy.contains('label', label).parent().find('input').clear().type(value);
+	cy.contains('label', label).parent().find('input').type(`{selectall}${value}`);
 };
 
 const selectAlgorithm = (algorithm: string) => {
@@ -97,6 +138,7 @@ const selectAlgorithm = (algorithm: string) => {
 
 describe('Hash generator page', () => {
 	beforeEach(() => {
+		cy.task('clearDownloads');
 		cy.visit('/hash');
 		cy.get('[data-ishydrated="true"]').should('exist');
 	});
@@ -116,6 +158,83 @@ describe('Hash generator page', () => {
 				setField('Salt', salt);
 			}
 
+			cy.contains('button', 'Generate').click();
+
+			hashResult().should('have.value', expected);
+		});
+	}
+
+	it('hashes content loaded with the upload button', () => {
+		cy.window().then((window) => {
+			const file = new window.File(['uploaded file content'], 'upload.txt', {
+				type: 'text/plain',
+			});
+
+			cy.stub(window.HTMLInputElement.prototype, 'click').callsFake(function (this: HTMLInputElement) {
+				// eslint-disable-next-line unicorn/no-this-outside-of-class
+				Object.defineProperty(this, 'files', { value: [file] });
+				// eslint-disable-next-line unicorn/no-this-outside-of-class
+				this.dispatchEvent(new window.Event('change'));
+			});
+		});
+
+		cy.contains('button', 'Upload').click();
+		cy.contains('File has been loaded').should('be.visible');
+		cy.contains('button', 'Generate').click();
+
+		hashResult().should('have.value', '28656224237fb152ec1e4d20a3c9e063051bed4b6217a6e039c19ee1978a56fb');
+	});
+
+	it('hashes content loaded by dropping a file', () => {
+		cy.get('[aria-label="CSV file dropzone"]').selectFile({
+			contents: Cypress.Buffer.from('dropped file content'),
+			fileName: 'drop.txt',
+			mimeType: 'text/plain',
+		}, {
+			action: 'drag-drop',
+		});
+
+		cy.contains('File has been loaded').should('be.visible');
+		cy.contains('button', 'Generate').click();
+
+		hashResult().should('have.value', 'cfb2602438363471b33e3b5f7c37e3664f8b20fcc5bc453838f58097e2b78501');
+	});
+
+	it('downloads the generated hash', () => {
+		sourceContent().type(content);
+		cy.contains('button', 'Generate').click();
+		hashResult().should('have.value', hashCases[1].expected);
+
+		cy.contains('button', 'Download').click();
+
+		cy.readFile('cypress/downloads/result_hash.txt').should('equal', hashCases[1].expected);
+	});
+
+	it('applies the bcrypt cost factor option', () => {
+		sourceContent().type(content);
+		selectAlgorithm('BCRYPT');
+		setField('Cost Factor', '5');
+		setField('Salt', salt);
+		cy.contains('button', 'Generate').click();
+
+		hashResult().should('have.value', '$2a$05$KRGxLBS0Lxe3KEDgW0PjXepkcIRAGlnS.2znpquW2faS6PbK6vffC');
+	});
+
+	it('applies the bcrypt salt option', () => {
+		sourceContent().type(content);
+		selectAlgorithm('BCRYPT');
+		setField('Salt', otherSalt);
+		cy.contains('button', 'Generate').click();
+
+		hashResult().should('have.value', '$2a$04$WUHhXETkKRGxLBS0Lxe3K.D3hILMr5PEzv53S0dztl/Xeb6vqL5xS');
+	});
+
+	for (const { name, field, value, expected } of argonOptionCases) {
+		it(`applies the Argon2 ${name} option`, () => {
+			sourceContent().type(content);
+			selectAlgorithm('ARGON2ID');
+			setField('Salt', salt);
+			setField(field, value);
 			cy.contains('button', 'Generate').click();
 
 			hashResult().should('have.value', expected);
