@@ -84,10 +84,14 @@ export const HashContainer  = () => {
 
 	const onInitUploadFile = async () => {
 		try {
+			setIsLoadingFile(true);
 			const result = await FileService.getFileContent(undefined, false);
+			setIsFile(true);
 			setValue(result);
 		} catch (error) {
 			console.error('Failed to get file content', error);
+		} finally {
+			setIsLoadingFile(false);
 		}
 	};
 
@@ -129,6 +133,7 @@ export const HashContainer  = () => {
 
 		return (
 			<Textarea
+				placeholder="Type or drop file here..."
 				className={cn('h-full')}
 				value={value}
 				onChange={(e) => setValue(e.target.value)}

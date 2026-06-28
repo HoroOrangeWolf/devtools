@@ -93,6 +93,13 @@ const getFileContent = async <T extends boolean>(
 			input.accept = formats.join(',');
 		}
 
+		const rejectCancellation = () => {
+			reject(new DOMException('File selection cancelled', 'AbortError'));
+		};
+
+		// Executes only once and removes itself.
+		input.addEventListener('cancel', rejectCancellation, { once: true });
+
 		input.addEventListener('change', async (event) => {
 			const file = (event.target as HTMLInputElement).files?.[0];
 
