@@ -43,7 +43,7 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 
 	if (isArgonSettings) {
 		return (
-			<div className="flex-col gap-2">
+			<div className="flex flex-col gap-2">
 				<HashLengthComponent
 					value={argonOptions.hashLength}
 					onChange={(e) => setArgonOptions({ ...argonOptions, hashLength: e })}
@@ -69,7 +69,7 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 	}
 
 	return (
-		<div className="flex-col gap-2">
+		<div className="flex flex-col gap-2">
 			<CostFactorComponent
 				value={bcryptOptions.costFactor}
 				onChange={(e) => setBcryptOptions({ ...bcryptOptions, costFactor: e })}

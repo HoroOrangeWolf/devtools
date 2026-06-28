@@ -87,9 +87,9 @@ export const HashContainer  = () => {
 	return (
 		<div className={cn('flex flex-col gap-2')}>
 			<div className={cn('flex flex-col lg:grid lg:grid-cols-3 gap-2')}>
-				<FileDropzone onDropFile={handleFileDrop}>
+				<FileDropzone className={cn('min-h-64')} onDropFile={handleFileDrop}>
 					<Textarea
-						className={cn('min-h-64')}
+						className={cn('h-full min-h-64')}
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
 					/>
