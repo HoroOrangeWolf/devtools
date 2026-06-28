@@ -1,4 +1,4 @@
-import { Field, FieldLabel } from '@/components/ui/field.tsx';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
 
 type PropsType = {
@@ -15,5 +15,8 @@ export const IterationComponent = ({ value, onChange }: PropsType) => (
 			value={value}
 			onChange={(e) => onChange(Number(e.target.value))}
 		/>
+		<FieldDescription>
+			Number of iterations to perform
+		</FieldDescription>
 	</Field>
 );

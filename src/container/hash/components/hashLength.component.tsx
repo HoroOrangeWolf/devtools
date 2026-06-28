@@ -1,4 +1,4 @@
-import { Field, FieldLabel } from '@/components/ui/field.tsx';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
 
 type PropsType = {
@@ -14,5 +14,8 @@ export const HashLengthComponent = ({ value, onChange }: PropsType) => (
 			value={value}
 			onChange={(e) => onChange(Number(e.target.value))}
 		/>
+		<FieldDescription>
+			Output size in bytes
+		</FieldDescription>
 	</Field>
 );

@@ -2,41 +2,42 @@
 import Layout from '@/layouts/Layout.astro';
 import { HashRoot } from '@/container/hash/hash.root.tsx';
 
-const title = 'Base64 Encoder and Decoder Tool | Dev Utils';
+const title = 'Hash Generator for SHA, MD5, bcrypt and Argon2 | Dev Utils';
 const description =
-    'Encode and decode Base64 or URL-safe Base64 text locally in your browser without uploading data.';
+    'Generate SHA, SHA-3, MD5, bcrypt, and Argon2 hashes from text or files locally in your browser.';
 const keywords = [
-    'Base64 encoder',
-    'Base64 decoder',
-    'Base64 converter',
-    'URL-safe Base64',
-    'local Base64 tool',
-    'browser Base64 utility',
-    'developer encoding tool',
-    'text encoder decoder',
+    'hash generator',
+    'SHA-256 generator',
+    'SHA-3 generator',
+    'MD5 generator',
+    'bcrypt generator',
+    'Argon2 generator',
+    'file hash generator',
+    'local hashing tool',
 ];
 ---
 <Layout
         title={title}
         description={description}
         keywords={keywords}
-        canonicalPath="/base"
+        canonicalPath="/hash"
         structuredData={{
             '@context': 'https://schema.org',
             '@type': 'WebApplication',
-            name: 'Base64 Encoder and Decoder Tool',
+            name: 'Hash Generator for SHA, MD5, bcrypt and Argon2',
             applicationCategory: 'DeveloperApplication',
             operatingSystem: 'Any',
             browserRequirements: 'Requires a modern browser with JavaScript enabled.',
             description,
-            url: new URL('/base', Astro.site ?? Astro.url.origin).toString(),
+            url: new URL('/hash', Astro.site ?? Astro.url.origin).toString(),
             isAccessibleForFree: true,
             featureList: [
-                'Encode text as Base64 in the browser',
-                'Decode Base64 text locally',
-                'Switch between standard and URL-safe Base64 variants',
-                'Process text locally without server upload',
-                'Use encoded output in development, testing, and data workflows',
+                'Generate SHA-2 and SHA-3 hashes',
+                'Generate MD5 hashes',
+                'Generate bcrypt password hashes with configurable options',
+                'Generate Argon2d, Argon2i, and Argon2id hashes with configurable options',
+                'Hash text or uploaded file content locally in the browser',
+                'Download generated hashes as a text file',
             ],
             offers: {
                 '@type': 'Offer',
@@ -47,10 +48,10 @@ const keywords = [
 >
     <section class="space-y-6">
         <div class="space-y-2">
-            <p class="text-primary text-sm font-medium">Encoder TODO</p>
-            <h2 class="text-2xl font-semibold tracking-tight">Base64 Encoder</h2>
+            <p class="text-primary text-sm font-medium">Generator</p>
+            <h2 class="text-2xl font-semibold tracking-tight">Hash Generator</h2>
             <p class="text-muted-foreground text-sm">
-                Encode and decode Base64 text locally in your browser.
+                Generate hashes from text or files locally in your browser.
             </p>
         </div>
 
