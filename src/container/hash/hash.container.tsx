@@ -9,9 +9,9 @@ import { FileService } from '@/service/file.service.ts';
 import { HashType, HashTypesConstant } from '@/container/hash/constant/hashTypes.constant.ts';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { useDebounceValue } from '@/hooks/useDebounce.hook.ts';
-import { ExcludedBcrypt, HashOptionTypes, HashService } from '@/container/hash/service/hash.service.ts';
+import { HashOptionTypes, HashService } from '@/container/hash/service/hash.service.ts';
 import { HashOptionsContainer } from '@/container/hash/hashOptions.container.tsx';
-import { HashOptionTypeConstant } from '@/container/hash/constant/hashOptionType.constant.ts';
+import { HashModeType, HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
 import { SaltUtils } from '@/container/hash/service/salt.utils.ts';
 import { ErrorBanner } from '@/components/error.component.tsx';
 
@@ -21,17 +21,25 @@ const options: OptionType<HashType>[] = Object.keys(HashTypesConstant)
 		value: value as HashType
 	}));
 
-const bcryptDef: ExcludedBcrypt = {
-	salt: SaltUtils.generateSalt(16),
-	costFactor: 4
+type HashOptionWithMode = {
+	mode: HashModeType;
+	options: HashOptionTypes;
+}
+
+const bcryptDef: HashOptionWithMode = {
+	mode: HashModeTypeConstant.BCRYPT,
+	options: {
+		salt: SaltUtils.generateSalt(8),
+		costFactor: 4
+	}
 };
 
 export const HashContainer  = () => {
-	const [value, setValue] = useState<string>('');
+	const [value, setValue] = useState<string>('Test hash value');
 	const debouncedValue = useDebounceValue(value, 250);
 	const [hashValue, setHashValue] = useState<string>('');
 	const [hashType, setHashType] = useState<HashType>(HashTypesConstant.SHA_256);
-	const [hashOptions, setHashOptions] = useState<HashOptionTypes>(bcryptDef);
+	const [hashOptions, setHashOptions] = useState<HashOptionWithMode>(bcryptDef);
 	const debouncedOptions = useDebounceValue(hashOptions, 250);
 	const [errorMessage, setErrorMessage] = useState<string>();
 
@@ -41,11 +49,32 @@ export const HashContainer  = () => {
 		setValue(result);
 	};
 
+	const getOptionMode = () => {
+		const argon: HashType[] = [
+			HashTypesConstant.ARGON2D,
+			HashTypesConstant.ARGON2I,
+			HashTypesConstant.ARGON2ID
+		];
+
+		if (argon.includes(hashType)){
+			return HashModeTypeConstant.ARGON;
+		}
+
+		return HashTypesConstant.BCRYPT === hashType ? HashModeTypeConstant.BCRYPT : undefined;
+	};
+
+	const optionMode = getOptionMode();
+
 	useEffect(() => {
 		const fn = async () => {
 			try {
 				setErrorMessage(undefined);
-				const hashResult = await HashService.hashContent(hashType, debouncedValue, debouncedOptions);
+
+				if (optionMode && optionMode !== debouncedOptions.mode) {
+					return;
+				}
+
+				const hashResult = await HashService.hashContent(hashType, debouncedValue, debouncedOptions.options);
 
 				setHashValue(hashResult);
 			} catch (error) {
@@ -56,7 +85,7 @@ export const HashContainer  = () => {
 
 		fn()
 			.catch(console.error);
-	}, [debouncedValue, hashType, debouncedOptions]);
+	}, [debouncedValue, hashType, debouncedOptions, optionMode]);
 
 	const onInitUploadFile = async () => {
 		try {
@@ -70,22 +99,6 @@ export const HashContainer  = () => {
 	const onDownloadFile = () => {
 		FileService.downloadFile('result_hash.txt', hashValue, 'text/plain');
 	};
-
-	const getOptionMode = () => {
-		const argon: HashType[] = [
-			HashTypesConstant.ARGON2D,
-			HashTypesConstant.ARGON2I,
-			HashTypesConstant.ARGON2ID
-		];
-
-		if (argon.includes(hashType)){
-			return HashOptionTypeConstant.ARGON;
-		}
-
-		return HashTypesConstant.BCRYPT === hashType ? HashOptionTypeConstant.BCRYPT : undefined;
-	};
-
-	const optionMode = getOptionMode();
 
 	return (
 		<div className={cn('flex flex-col gap-2')}>
@@ -115,8 +128,8 @@ export const HashContainer  = () => {
 					</Field>
 					{optionMode && (
 						<HashOptionsContainer
-							onChange={setHashOptions}
-							isArgonSettings={optionMode === HashOptionTypeConstant.ARGON}
+							onChange={(mode, options) => setHashOptions({ mode, options })}
+							isArgonSettings={optionMode === HashModeTypeConstant.ARGON}
 						/>
 					)}
 					<Button

@@ -1,26 +1,28 @@
-import { HashOptionType, HashOptionTypeConstant } from '@/container/hash/constant/hashOptionType.constant.ts';
+import { HashModeType, HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { RefreshCw } from 'lucide-react';
 import { SaltUtils } from '@/container/hash/service/salt.utils.ts';
+import { useState } from 'react';
 
 type PropsType = {
     value: string;
-    optionMode: HashOptionType;
+    optionMode: HashModeType;
     onChange: (value: string) => void;
 }
 
-const SALT_DEFAULT = 16;
+const SALT_DEFAULT = 8;
 
 export const SaltGeneratorComponent = ({ value, onChange, optionMode }: PropsType) => {
+	const [isLocked, setIsLocked] = useState<boolean>(false);
 	const getMinVal = () => {
 		switch (optionMode) {
-			case HashOptionTypeConstant.ARGON: {
-				return 8;
+			case HashModeTypeConstant.ARGON: {
+				return 4;
 			}
-			case HashOptionTypeConstant.BCRYPT: {
+			case HashModeTypeConstant.BCRYPT: {
 				return SALT_DEFAULT;
 			}
 		}
@@ -28,17 +30,24 @@ export const SaltGeneratorComponent = ({ value, onChange, optionMode }: PropsTyp
 
 	const getMaxVal = () => {
 		switch (optionMode) {
-			case HashOptionTypeConstant.ARGON: {
+			case HashModeTypeConstant.ARGON: {
 				return Number.MAX_VALUE;
 			}
-			case HashOptionTypeConstant.BCRYPT: {
+			case HashModeTypeConstant.BCRYPT: {
 				return SALT_DEFAULT;
 			}
 		}
 	};
 
-	const onRefresh = () => {
-		onChange(SaltUtils.generateSalt(SALT_DEFAULT));
+	const onRefresh = async () => {
+		try {
+			setIsLocked((v) => !v);
+			onChange(SaltUtils.generateSalt(SALT_DEFAULT));
+		} catch (error) {
+			console.error('Failed to generate salt', error);
+		} finally {
+			setIsLocked((v) => !v);
+		}
 	};
 
 	return (
@@ -46,12 +55,14 @@ export const SaltGeneratorComponent = ({ value, onChange, optionMode }: PropsTyp
 			<FieldLabel>Salt</FieldLabel>
 			<ButtonGroup>
 				<Input
+					disabled={isLocked}
 					value={value}
 					minLength={getMinVal()}
 					maxLength={getMaxVal()}
 					onChange={(e) => onChange(e.target.value)}
 				/>
 				<Button
+					disabled={isLocked}
 					variant="outline"
 					onClick={onRefresh}
 				>

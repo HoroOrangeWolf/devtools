@@ -7,14 +7,14 @@ import { ParallelismComponent } from '@/container/hash/components/parallelism.co
 import { CostFactorComponent } from '@/container/hash/components/costFactor.component.tsx';
 import { SaltGeneratorComponent } from '@/container/hash/components/saltGenerator.component.tsx';
 import { SaltUtils } from '@/container/hash/service/salt.utils.ts';
-import { HashOptionTypeConstant } from '@/container/hash/constant/hashOptionType.constant.ts';
+import { HashModeType, HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
 
 type PropsType = {
 	isArgonSettings: boolean;
-    onChange: (options: HashOptionTypes) => void;
+    onChange: (mode: HashModeType, options: HashOptionTypes) => void;
 }
 
-const salt = SaltUtils.generateSalt(16);
+const salt = SaltUtils.generateSalt(8);
 
 const argonDef: ExcludedArgon = {
 	hashLength: 16,
@@ -35,11 +35,11 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 
 	useEffect(() => {
 		if (isArgonSettings) {
-			onChange(argonOptions);
+			onChange(HashModeTypeConstant.ARGON, argonOptions);
 			return;
 		}
 
-		onChange(bcryptOptions);
+		onChange(HashModeTypeConstant.BCRYPT, bcryptOptions);
 	}, [argonOptions, bcryptOptions, isArgonSettings]);
 
 	if (isArgonSettings) {
@@ -63,7 +63,7 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 				/>
 				<SaltGeneratorComponent
 					value={argonOptions.salt as string}
-					optionMode={HashOptionTypeConstant.ARGON}
+					optionMode={HashModeTypeConstant.ARGON}
 					onChange={(e) => setArgonOptions({ ...argonOptions, salt: e })}
 				/>
 			</div>
@@ -78,7 +78,7 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 			/>
 			<SaltGeneratorComponent
 				value={bcryptOptions.salt as string}
-				optionMode={HashOptionTypeConstant.BCRYPT}
+				optionMode={HashModeTypeConstant.BCRYPT}
 				onChange={(e) => setBcryptOptions({ ...bcryptOptions, salt: e })}
 			/>
 		</div>
