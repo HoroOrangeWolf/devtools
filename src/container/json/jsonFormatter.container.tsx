@@ -14,7 +14,7 @@ import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
 import { ContentFormat, FileExtension, FileService } from '@/service/file.service.ts';
 import { FileDataTypeExtensionMapConstant } from '@/container/json/constant/fileDataTypeExtensionMap.constant.ts';
-import { ErrorBanner } from '@/components/error.component.tsx';
+import { BannerComponent } from '@/components/banner.component.tsx';
 
 const exp = `{
   "employees": {
@@ -205,12 +205,12 @@ export const JsonFormatterContainer = () => {
 					targetTransform={targetTransform}
 				/>
 			</div>
-			<ErrorBanner
+			<BannerComponent
 				title="Error"
 				className={errorMessage || 'opacity-0'}
 			>
 				{errorMessage ?? 'Unknown error'}
-			</ErrorBanner>
+			</BannerComponent>
 		</div>
 	);
 };

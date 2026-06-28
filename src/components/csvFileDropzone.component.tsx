@@ -10,12 +10,13 @@ type CsvFileDropzoneProps = {
 	onDropFile: (file: File) => void | Promise<void>;
 	children: ReactNode;
 	className?: string;
+	isDisabled?: boolean;
 };
 
 const hasFiles = (event: DragEvent<HTMLDivElement>) =>
 	Array.from(event.dataTransfer?.types ?? []).includes('Files');
 
-export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFileDropzoneProps) => {
+export const FileDropzone = ({ accept, onDropFile, children, className, isDisabled }: CsvFileDropzoneProps) => {
 	const [isActive, setIsActive] = useState(false);
 	const [, setDragDepth] = useState(0);
 
@@ -69,7 +70,7 @@ export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFil
 
 				const file = event.dataTransfer.files?.[0];
 
-				if (!file || (accept && !FileService.isAcceptedFile(file, accept))) {
+				if (!file || isDisabled || (accept && !FileService.isAcceptedFile(file, accept))) {
 					return;
 				}
 
@@ -81,7 +82,7 @@ export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFil
 			<div
 				className={cn(
 					'pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-lg border border-dashed border-transparent bg-transparent text-transparent opacity-0 transition-all',
-					isActive && 'border-primary/70 bg-primary/10 text-primary opacity-100'
+					isActive && !isDisabled && 'border-primary/70 bg-primary/10 text-primary opacity-100'
 				)}
 			>
 				<div className="flex flex-col items-center gap-2">

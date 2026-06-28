@@ -1,19 +1,20 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
-import { AlertCircleIcon } from 'lucide-react';
+import { AlertCircleIcon, InfoIcon } from 'lucide-react';
 import { cn } from '@/lib/utils.ts';
 
 type PropsType = {
     title?: string;
     children?: React.ReactNode;
 	className?: string;
+	variant?: 'destructive' | 'default';
 }
 
-export const ErrorBanner = ({ title, children, className }: PropsType) => (
+export const BannerComponent = ({ title, children, className, variant = 'destructive' }: PropsType) => (
 	<Alert
-		variant="destructive"
+		variant={variant}
 		className={cn('w-full', className)}
 	>
-		<AlertCircleIcon />
+		{variant === 'destructive' ? <AlertCircleIcon /> : <InfoIcon />}
 		<AlertTitle>{title}</AlertTitle>
 		<AlertDescription>
 			{children}

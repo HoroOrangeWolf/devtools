@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { BaseService } from '@/service/base.service.ts';
-import { ErrorBanner } from '@/components/error.component.tsx';
+import { BannerComponent } from '@/components/banner.component.tsx';
 import { FileService } from '@/service/file.service.ts';
 import { ClipboardCopy, DownloadIcon } from 'lucide-react';
 import { ToastUtils } from '@/utils/toast.utils.ts';
@@ -110,11 +110,11 @@ export const Base64Container = () => {
 				/>
 			</div>
 			{isEncodingError && (
-				<ErrorBanner
+				<BannerComponent
 					title="Error"
 				>
 					Failed to {isEncodeMode ? 'encode' : 'decode'} value...
-				</ErrorBanner>
+				</BannerComponent>
 			)}
 			{targetText && (
 				<div className={cn('flex flex-row gap-2 justify-end')}>
