@@ -63,7 +63,6 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 				/>
 				<SaltGeneratorComponent
 					value={argonOptions.salt as string}
-					optionMode={HashModeTypeConstant.ARGON}
 					onChange={(e) => setArgonOptions({ ...argonOptions, salt: e })}
 				/>
 			</div>
@@ -78,7 +77,6 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 			/>
 			<SaltGeneratorComponent
 				value={bcryptOptions.salt as string}
-				optionMode={HashModeTypeConstant.BCRYPT}
 				onChange={(e) => setBcryptOptions({ ...bcryptOptions, salt: e })}
 			/>
 		</div>

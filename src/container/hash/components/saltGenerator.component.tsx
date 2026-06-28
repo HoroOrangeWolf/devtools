@@ -1,4 +1,3 @@
-import { HashModeType, HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { ButtonGroup } from '@/components/ui/button-group.tsx';
@@ -9,35 +8,13 @@ import { useState } from 'react';
 
 type PropsType = {
     value: string;
-    optionMode: HashModeType;
     onChange: (value: string) => void;
 }
 
 const SALT_DEFAULT = 8;
 
-export const SaltGeneratorComponent = ({ value, onChange, optionMode }: PropsType) => {
+export const SaltGeneratorComponent = ({ value, onChange }: PropsType) => {
 	const [isLocked, setIsLocked] = useState<boolean>(false);
-	const getMinVal = () => {
-		switch (optionMode) {
-			case HashModeTypeConstant.ARGON: {
-				return 4;
-			}
-			case HashModeTypeConstant.BCRYPT: {
-				return SALT_DEFAULT;
-			}
-		}
-	};
-
-	const getMaxVal = () => {
-		switch (optionMode) {
-			case HashModeTypeConstant.ARGON: {
-				return Number.MAX_VALUE;
-			}
-			case HashModeTypeConstant.BCRYPT: {
-				return SALT_DEFAULT;
-			}
-		}
-	};
 
 	const onRefresh = async () => {
 		try {
@@ -57,8 +34,7 @@ export const SaltGeneratorComponent = ({ value, onChange, optionMode }: PropsTyp
 				<Input
 					disabled={isLocked}
 					value={value}
-					minLength={getMinVal()}
-					maxLength={getMaxVal()}
+					minLength={1}
 					onChange={(e) => onChange(e.target.value)}
 				/>
 				<Button
