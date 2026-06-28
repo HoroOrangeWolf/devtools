@@ -69,7 +69,7 @@ export const FileDropzone = ({ accept, onDropFile, children, className }: CsvFil
 
 				const file = event.dataTransfer.files?.[0];
 
-				if (!file || (!accept ||!FileService.isAcceptedFile(file, accept))) {
+				if (!file || (accept && !FileService.isAcceptedFile(file, accept))) {
 					return;
 				}
 
