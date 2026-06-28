@@ -18,12 +18,12 @@ export const SaltGeneratorComponent = ({ value, onChange }: PropsType) => {
 
 	const onRefresh = async () => {
 		try {
-			setIsLocked((v) => !v);
+			setIsLocked(true);
 			onChange(SaltUtils.generateSalt(SALT_DEFAULT));
 		} catch (error) {
 			console.error('Failed to generate salt', error);
 		} finally {
-			setIsLocked((v) => !v);
+			setIsLocked(false);
 		}
 	};
 

@@ -21,27 +21,18 @@ const options: OptionType<HashType>[] = Object.keys(HashTypesConstant)
 		value: value as HashType
 	}));
 
-type HashOptionWithMode = {
-	mode: HashModeType;
-	options: HashOptionTypes;
-}
-
-const bcryptDef: HashOptionWithMode = {
-	mode: HashModeTypeConstant.BCRYPT,
-	options: {
-		salt: SaltUtils.generateSalt(8),
-		costFactor: 4
-	}
+const bcryptDef: HashOptionTypes = {
+	salt: SaltUtils.generateSalt(8),
+	costFactor: 4
 };
 
 export const HashContainer  = () => {
 	const [value, setValue] = useState<string>('Test hash value');
-	const debouncedValue = useDebounceValue(value, 250);
 	const [hashValue, setHashValue] = useState<string>('');
 	const [hashType, setHashType] = useState<HashType>(HashTypesConstant.SHA_256);
-	const [hashOptions, setHashOptions] = useState<HashOptionWithMode>(bcryptDef);
-	const debouncedOptions = useDebounceValue(hashOptions, 250);
+	const [hashOptions, setHashOptions] = useState<HashOptionTypes>(bcryptDef);
 	const [errorMessage, setErrorMessage] = useState<string>();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const handleFileDrop = async (file: File) => {
 		const result  = await file.text();
@@ -65,27 +56,21 @@ export const HashContainer  = () => {
 
 	const optionMode = getOptionMode();
 
-	useEffect(() => {
-		const fn = async () => {
-			try {
-				setErrorMessage(undefined);
+	const generateHash = async () => {
+		try {
+			setIsLoading(true);
+			setErrorMessage(undefined);
 
-				if (optionMode && optionMode !== debouncedOptions.mode) {
-					return;
-				}
+			const hashResult = await HashService.hashContent(hashType, value, hashOptions);
 
-				const hashResult = await HashService.hashContent(hashType, debouncedValue, debouncedOptions.options);
-
-				setHashValue(hashResult);
-			} catch (error) {
-				setErrorMessage((error as Error).message);
-				console.error('Failed to load hash', error);
-			}
-		};
-
-		fn()
-			.catch(console.error);
-	}, [debouncedValue, hashType, debouncedOptions, optionMode]);
+			setHashValue(hashResult);
+		} catch (error) {
+			setErrorMessage((error as Error).message);
+			console.error('Failed to load hash', error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	const onInitUploadFile = async () => {
 		try {
@@ -102,10 +87,10 @@ export const HashContainer  = () => {
 
 	return (
 		<div className={cn('flex flex-col gap-2')}>
-			<div className={cn('grid grid-cols-3 gap-2')}>
+			<div className={cn('flex flex-col lg:grid lg:grid-cols-3 gap-2')}>
 				<FileDropzone onDropFile={handleFileDrop}>
 					<Textarea
-						className={cn('h-64')}
+						className={cn('min-h-64')}
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
 					/>
@@ -128,7 +113,7 @@ export const HashContainer  = () => {
 					</Field>
 					{optionMode && (
 						<HashOptionsContainer
-							onChange={(mode, options) => setHashOptions({ mode, options })}
+							onChange={setHashOptions}
 							isArgonSettings={optionMode === HashModeTypeConstant.ARGON}
 						/>
 					)}
@@ -137,9 +122,15 @@ export const HashContainer  = () => {
 					>
 						<DownloadIcon /> Download
 					</Button>
+					<Button
+						onClick={generateHash}
+						disabled={isLoading}
+					>
+						{isLoading ? 'Generating...' : 'Generate'}
+					</Button>
 				</div>
 				<Textarea
-					className={cn('h-64')}
+					className={cn('min-h-64')}
 					value={hashValue}
 				/>
 			</div>

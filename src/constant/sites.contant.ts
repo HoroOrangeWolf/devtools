@@ -24,9 +24,9 @@ export const NavItems = [
 		isReady: true,
 	},
 	{
-		href: '#',
+		href: '/hash',
 		label: 'Hash',
 		description: 'Create checksums',
-		isReady: false,
+		isReady: true,
 	},
 ] as const;

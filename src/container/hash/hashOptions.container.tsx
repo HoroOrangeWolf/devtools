@@ -7,11 +7,10 @@ import { ParallelismComponent } from '@/container/hash/components/parallelism.co
 import { CostFactorComponent } from '@/container/hash/components/costFactor.component.tsx';
 import { SaltGeneratorComponent } from '@/container/hash/components/saltGenerator.component.tsx';
 import { SaltUtils } from '@/container/hash/service/salt.utils.ts';
-import { HashModeType, HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
 
 type PropsType = {
 	isArgonSettings: boolean;
-    onChange: (mode: HashModeType, options: HashOptionTypes) => void;
+    onChange: (options: HashOptionTypes) => void;
 }
 
 const salt = SaltUtils.generateSalt(8);
@@ -35,11 +34,11 @@ export const HashOptionsContainer = ({ onChange, isArgonSettings }: PropsType) =
 
 	useEffect(() => {
 		if (isArgonSettings) {
-			onChange(HashModeTypeConstant.ARGON, argonOptions);
+			onChange(argonOptions);
 			return;
 		}
 
-		onChange(HashModeTypeConstant.BCRYPT, bcryptOptions);
+		onChange(bcryptOptions);
 	}, [argonOptions, bcryptOptions, isArgonSettings]);
 
 	if (isArgonSettings) {
