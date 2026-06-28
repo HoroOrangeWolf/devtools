@@ -4,14 +4,13 @@ import { Button } from '@/components/ui/button.tsx';
 import { DownloadIcon, UploadIcon } from 'lucide-react';
 import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FileService } from '@/service/file.service.ts';
 import { HashType, HashTypesConstant } from '@/container/hash/constant/hashTypes.constant.ts';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
-import { useDebounceValue } from '@/hooks/useDebounce.hook.ts';
 import { HashOptionTypes, HashService } from '@/container/hash/service/hash.service.ts';
 import { HashOptionsContainer } from '@/container/hash/hashOptions.container.tsx';
-import { HashModeType, HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
+import { HashModeTypeConstant } from '@/container/hash/constant/hashModeType.constant.ts';
 import { SaltUtils } from '@/container/hash/service/salt.utils.ts';
 import { ErrorBanner } from '@/components/error.component.tsx';
 
