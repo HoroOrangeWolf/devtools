@@ -18,12 +18,13 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 
 	return (
 		<Document file={file} onLoadSuccess={setLoadedDocument}>
-			<div className={cn('grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-[repeat(auto-fit, minmax(300px,1fr))] gap-2')}>
+			<div className={cn('grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-2')}>
 				{Array.from({ length: pages }, ()=>null).map((_, i) => (
 					<div key={i}>
 						<Page
+							className={cn('aspect-1/1.414 h-full w-full')}
 							renderTextLayer={false}
-							scale={0.5}
+							scale={0.25}
 							renderAnnotationLayer={false}
 							pageNumber={i + 1}
 						/>
