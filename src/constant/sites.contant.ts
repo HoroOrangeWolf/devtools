@@ -29,4 +29,10 @@ export const NavItems = [
 		description: 'Create checksums',
 		isReady: true,
 	},
+	{
+		href: '/pdf',
+		label: 'PDF',
+		description: 'Manage PDF',
+		isReady: true,
+	},
 ] as const;

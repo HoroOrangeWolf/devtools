@@ -114,7 +114,8 @@ const getFileContent = async <T extends boolean>(
 					return;
 				}
 
-				resolve(await readFileContent(file) as any);
+				resolve(file as any);
+				// resolve(await readFileContent(file) as any);
 			} catch (error) {
 				reject(error);
 			}
