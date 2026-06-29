@@ -1,5 +1,7 @@
 import { Document, Page, pdfjs } from 'react-pdf';
 import { DocumentCallback } from 'react-pdf/dist/shared/types.js';
+import { useState } from 'react';
+import { cn } from '@/lib/utils.ts';
 
 type PropsType = {
     pageNumber: number;
@@ -10,9 +12,24 @@ type PropsType = {
 pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.mjs`;
 
 export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsType) => {
+	const [loadedDocument, setLoadedDocument] = useState<DocumentCallback>();
+
+	const pages = loadedDocument?.numPages ?? 0;
+
 	return (
-		<Document file={file} onLoadSuccess={onDocumentLoad}>
-			<Page pageNumber={pageNumber} />
+		<Document file={file} onLoadSuccess={setLoadedDocument}>
+			<div className={cn('grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-[repeat(auto-fit, minmax(300px,1fr))] gap-2')}>
+				{Array.from({ length: pages }, ()=>null).map((_, i) => (
+					<div key={i}>
+						<Page
+							renderTextLayer={false}
+							scale={0.5}
+							renderAnnotationLayer={false}
+							pageNumber={i + 1}
+						/>
+					</div>
+				))}
+			</div>
 		</Document>
 	);
 };
