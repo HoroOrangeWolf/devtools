@@ -20,7 +20,7 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 		<Document file={file} onLoadSuccess={setLoadedDocument}>
 			<div className={cn('grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-2')}>
 				{Array.from({ length: pages }, ()=>null).map((_, i) => (
-					<div key={i}>
+					<div key={i} className={cn('bg-secondary p-3 flex align-center justify-center rounded-lg border')}>
 						<Page
 							className={cn('aspect-1/1.414 h-full w-full')}
 							renderTextLayer={false}
