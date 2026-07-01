@@ -21,11 +21,11 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 
 	return (
 		<Document file={file} onLoadSuccess={setLoadedDocument}>
-			<div className={cn('grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-2')}>
+			<div className={cn('grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-3')}>
 				{Array.from({ length: pages }, ()=>null).map((_, i) => (
 					<div key={i} className={cn('relative')}>
 						<div className={cn('bg-secondary p-3 flex align-center justify-center rounded-lg border')}>
-							<div className={cn('absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 translate-z-96')}>
+							<div className={cn('absolute top-0 right-0 translate-x-1/2 -translate-y-1/3 translate-z-96')}>
 								<DropdownWrapperComponent
 									options={
 										[
@@ -38,10 +38,8 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 										]
 									}
 								>
-									<Button className={cn('rounded-full')} variant="ghost">
-										<div className={cn('p-0.5 rounded-full bg-primary border')}>
-											<Menu color="var(--secondary)"  />
-										</div>
+									<Button className={cn('rounded-full h-auto p-0.5 bg-card dark:bg-card')} variant="outline">
+										<Menu />
 									</Button>
 								</DropdownWrapperComponent>
 							</div>
