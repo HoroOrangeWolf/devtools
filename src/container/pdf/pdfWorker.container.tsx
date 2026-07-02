@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils.ts';
 import { DropdownWrapperComponent } from '@/components/dropdownWrapper.component.tsx';
 import { Button } from '@/components/ui/button.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
 import { Menu } from 'lucide-react';
 
 type PropsType = {
@@ -21,7 +22,7 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 
 	return (
 		<Document file={file} onLoadSuccess={setLoadedDocument}>
-			<div className={cn('grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-3')}>
+			<div className={cn('grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-4')}>
 				{Array.from({ length: pages }, ()=>null).map((_, i) => (
 					<div key={i} className={cn('relative')}>
 						<div className={cn('bg-secondary p-3 flex align-center justify-center rounded-lg border')}>
@@ -30,7 +31,19 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 									options={
 										[
 											{
-												label: 'Delete',
+												label: 'Remove',
+												onClick: () => {
+													console.log('Test',123);
+												}
+											},
+											{
+												label: 'Move To',
+												onClick: () => {
+													console.log('Test',123);
+												}
+											},
+											{
+												label: 'Replace With',
 												onClick: () => {
 													console.log('Test',123);
 												}
@@ -50,6 +63,11 @@ export const PdfWorkerContainer = ({ onDocumentLoad, pageNumber, file }: PropsTy
 								renderAnnotationLayer={false}
 								pageNumber={i + 1}
 							/>
+							<div className={cn('absolute left-1/2 bottom-0 translate-y-1/2 -translate-x-1/2')}>
+								<Badge className={cn('bg-card dark:bg-card')} variant="outline">
+									{i + 1}
+								</Badge>
+							</div>
 						</div>
 					</div>
 				))}
