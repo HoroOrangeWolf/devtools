@@ -28,6 +28,9 @@ export default defineConfig({
   site,
   integrations: [react(), sitemap()],
   vite: {
+    define: {
+      'process.env.DRAGGABLE_DEBUG': 'false',
+    },
     plugins: [
       tailwindcss(),
       viteStaticCopy({
