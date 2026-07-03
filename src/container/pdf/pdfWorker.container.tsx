@@ -147,13 +147,11 @@ export const PdfWorkerContainer = ({
 }: PdfWorkerContainerProps) => {
 	const [pageOrder, setPageOrder] = useState<number[]>([]);
 	const [pendingAction, setPendingAction] = useState<PendingAction>();
-	const [targetPosition, setTargetPosition] = useState('');
 	const [validationError, setValidationError] = useState('');
 	const pageElementsRef = useRef(new Map<number, HTMLDivElement>());
 
 	const closeAction = useCallback(() => {
 		setPendingAction(undefined);
-		setTargetPosition('');
 		setValidationError('');
 	}, []);
 
@@ -225,7 +223,6 @@ export const PdfWorkerContainer = ({
 
 	const openAction = useCallback((action: PendingAction) => {
 		setPendingAction(action);
-		setTargetPosition('');
 		setValidationError('');
 	}, []);
 
@@ -240,14 +237,10 @@ export const PdfWorkerContainer = ({
 		closeAction();
 	};
 
-	const handleTargetSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
+	const handleTargetSubmit = (position: number) => {
 		if (!pendingAction || pendingAction.type === 'remove') {
 			return;
 		}
-
-		const position = Number(targetPosition);
 
 		if (!Number.isInteger(position) || position < 1 || position > pageOrder.length) {
 			setValidationError(`Enter a whole number from 1 to ${pageOrder.length}.`);

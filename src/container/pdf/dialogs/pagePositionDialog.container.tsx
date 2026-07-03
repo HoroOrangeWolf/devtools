@@ -10,10 +10,11 @@ import {
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { PendingAction } from '@/container/pdf/pdfWorker.container.tsx';
+import { useState } from 'react';
 
 type PropsType = {
     onClose: () => void;
-    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    onSubmit: (position: number) => void;
     pendingAction: PendingAction;
     validationError?: string;
     maxLength: number;
@@ -27,7 +28,14 @@ export const PagePositionDialogContainer = ({
 	validationError,
 	maxLength,
 }: PropsType) => {
+	const [position, setPosition] = useState<string>('');
 	const actionLabel = pendingAction?.type === 'replace' ? 'Replace' : 'Move';
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		onSubmit(Number(position));
+	};
 
 	return (
 		<Dialog
@@ -37,7 +45,7 @@ export const PagePositionDialogContainer = ({
 			<DialogContent>
 				<form
 					className="grid gap-4"
-					onSubmit={onSubmit}
+					onSubmit={handleSubmit}
 				>
 					<DialogHeader>
 						<DialogTitle>{actionLabel} page {pendingAction?.index}</DialogTitle>
@@ -53,6 +61,10 @@ export const PagePositionDialogContainer = ({
 							min={1}
 							max={maxLength}
 							step={1}
+							value={position}
+							onChange={(e)=>{
+								setPosition(e.target.value);
+							}}
 							placeholder={`Page position (1-${maxLength})`}
 							aria-label="Target page position"
 							aria-invalid={Boolean(validationError)}
