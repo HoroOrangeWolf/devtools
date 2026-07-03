@@ -3,31 +3,12 @@ import Draggable, { type DraggableData, type DraggableEventHandler } from 'react
 import { Document, Page, pdfjs } from 'react-pdf';
 import type { DocumentCallback } from 'react-pdf/dist/shared/types.js';
 import { Menu } from 'lucide-react';
-
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog.tsx';
-import { Input } from '@/components/ui/input.tsx';
 import { DropdownWrapperComponent } from '@/components/dropdownWrapper.component.tsx';
 import { cn } from '@/lib/utils.ts';
+import { PagePositionDialogContainer } from '@/container/pdf/dialogs/pagePositionDialog.container.tsx';
+import { DeleteDialogContainer } from '@/container/pdf/dialogs/deleteDialog.container.tsx';
 
 export type PdfPageAction =
 	| { type: 'remove'; index: number }
@@ -42,7 +23,7 @@ export type PdfWorkerContainerProps = {
 	onPageAction?: PdfPageActionHandler;
 };
 
-type PendingAction = {
+export type PendingAction = {
 	type: 'move' | 'remove' | 'replace';
 	index: number;
 };
@@ -291,9 +272,32 @@ export const PdfWorkerContainer = ({
 		closeAction();
 	};
 
-	const isTargetDialogOpen = pendingAction?.type === 'move' || pendingAction?.type === 'replace';
-	const actionLabel = pendingAction?.type === 'replace' ? 'Replace' : 'Move';
-	const sourcePosition = pendingAction ? pendingAction.index + 1 : 0;
+	const renderDialog = () => {
+		switch (pendingAction?.type) {
+			case 'replace':
+			case 'move': {
+				return (
+					<PagePositionDialogContainer
+						onClose={closeAction}
+						validationError={validationError}
+						onSubmit={handleTargetSubmit}
+						pendingAction={pendingAction}
+						maxLength={pageOrder.length}
+						isReplace={pendingAction?.type === 'replace'}
+					/>
+				);
+			}
+			case 'remove': {
+				return (
+					<DeleteDialogContainer
+						pendingAction={pendingAction}
+						onSubmit={handleRemove}
+						onClose={closeAction}
+					/>
+				);
+			}
+		}
+	};
 
 	return (
 		<>
@@ -314,81 +318,7 @@ export const PdfWorkerContainer = ({
 					))}
 				</div>
 			</Document>
-
-			<Dialog
-				open={isTargetDialogOpen}
-				onOpenChange={(open) => !open && closeAction()}
-			>
-				<DialogContent>
-					<form
-						className="grid gap-4"
-						onSubmit={handleTargetSubmit}
-					>
-						<DialogHeader>
-							<DialogTitle>{actionLabel} page {sourcePosition}</DialogTitle>
-							<DialogDescription>
-								{pendingAction?.type === 'replace'
-									? 'Choose a page position to swap with this page.'
-									: 'Choose the position where this page should be moved.'}
-							</DialogDescription>
-						</DialogHeader>
-						<div className="grid gap-2">
-							<Input
-								type="number"
-								min={1}
-								max={pageOrder.length}
-								step={1}
-								value={targetPosition}
-								onChange={(event) => {
-									setTargetPosition(event.target.value);
-									setValidationError('');
-								}}
-								placeholder={`Page position (1-${pageOrder.length})`}
-								aria-label="Target page position"
-								aria-invalid={Boolean(validationError)}
-								autoFocus
-							/>
-							{validationError && (
-								<p className="text-sm text-destructive">{validationError}</p>
-							)}
-						</div>
-						<DialogFooter>
-							<DialogClose asChild>
-								<Button
-									type="button"
-									variant="outline"
-								>
-									Cancel
-								</Button>
-							</DialogClose>
-							<Button type="submit">{actionLabel}</Button>
-						</DialogFooter>
-					</form>
-				</DialogContent>
-			</Dialog>
-
-			<AlertDialog
-				open={pendingAction?.type === 'remove'}
-				onOpenChange={(open) => !open && closeAction()}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Remove page {sourcePosition}?</AlertDialogTitle>
-						<AlertDialogDescription>
-							This removes the page from the current page order.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							className={cn('bg-destructive text-white hover:bg-destructive/90')}
-							onClick={handleRemove}
-						>
-							Remove
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			{renderDialog()}
 		</>
 	);
 };
