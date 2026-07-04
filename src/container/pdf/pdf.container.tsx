@@ -35,7 +35,7 @@ export const PdfContainer = () => {
 			setFile(contactedFile);
 		} catch (error) {
 			console.error('Failed to drop file', error);
-			ToastUtils.error('Failed to drop file');
+			ToastUtils.error(`Failed to drop file with error "${(error as Error).message}"`);
 		}
 	},[setFile, pageOrder, file]);
 

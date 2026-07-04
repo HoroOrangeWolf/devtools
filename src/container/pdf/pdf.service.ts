@@ -5,7 +5,7 @@ const concatPdfFiles = async (...files: File[]): Promise<File> => {
 	const pdfDoc = await PDFDocument.create();
 
 	for (const file of files) {
-		const pdfBytes = await file.bytes();
+		const pdfBytes = await file.arrayBuffer();
 
 		const firstPdf = await PDFDocument.load(pdfBytes);
 
@@ -31,7 +31,7 @@ const concatPdfFiles = async (...files: File[]): Promise<File> => {
 const shufflePdf = async (file: File, pageOrder: number[]) => {
 	const pdfDoc = await PDFDocument.create();
 
-	const pdfBytes = await file.bytes();
+	const pdfBytes = await file.arrayBuffer();
 
 	const pdfToHandle = await PDFDocument.load(pdfBytes);
 

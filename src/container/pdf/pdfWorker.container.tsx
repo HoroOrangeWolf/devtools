@@ -4,6 +4,7 @@ import { Document, pdfjs } from 'react-pdf';
 import type { DocumentCallback } from 'react-pdf/dist/shared/types.js';
 import { PagePositionDialogContainer } from '@/container/pdf/dialogs/pagePositionDialog.container.tsx';
 import { DeleteDialogContainer } from '@/container/pdf/dialogs/deleteDialog.container.tsx';
+import { PdfPagePreviewDialogContainer } from '@/container/pdf/dialogs/pdfPagePreviewDialog.container.tsx';
 import { PdfPageThumbnail } from '@/container/pdf/pdfPage.container.tsx';
 
 export type PdfPageActionHandler = (pages: number[]) => void;
@@ -16,6 +17,11 @@ export type PdfWorkerContainerProps = {
 export type PendingAction = {
 	type: 'move' | 'remove' | 'replace';
 	index: number;
+};
+
+type PreviewPage = {
+	sourcePageNumber: number;
+	position: number;
 };
 
 const movePage = (pages: number[], fromIndex: number, toIndex: number) => {
@@ -44,6 +50,7 @@ export const PdfWorkerContainer = ({
 }: PdfWorkerContainerProps) => {
 	const [pageOrder, setPageOrder] = useState<number[]>([]);
 	const [pendingAction, setPendingAction] = useState<PendingAction>();
+	const [previewPage, setPreviewPage] = useState<PreviewPage>();
 	const [validationError, setValidationError] = useState('');
 	const pageElementsRef = useRef(new Map<number, HTMLDivElement>());
 
@@ -54,12 +61,11 @@ export const PdfWorkerContainer = ({
 
 	useEffect(() => {
 		onPageOrderChange?.(pageOrder);
-	}, [pageOrder]);
+	}, [onPageOrderChange, pageOrder]);
 
 	const handleDocumentLoad = useCallback((document: DocumentCallback) => {
-		pageElementsRef.current.clear();
-
 		setPageOrder(Array.from({ length: document.numPages }, (_, index) =>  index + 1));
+		setPreviewPage(undefined);
 		closeAction();
 	}, [closeAction]);
 
@@ -124,6 +130,10 @@ export const PdfWorkerContainer = ({
 	const openAction = useCallback((action: PendingAction) => {
 		setPendingAction(action);
 		setValidationError('');
+	}, []);
+
+	const openPreview = useCallback((sourcePageNumber: number, position: number) => {
+		setPreviewPage({ sourcePageNumber, position });
 	}, []);
 
 	const handleRemove = () => {
@@ -196,18 +206,28 @@ export const PdfWorkerContainer = ({
 				file={file}
 				onLoadSuccess={handleDocumentLoad}
 			>
-				<div className="grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-4">
-					{pageOrder.map((sourcePageNumber, position) => (
-						<PdfPageThumbnail
-							key={sourcePageNumber}
-							sourcePageNumber={sourcePageNumber}
-							position={position}
-							onElementChange={handleElementChange}
-							onDrop={handlePageDrop}
-							onOpenAction={openAction}
+				<>
+					<div className="grid grid-cols-[repeat(auto-fit,10rem)] justify-between gap-4">
+						{pageOrder.map((sourcePageNumber, position) => (
+							<PdfPageThumbnail
+								key={sourcePageNumber}
+								sourcePageNumber={sourcePageNumber}
+								position={position}
+								onElementChange={handleElementChange}
+								onDrop={handlePageDrop}
+								onOpenAction={openAction}
+								onOpenPreview={openPreview}
+							/>
+						))}
+					</div>
+					{previewPage && (
+						<PdfPagePreviewDialogContainer
+							sourcePageNumber={previewPage.sourcePageNumber}
+							position={previewPage.position}
+							onClose={() => setPreviewPage(undefined)}
 						/>
-					))}
-				</div>
+					)}
+				</>
 			</Document>
 			{renderDialog()}
 		</>
