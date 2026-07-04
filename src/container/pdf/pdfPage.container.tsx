@@ -29,6 +29,7 @@ export const PdfPageThumbnail = ({
 		nodeRef.current = element;
 		onElementChange(sourcePageNumber, element);
 	}, [onElementChange, sourcePageNumber]);
+
 	const handleDragStop: DraggableEventHandler = (_, data) => {
 		onDrop(sourcePageNumber, data);
 	};

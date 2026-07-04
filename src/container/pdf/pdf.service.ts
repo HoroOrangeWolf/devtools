@@ -9,7 +9,7 @@ const concatPdfFiles = async (...files: File[]): Promise<File> => {
 
 		const firstPdf = await PDFDocument.load(pdfBytes);
 
-		const copiedPages =		await pdfDoc.copyPages(firstPdf, firstPdf.getPageIndices());
+		const copiedPages = await pdfDoc.copyPages(firstPdf, firstPdf.getPageIndices());
 
 		for (const page of copiedPages) {
 			pdfDoc.addPage(page);

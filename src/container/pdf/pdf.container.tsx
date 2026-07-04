@@ -50,6 +50,7 @@ export const PdfContainer = ({ onPageAction }: PropsType) => {
 		<div>
 			<FileDropzone
 				className="min-h-64"
+				displayShadow={!file}
 				onDropFile={onDropFIle}
 				accept={['.pdf', 'application/pdf']}
 			>
