@@ -6,6 +6,9 @@ import type {
 	PdfPageActionHandler,
 	PdfWorkerContainerProps,
 } from '@/container/pdf/pdfWorker.container.tsx';
+import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
+import { ToastUtils } from '@/utils/toast.utils.ts';
+import { PdfService } from '@/container/pdf/pdf.service.ts';
 
 type PropsType = {
 	onPageAction?: PdfPageActionHandler;
@@ -27,22 +30,44 @@ export const PdfContainer = ({ onPageAction }: PropsType) => {
 		setNumPages(numPages);
 	};
 
+	const onDropFIle = async (droppedFile: File) => {
+		try {
+			if (!file) {
+				setFile(droppedFile);
+				return;
+			}
+
+			const contactedFile = await PdfService.concatPdfFiles(file, droppedFile);
+
+			setFile(contactedFile);
+		} catch (error) {
+			console.error('Failed to drop file', error);
+			ToastUtils.error('Failed to drop file');
+		}
+	};
+
 	return (
 		<div>
-			{file && PdfWrapper && (
-				<PdfWrapper
-					file={file}
-					onDocumentLoad={onDocumentLoadSuccess}
-					onPageAction={onPageAction}
-				/>
-			)}
+			<FileDropzone
+				className="min-h-64"
+				onDropFile={onDropFIle}
+				accept={['.pdf', 'application/pdf']}
+			>
+				{file && PdfWrapper && (
+					<PdfWrapper
+						file={file}
+						onDocumentLoad={onDocumentLoadSuccess}
+						onPageAction={onPageAction}
+					/>
+				)}
+			</FileDropzone>
 			<p>
 				Page {pageNumber} of {numPages}
 			</p>
 			<Button
 				onClick={async () => {
-					const file = await 	FileService.getFileContent() as File;
-					setFile(file);
+					const file = await FileService.getFileContent() as File;
+					await onDropFIle(file);
 				}}
 			>
 				Upload

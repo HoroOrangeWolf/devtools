@@ -2,9 +2,9 @@ import Papaparse from 'papaparse';
 import { XMLParser } from 'fast-xml-parser';
 import XMLBuilder from 'fast-xml-builder';
 
-export type ContentFormat = 'text/csv' | 'application/json' | 'text/plain' | 'application/xml';
+export type ContentFormat = 'text/csv' | 'application/json' | 'text/plain' | 'application/xml' | 'application/pdf';
 
-export type FileExtension = '.csv' | '.json' | '.xml';
+export type FileExtension = '.csv' | '.json' | '.xml' | '.pdf';
 
 const downloadFile = (fileName: string, content: string, format: ContentFormat) => {
 	const blob = new Blob([content], { type: `${format};charset=utf-8;` });
