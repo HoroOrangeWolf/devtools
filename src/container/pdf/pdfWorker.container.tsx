@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { type DraggableData } from 'react-draggable';
 import { Document, pdfjs } from 'react-pdf';
 import type { DocumentCallback } from 'react-pdf/dist/shared/types.js';
@@ -6,17 +6,11 @@ import { PagePositionDialogContainer } from '@/container/pdf/dialogs/pagePositio
 import { DeleteDialogContainer } from '@/container/pdf/dialogs/deleteDialog.container.tsx';
 import { PdfPageThumbnail } from '@/container/pdf/pdfPage.container.tsx';
 
-export type PdfPageAction =
-	| { type: 'remove'; index: number }
-	| { type: 'move'; fromIndex: number; toIndex: number }
-	| { type: 'replace'; firstIndex: number; secondIndex: number };
-
-export type PdfPageActionHandler = (action: PdfPageAction) => void;
+export type PdfPageActionHandler = (pages: number[]) => void;
 
 export type PdfWorkerContainerProps = {
 	file: File;
-	onDocumentLoad: (document: DocumentCallback) => void;
-	onPageAction?: PdfPageActionHandler;
+	onPageOrderChange?: PdfPageActionHandler;
 };
 
 export type PendingAction = {
@@ -45,8 +39,7 @@ const swapPages = (pages: number[], firstIndex: number, secondIndex: number) => 
 pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.mjs`;
 
 export const PdfWorkerContainer = ({
-	onDocumentLoad,
-	onPageAction,
+	onPageOrderChange,
 	file,
 }: PdfWorkerContainerProps) => {
 	const [pageOrder, setPageOrder] = useState<number[]>([]);
@@ -59,12 +52,16 @@ export const PdfWorkerContainer = ({
 		setValidationError('');
 	}, []);
 
+	useEffect(() => {
+		onPageOrderChange?.(pageOrder);
+	}, [pageOrder]);
+
 	const handleDocumentLoad = useCallback((document: DocumentCallback) => {
 		pageElementsRef.current.clear();
-		setPageOrder(Array.from({ length: document.numPages }, (_, index) => index + 1));
+
+		setPageOrder(Array.from({ length: document.numPages }, (_, index) =>  index + 1));
 		closeAction();
-		onDocumentLoad(document);
-	}, [closeAction, onDocumentLoad]);
+	}, [closeAction]);
 
 	const handleElementChange = useCallback((sourcePageNumber: number, element: HTMLDivElement | null) => {
 		if (element) {
@@ -81,8 +78,7 @@ export const PdfWorkerContainer = ({
 		}
 
 		setPageOrder((pages) => movePage(pages, fromIndex, toIndex));
-		onPageAction?.({ type: 'move', fromIndex, toIndex });
-	}, [onPageAction]);
+	}, []);
 
 	const handlePageDrop = useCallback((sourcePageNumber: number, data: DraggableData) => {
 		const sourceIndex = pageOrder.indexOf(sourcePageNumber);
@@ -137,7 +133,6 @@ export const PdfWorkerContainer = ({
 
 		const { index } = pendingAction;
 		setPageOrder((pages) => pages.filter((_, pageIndex) => pageIndex !== index));
-		onPageAction?.({ type: 'remove', index });
 		closeAction();
 	};
 
@@ -163,7 +158,6 @@ export const PdfWorkerContainer = ({
 		} else {
 			const firstIndex = pendingAction.index;
 			setPageOrder((pages) => swapPages(pages, firstIndex, targetIndex));
-			onPageAction?.({ type: 'replace', firstIndex, secondIndex: targetIndex });
 		}
 
 		closeAction();

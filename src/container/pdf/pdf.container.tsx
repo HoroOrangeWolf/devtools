@@ -1,24 +1,18 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { FileService } from '@/service/file.service.ts';
-import type { DocumentCallback } from 'react-pdf/dist/shared/types.js';
 import type {
-	PdfPageActionHandler,
 	PdfWorkerContainerProps,
 } from '@/container/pdf/pdfWorker.container.tsx';
 import { FileDropzone } from '@/components/csvFileDropzone.component.tsx';
 import { ToastUtils } from '@/utils/toast.utils.ts';
 import { PdfService } from '@/container/pdf/pdf.service.ts';
-import { UploadIcon } from 'lucide-react';
+import { DownloadIcon, UploadIcon } from 'lucide-react';
+import { ButtonGroup } from '@/components/ui/button-group.tsx';
 
-type PropsType = {
-	onPageAction?: PdfPageActionHandler;
-};
-
-export const PdfContainer = ({ onPageAction }: PropsType) => {
+export const PdfContainer = () => {
 	const [file, setFile] = useState<File>();
-	const [numPages, setNumPages] = useState<number>();
-	const [pageNumber,] = useState<number>(1);
+	const [pageOrder, setPageOrder] = useState<number[]>([]);
 	const [PdfWrapper, setPdfContainer] = useState<FunctionComponent<PdfWorkerContainerProps> | null>(null);
 
 	useEffect(() => {
@@ -27,33 +21,30 @@ export const PdfContainer = ({ onPageAction }: PropsType) => {
 		});
 	}, []);
 
-	const onDocumentLoadSuccess = ({ numPages }: DocumentCallback): void => {
-		setNumPages(numPages);
-	};
-
-	const onDropFIle = async (droppedFile: File) => {
+	const onDropFile = useCallback(async (droppedFile: File) => {
 		try {
 			if (!file) {
 				setFile(droppedFile);
 				return;
 			}
 
-			const contactedFile = await PdfService.concatPdfFiles(file, droppedFile);
+			const shuffledPdf = await PdfService.shufflePdf(file, pageOrder);
+
+			const contactedFile = await PdfService.concatPdfFiles(shuffledPdf, droppedFile);
 
 			setFile(contactedFile);
 		} catch (error) {
 			console.error('Failed to drop file', error);
 			ToastUtils.error('Failed to drop file');
 		}
-	};
+	},[setFile, pageOrder, file]);
 
 	const renderDropzoneChild = () => {
 		if (file && PdfWrapper) {
 			return (
 				<PdfWrapper
 					file={file}
-					onDocumentLoad={onDocumentLoadSuccess}
-					onPageAction={onPageAction}
+					onPageOrderChange={setPageOrder}
 				/>
 			);
 		}
@@ -61,25 +52,55 @@ export const PdfContainer = ({ onPageAction }: PropsType) => {
 		return null;
 	};
 
+	const handleUploadClick = useCallback(async () => {
+		try {
+			const file = await FileService.getFileContent() as File;
+			await onDropFile(file);
+		} catch (error) {
+			console.error('Failed to drop file', error);
+			throw error;
+		}
+	},[onDropFile]);
+
+	const handleDownload = useCallback(async () => {
+		try {
+			if (!file) {
+				return;
+			}
+
+			const shuffledPages = await PdfService.shufflePdf(file, pageOrder);
+
+			await FileService.downloadFileContent(shuffledPages);
+		} catch (error) {
+			console.error('Failed to download file', error);
+			throw error;
+		}
+	},[file, pageOrder]);
+
 	return (
 		<div className="flex flex-col gap-2">
 			<FileDropzone
 				className="min-h-80"
 				displayShadow={!file}
-				onDropFile={onDropFIle}
+				onDropFile={onDropFile}
 				accept={['.pdf', 'application/pdf']}
 			>
 				{renderDropzoneChild()}
 			</FileDropzone>
 			<div className="flex flex-row justify-end">
-				<Button
-					onClick={async () => {
-						const file = await FileService.getFileContent() as File;
-						await onDropFIle(file);
-					}}
-				>
-					<UploadIcon /> Upload
-				</Button>
+				<ButtonGroup>
+					<Button
+						disabled={!file}
+						onClick={handleDownload}
+					>
+						<DownloadIcon /> Download
+					</Button>
+					<Button
+						onClick={handleUploadClick}
+					>
+						<UploadIcon /> Upload
+					</Button>
+				</ButtonGroup>
 			</div>
 		</div>
 	);

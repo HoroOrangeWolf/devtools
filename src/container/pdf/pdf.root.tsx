@@ -1,13 +1,8 @@
 import { PageWrapper } from '@/components/pageWrapper.component.tsx';
 import { PdfContainer } from '@/container/pdf/pdf.container.tsx';
-import type { PdfPageActionHandler } from '@/container/pdf/pdfWorker.container.tsx';
 
-type PropsType = {
-	onPageAction?: PdfPageActionHandler;
-};
-
-export const PdfRoot = ({ onPageAction }: PropsType) => (
+export const PdfRoot = () => (
 	<PageWrapper>
-		<PdfContainer onPageAction={onPageAction} />
+		<PdfContainer />
 	</PageWrapper>
 );

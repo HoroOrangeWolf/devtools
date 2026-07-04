@@ -6,6 +6,7 @@ import { Menu } from 'lucide-react';
 import { Page } from 'react-pdf';
 import { cn } from '@/lib/utils.ts';
 import { PendingAction } from '@/container/pdf/pdfWorker.container.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
 
 type PdfPageThumbnailProps = {
     sourcePageNumber: number;
@@ -87,6 +88,14 @@ export const PdfPageThumbnail = ({
 						renderAnnotationLayer={false}
 						pageNumber={sourcePageNumber}
 					/>
+					<div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+						<Badge
+							className="bg-card dark:bg-card"
+							variant="outline"
+						>
+							{position + 1}
+						</Badge>
+					</div>
 				</div>
 			</div>
 		</Draggable>
