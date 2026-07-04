@@ -1,18 +1,21 @@
 import { useCallback, useRef } from 'react';
-import Draggable, { type DraggableData, DraggableEventHandler } from 'react-draggable';
+import Draggable, { type DraggableData, type DraggableEventHandler } from 'react-draggable';
 import { DropdownWrapperComponent } from '@/components/dropdownWrapper.component.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Menu } from 'lucide-react';
 import { Page } from 'react-pdf';
-import { cn } from '@/lib/utils.ts';
-import { PendingAction } from '@/container/pdf/pdfWorker.container.tsx';
+import type { PendingAction } from '@/container/pdf/pdfWorker.container.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
+
+const THUMBNAIL_WIDTH = 240;
 
 type PdfPageThumbnailProps = {
     sourcePageNumber: number;
     position: number;
     onElementChange: (sourcePageNumber: number, element: HTMLDivElement | null) => void;
-    onDrop: (sourcePageNumber: number, data: DraggableData) => void;
+	onDragStart: (sourcePageNumber: number) => void;
+	onDrag: (sourcePageNumber: number, data: DraggableData) => void;
+	onDrop: (sourcePageNumber: number) => void;
     onOpenAction: (action: PendingAction) => void;
     onOpenPreview: (sourcePageNumber: number, position: number) => void;
 };
@@ -22,6 +25,8 @@ export const PdfPageThumbnail = ({
 	sourcePageNumber,
 	position,
 	onElementChange,
+	onDragStart,
+	onDrag,
 	onDrop,
 	onOpenAction,
 	onOpenPreview,
@@ -36,7 +41,7 @@ export const PdfPageThumbnail = ({
 	const handleDragStop: DraggableEventHandler = (_, data) => {
 		const didMove = data.x !== 0 || data.y !== 0;
 		suppressPreviewRef.current = didMove;
-		onDrop(sourcePageNumber, data);
+		onDrop(sourcePageNumber);
 
 		if (didMove) {
 			globalThis.setTimeout(() => {
@@ -61,15 +66,25 @@ export const PdfPageThumbnail = ({
 			position={{ x: 0, y: 0 }}
 			defaultClassName="cursor-grab touch-none"
 			defaultClassNameDragging="z-50 cursor-grabbing opacity-90 shadow-xl"
+			onStart={() => onDragStart(sourcePageNumber)}
+			onDrag={(_, data) => onDrag(sourcePageNumber, data)}
 			onStop={handleDragStop}
 		>
 			<div
 				ref={setNodeRef}
-				className="relative"
+				className="group/pdf-thumbnail relative h-full"
 				data-page-position={position}
 				data-source-page-number={sourcePageNumber}
 			>
-				<div className="flex h-full items-center justify-center rounded-lg border bg-secondary p-3">
+				<div
+					aria-hidden="true"
+					className="pointer-events-none absolute top-2 bottom-2 z-20 hidden w-1 rounded-full bg-primary shadow-sm group-data-[drop-indicator=before]/pdf-thumbnail:-left-2 group-data-[drop-indicator=before]/pdf-thumbnail:block group-data-[drop-indicator=after]/pdf-thumbnail:-right-2 group-data-[drop-indicator=after]/pdf-thumbnail:block"
+					data-pdf-drop-indicator
+				/>
+				<div
+					className="flex h-full items-center justify-center rounded-lg border bg-secondary p-3"
+					data-pdf-thumbnail-frame
+				>
 					<div
 						className="absolute top-0 right-0 z-10 translate-x-1/2 -translate-y-1/3"
 						data-pdf-page-menu
@@ -107,11 +122,10 @@ export const PdfPageThumbnail = ({
 						aria-label={`View page ${position + 1}`}
 					>
 						<Page
-							className={cn('aspect-1/1.414 h-full w-full')}
 							renderTextLayer={false}
-							scale={0.25}
 							renderAnnotationLayer={false}
 							pageNumber={sourcePageNumber}
+							width={THUMBNAIL_WIDTH}
 						/>
 					</button>
 					<div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
