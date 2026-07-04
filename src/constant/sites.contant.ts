@@ -35,4 +35,10 @@ export const NavItems = [
 		description: 'Manage PDF',
 		isReady: true,
 	},
+	{
+		href: '/jwt',
+		label: 'JWT',
+		description: 'Debug and view JWT',
+		isReady: true,
+	}
 ] as const;
