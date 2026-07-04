@@ -2,43 +2,41 @@
 import Layout from '@/layouts/Layout.astro';
 import { PdfRoot } from '@/container/pdf/pdf.root.tsx';
 
-const title = 'JSON Formatter and Converter Tool | Dev Utils';
+const title = 'PDF Merger and Page Organizer Tool | Dev Utils';
 const description =
-    'Format, validate, and convert JSON to XML or CSV locally in your browser without uploading data.';
+    'Merge PDF files, reorder, preview, swap, and remove pages locally in your browser without uploading documents.';
 const keywords = [
-    'JSON formatter',
-    'JSON beautifier',
-    'JSON validator',
-    'JSON to XML converter',
-    'JSON to CSV converter',
-    'local JSON tool',
-    'browser JSON formatter',
-    'developer JSON utility',
+    'PDF merger',
+    'PDF page organizer',
+    'reorder PDF pages',
+    'remove PDF pages',
+    'merge PDF files',
+    'local PDF tool',
+    'browser PDF editor',
+    'PDF utility',
 ];
-
-// TODO: Ogarnąć to
 ---
 <Layout
         title={title}
         description={description}
         keywords={keywords}
-        canonicalPath="/jsonformatter"
+        canonicalPath="/pdf"
         structuredData={{
             '@context': 'https://schema.org',
             '@type': 'WebApplication',
-            name: 'JSON Formatter and Converter Tool',
+            name: 'PDF Merger and Page Organizer Tool',
             applicationCategory: 'DeveloperApplication',
             operatingSystem: 'Any',
             browserRequirements: 'Requires a modern browser with JavaScript enabled.',
             description,
-            url: new URL('/jsonformatter', Astro.site ?? Astro.url.origin).toString(),
+            url: new URL('/pdf', Astro.site ?? Astro.url.origin).toString(),
             isAccessibleForFree: true,
             featureList: [
-                'Format and beautify JSON in the browser',
-                'Validate JSON input',
-                'Convert JSON to XML or CSV',
-                'Choose compact or beautified output',
-                'Process data locally without server upload',
+                'Merge multiple PDF files in the browser',
+                'Reorder PDF pages with drag and drop',
+                'Preview, swap, and remove PDF pages',
+                'Download the organized PDF document',
+                'Process PDF files locally without server upload',
             ],
             offers: {
                 '@type': 'Offer',
@@ -49,10 +47,10 @@ const keywords = [
 >
     <section class="space-y-6">
         <div class="space-y-2">
-            <p class="text-primary text-sm font-medium">Formatter</p>
-            <h2 class="text-2xl font-semibold tracking-tight">JSON Formatter</h2>
+            <p class="text-primary text-sm font-medium">PDF</p>
+            <h2 class="text-2xl font-semibold tracking-tight">PDF Merger and Page Organizer</h2>
             <p class="text-muted-foreground text-sm">
-                Format and beautify JSON locally in your browser.
+                Merge and organize PDF pages locally in your browser.
             </p>
         </div>
 
