@@ -347,7 +347,8 @@ const InlineEditor = ({
 					setDraft(event.target.value);
 					setError(undefined);
 				}}
-				onBlur={() => {
+				onBlur={(e) => {
+					e.stopPropagation();
 					if (skipBlur.current) {
 						skipBlur.current = false;
 						return;
@@ -585,7 +586,10 @@ const JsonTreeNode = ({
 
 export const JsonTreeView = ({ value, readOnly = false, settings, onChange }: PropsType) => {
 	const defaultExpandedDepth = Math.max(0, settings?.defaultExpandedDepth ?? 2);
-	const updateValue = (path: Path, nextValue: JsonValue) => onChange(updateAtPath(value, path, nextValue));
+
+	const updateValue = (path: Path, nextValue: JsonValue) => {
+		onChange(updateAtPath(value, path, nextValue));
+	};
 
 	return (
 		<div className="overflow-auto rounded-lg border bg-background p-2 text-foreground h-full">

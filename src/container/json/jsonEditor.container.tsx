@@ -80,7 +80,6 @@ export const JsonEditorContainer = ({
 
 		setLastKnowValidJson((val) => {
 			try {
-
 				if (targetTransform === ViewDataTypeConstant.JSON) {
 					JSON.parse(lazyTargetValue);
 				} else {
