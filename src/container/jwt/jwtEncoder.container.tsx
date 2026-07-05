@@ -6,10 +6,32 @@ import { useEffect, useState } from 'react';
 import { JwtService } from '@/container/jwt/service/jwt.service.ts';
 import { BannerComponent } from '@/components/banner.component.tsx';
 
+const JWT_PAYLOAD_EXAMPLE = `
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "roles": ["user"],
+  "iss": "https://example.com",
+  "aud": "devtools-app",
+  "iat": 1783245600,
+  "nbf": 1783245600,
+  "exp": 1783249200,
+  "jti": "550e8400-e29b-41d4-a716-446655440000"
+}
+`;
+
+const HEADER_EXAMPLE = `
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+`;
+
 export const JwtEncoderContainer = () => {
-	const [header, setHeader] = useState<string>('{"alg": "HS256"}');
-	const [payload, setPayload] = useState<string>('{}');
-	const [secret, setSecret] = useState<string>('');
+	const [header, setHeader] = useState<string>(HEADER_EXAMPLE);
+	const [payload, setPayload] = useState<string>(JWT_PAYLOAD_EXAMPLE);
+	const [secret, setSecret] = useState<string>('Your secret');
 	const [result, setResult] = useState<string>('');
 	const [errorMessage, setErrorMessage] = useState<string>();
 

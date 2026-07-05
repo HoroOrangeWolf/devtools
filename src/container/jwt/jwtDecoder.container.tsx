@@ -6,11 +6,13 @@ import { BannerComponent } from '@/components/banner.component.tsx';
 import { useEffect, useState } from 'react';
 import { JwtService } from '@/container/jwt/service/jwt.service.ts';
 
+const EXAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsInJvbGVzIjpbInVzZXIiXSwiaXNzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSIsImF1ZCI6ImRldnRvb2xzLWFwcCIsImlhdCI6MTc4MzI0NTYwMCwibmJmIjoxNzgzMjQ1NjAwLCJleHAiOjE3ODMyNDkyMDAsImp0aSI6IjU1MGU4NDAwLWUyOWItNDFkNC1hNzE2LTQ0NjY1NTQ0MDAwMCJ9.lu3oYIcpr814DroMwaRjPtkGkTwfBGx7niqrMGCgxII';
+
 export const JwtDecoderContainer = () => {
-	const [originalJWT, setOriginalJWT] = useState<string>('');
+	const [originalJWT, setOriginalJWT] = useState<string>(EXAMPLE_JWT);
 	const [header, setHeader] = useState<string>('{}');
 	const [payload, setPayload] = useState<string>('{}');
-	const [secret, setSecret] = useState<string>('');
+	const [secret, setSecret] = useState<string>('Your secret');
 	const [errorMessage, setErrorMessage] = useState<string>();
 
 	useEffect(() => {
