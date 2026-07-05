@@ -16,7 +16,6 @@ const JWT_PAYLOAD_EXAMPLE = `
   "aud": "devtools-app",
   "iat": 1783245600,
   "nbf": 1783245600,
-  "exp": 1783249200,
   "jti": "550e8400-e29b-41d4-a716-446655440000"
 }
 `;

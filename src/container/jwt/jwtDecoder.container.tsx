@@ -6,7 +6,7 @@ import { BannerComponent } from '@/components/banner.component.tsx';
 import { useEffect, useState } from 'react';
 import { JwtService } from '@/container/jwt/service/jwt.service.ts';
 
-const EXAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsInJvbGVzIjpbInVzZXIiXSwiaXNzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSIsImF1ZCI6ImRldnRvb2xzLWFwcCIsImlhdCI6MTc4MzI0NTYwMCwibmJmIjoxNzgzMjQ1NjAwLCJleHAiOjE3ODMyNDkyMDAsImp0aSI6IjU1MGU4NDAwLWUyOWItNDFkNC1hNzE2LTQ0NjY1NTQ0MDAwMCJ9.lu3oYIcpr814DroMwaRjPtkGkTwfBGx7niqrMGCgxII';
+const EXAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsInJvbGVzIjpbInVzZXIiXSwiaXNzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSIsImF1ZCI6ImRldnRvb2xzLWFwcCIsImlhdCI6MTc4MzI0NTYwMCwibmJmIjoxNzgzMjQ1NjAwLCJqdGkiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAifQ._DlrqriXaV-q2HbqvhZ4SDnZ2D2HZUFiDlfgHShJrtg';
 
 export const JwtDecoderContainer = () => {
 	const [originalJWT, setOriginalJWT] = useState<string>(EXAMPLE_JWT);
@@ -38,6 +38,7 @@ export const JwtDecoderContainer = () => {
 		<div className="flex flex-col gap-2">
 			<div className="grid grid-cols-2 gap-2">
 				<Textarea
+					value={originalJWT}
 					onChange={(e) => setOriginalJWT(e.target.value)}
 				/>
 				<div className="grid grid-rows-[repeat(3,minmax(15rem,1fr))] gap-2">
