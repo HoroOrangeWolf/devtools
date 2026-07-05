@@ -1,5 +1,6 @@
 import { BaseService } from '@/service/base.service.ts';
 import { BaseVariantConstant } from '@/service/constant/baseVariant.constant.ts';
+import { jwtVerify } from 'jose';
 
 const JWT_SEPARATOR = '.';
 
@@ -37,6 +38,13 @@ const parseJwt = (jwt: string): ParsedJwtType => {
 	});
 };
 
+const verifyJWT =async (jwt: string, secret: string) => {
+	const bytes: Uint8Array = new TextEncoder().encode(secret);
+
+	await jwtVerify(jwt, bytes);
+};
+
 export const JwtService = {
-	parseJwt
+	parseJwt,
+	verifyJWT
 };
