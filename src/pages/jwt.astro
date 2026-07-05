@@ -2,20 +2,20 @@
 import Layout from '@/layouts/Layout.astro';
 import { JwtRoot } from '@/container/jwt/jwt.root.tsx';
 
-const title = 'JSON Formatter and Converter Tool | Dev Utils';
+const title = 'JWT Decoder, Encoder and Signature Verifier | Dev Utils';
 
 const description =
-    'Format, validate, and convert JSON to XML or CSV locally in your browser without uploading data.';
+    'Decode, inspect, sign, and verify JSON Web Tokens locally in your browser with support for HMAC, RSA, ECDSA, and EdDSA algorithms.';
 
 const keywords = [
-    'JSON formatter',
-    'JSON beautifier',
-    'JSON validator',
-    'JSON to XML converter',
-    'JSON to CSV converter',
-    'local JSON tool',
-    'browser JSON formatter',
-    'developer JSON utility',
+    'JWT decoder',
+    'JWT encoder',
+    'JWT verifier',
+    'JWT signature verifier',
+    'JSON Web Token debugger',
+    'JWT parser',
+    'JWT generator',
+    'local JWT tool',
 ];
 
 ---
@@ -23,23 +23,23 @@ const keywords = [
         title={title}
         description={description}
         keywords={keywords}
-        canonicalPath="/jsonformatter"
+        canonicalPath="/jwt"
         structuredData={{
             '@context': 'https://schema.org',
             '@type': 'WebApplication',
-            name: 'JSON Formatter and Converter Tool',
+            name: 'JWT Decoder, Encoder and Signature Verifier',
             applicationCategory: 'DeveloperApplication',
             operatingSystem: 'Any',
             browserRequirements: 'Requires a modern browser with JavaScript enabled.',
             description,
-            url: new URL('/jsonformatter', Astro.site ?? Astro.url.origin).toString(),
+            url: new URL('/jwt', Astro.site ?? Astro.url.origin).toString(),
             isAccessibleForFree: true,
             featureList: [
-                'Format and beautify JSON in the browser',
-                'Validate JSON input',
-                'Convert JSON to XML or CSV',
-                'Choose compact or beautified output',
-                'Process data locally without server upload',
+                'Decode JWT headers and payloads',
+                'Verify JWT signatures with a secret or public key',
+                'Create and sign JSON Web Tokens',
+                'Support HMAC, RSA, RSA-PSS, ECDSA, and EdDSA signing algorithms',
+                'Process tokens locally in the browser',
             ],
             offers: {
                 '@type': 'Offer',
@@ -50,10 +50,10 @@ const keywords = [
 >
     <section class="space-y-6">
         <div class="space-y-2">
-            <p class="text-primary text-sm font-medium">Formatter</p>
-            <h2 class="text-2xl font-semibold tracking-tight">JSON Formatter</h2>
+            <p class="text-primary text-sm font-medium">Token tool</p>
+            <h2 class="text-2xl font-semibold tracking-tight">JWT Decoder and Encoder</h2>
             <p class="text-muted-foreground text-sm">
-                Format and beautify JSON locally in your browser.
+                Decode, verify, and sign JSON Web Tokens locally in your browser.
             </p>
         </div>
 
