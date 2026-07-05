@@ -1,6 +1,6 @@
 import { BaseService } from '@/service/base.service.ts';
 import { BaseVariantConstant } from '@/service/constant/baseVariant.constant.ts';
-import { jwtVerify, SignJWT } from 'jose';
+import { importPKCS8, jwtVerify, SignJWT, importSPKI } from 'jose';
 
 const JWT_SEPARATOR = '.';
 
@@ -39,17 +39,36 @@ const parseJwt = (jwt: string): ParsedJwtType => {
 };
 
 const verifyJWT = async (jwt: string, secret: string) => {
-	const bytes: Uint8Array = new TextEncoder().encode(secret);
+	const decodedJwt = parseJwt(jwt);
+	const alg: string = decodedJwt.header.alg;
 
-	await jwtVerify(jwt, bytes);
+	if (typeof alg !== 'string' || alg.length === 0) {
+		throw new TypeError('JWT Header must contain an algorithm');
+	}
+
+
+	const signingKey = alg.startsWith('HS')
+		? new TextEncoder().encode(secret)
+		: await importSPKI(secret, alg);
+
+	await jwtVerify(jwt, signingKey);
 };
 
 const signJWT = async (header: string, payload: string, secret: string) => {
-	const encodedSecret = new TextEncoder().encode(secret);
+	const parsedHeader = JSON.parse(header);
+	const algorithm = parsedHeader.alg;
+
+	if (typeof algorithm !== 'string' || algorithm.length === 0) {
+		throw new TypeError('JWT Header must contain an algorithm');
+	}
+
+	const signingKey = algorithm.startsWith('HS')
+		? new TextEncoder().encode(secret)
+		: await importPKCS8(secret, algorithm);
 
 	return new SignJWT(JSON.parse(payload))
-		.setProtectedHeader(JSON.parse(header))
-		.sign(encodedSecret);
+		.setProtectedHeader(parsedHeader)
+		.sign(signingKey);
 };
 
 export const JwtService = {

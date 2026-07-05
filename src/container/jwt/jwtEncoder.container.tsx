@@ -5,6 +5,13 @@ import { Textarea } from '@/components/ui/textarea.tsx';
 import { useEffect, useState } from 'react';
 import { JwtService } from '@/container/jwt/service/jwt.service.ts';
 import { BannerComponent } from '@/components/banner.component.tsx';
+import { SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
+import {
+	isJwtAlgorithm,
+	JWT_ALGORITHM_FIXTURE_BY_ALGORITHM,
+	JWT_ALGORITHM_FIXTURES,
+	JwtAlgorithm,
+} from '@/container/jwt/fixture/jwtAlgorithm.fixture.ts';
 
 const JWT_PAYLOAD_EXAMPLE = `
 {
@@ -27,12 +34,47 @@ const HEADER_EXAMPLE = `
 }
 `;
 
+const DEFAULT_ALGORITHM: JwtAlgorithm = 'HS256';
+const ALGORITHM_OPTIONS = JWT_ALGORITHM_FIXTURES.map(({ algorithm }) => ({
+	label: algorithm,
+	value: algorithm,
+}));
+
+const getAlgorithmFromHeader = (header: string): JwtAlgorithm | undefined => {
+	try {
+		const algorithm = JSON.parse(header).alg;
+
+		return isJwtAlgorithm(algorithm) ? algorithm : undefined;
+	} catch {
+		return undefined;
+	}
+};
+
 export const JwtEncoderContainer = () => {
 	const [header, setHeader] = useState<string>(HEADER_EXAMPLE);
 	const [payload, setPayload] = useState<string>(JWT_PAYLOAD_EXAMPLE);
-	const [secret, setSecret] = useState<string>('Your secret');
+	const [secret, setSecret] = useState<string>(JWT_ALGORITHM_FIXTURE_BY_ALGORITHM[DEFAULT_ALGORITHM].secret);
 	const [result, setResult] = useState<string>('');
 	const [errorMessage, setErrorMessage] = useState<string>();
+	const selectedAlgorithm = getAlgorithmFromHeader(header);
+
+	const handleAlgorithmChange = (algorithm: JwtAlgorithm) => {
+		const parsedHeader = JSON.parse(header);
+
+		setHeader(JSON.stringify({ ...parsedHeader, alg: algorithm }, undefined, 2));
+		setSecret(JWT_ALGORITHM_FIXTURE_BY_ALGORITHM[algorithm].secret);
+	};
+
+	const handleHeaderChange = (nextHeader: string) => {
+		const previousAlgorithm = getAlgorithmFromHeader(header);
+		const nextAlgorithm = getAlgorithmFromHeader(nextHeader);
+
+		setHeader(nextHeader);
+
+		if (nextAlgorithm && nextAlgorithm !== previousAlgorithm) {
+			setSecret(JWT_ALGORITHM_FIXTURE_BY_ALGORITHM[nextAlgorithm].secret);
+		}
+	};
 
 	useEffect(() => {
 		const fn = async () => {
@@ -62,8 +104,20 @@ export const JwtEncoderContainer = () => {
 							<JsonEditorContainer
 								className="h-full"
 								value={header}
-								onChange={setHeader}
+								onChange={handleHeaderChange}
 								defaultViewType={ViewTypeConstant.TREE}
+							/>
+						</FieldContent>
+					</Field>
+					<Field>
+						<FieldLabel>Algorithm</FieldLabel>
+						<FieldContent>
+							<SelectWrapper<JwtAlgorithm>
+								ariaLabel="JWT signing algorithm"
+								options={ALGORITHM_OPTIONS}
+								placeholder="Unsupported algorithm"
+								value={selectedAlgorithm ?? ''}
+								onChange={handleAlgorithmChange}
 							/>
 						</FieldContent>
 					</Field>
@@ -87,7 +141,7 @@ export const JwtEncoderContainer = () => {
 					<Field
 						className="h-full"
 					>
-						<FieldLabel>Secret</FieldLabel>
+						<FieldLabel>Secret / Private Key</FieldLabel>
 						<FieldContent
 							className="h-full"
 						>

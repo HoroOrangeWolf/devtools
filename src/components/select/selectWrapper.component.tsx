@@ -20,11 +20,12 @@ type PropsType<T = string> = {
 	ariaLabel?: string;
     placeholder?: string;
     defaultValue?: string | number | boolean;
+	value?: T | '';
 	onChange?: (value: T) => void;
     options?: OptionType<T>[];
 }
 
-export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, placeholder, onChange }: PropsType<T>) => {
+export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, value, placeholder, onChange }: PropsType<T>) => {
 	const renderOptions = () => {
 		return options.map(({ label, value, tooltip, isDisabled }, index) => (
 			<SelectItem disabled={isDisabled} value={value as string} key={`option-${index}-${label}-${value}`}>
@@ -42,6 +43,7 @@ export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, p
 		<Select
 			onValueChange={onChange as any}
 			defaultValue={defaultValue as any}
+			value={value as any}
 		>
 			<SelectTrigger
 				id={id}
