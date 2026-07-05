@@ -2,7 +2,7 @@ import { Textarea } from '@/components/ui/textarea.tsx';
 import { JsonEditorContainer } from '@/container/json/jsonEditor.container.tsx';
 import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
 import { ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { JwtService } from '@/container/jwt/service/jwt.service.ts';
 import { BannerComponent } from '@/components/banner.component.tsx';
 
@@ -16,6 +16,7 @@ export const JwtContainer = () => {
 	useEffect(() => {
 		const fn = async () => {
 			try {
+				setErrorMessage(undefined);
 				const parsedJwt = JwtService.parseJwt(originalJWT);
 
 				setHeader(JSON.stringify(parsedJwt.header));
@@ -85,10 +86,10 @@ export const JwtContainer = () => {
 				</div>
 			</div>
 			<BannerComponent
-				title="Error"
-				className={errorMessage || 'opacity-0'}
+				variant={errorMessage ? 'destructive' : 'default'}
+				title={errorMessage ? 'Error' : 'Success'}
 			>
-				{errorMessage}
+				{errorMessage ?? 'JWT is valid'}
 			</BannerComponent>
 		</div>
 	);

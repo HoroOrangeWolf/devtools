@@ -38,7 +38,7 @@ const parseJwt = (jwt: string): ParsedJwtType => {
 	});
 };
 
-const verifyJWT =async (jwt: string, secret: string) => {
+const verifyJWT = async (jwt: string, secret: string) => {
 	const bytes: Uint8Array = new TextEncoder().encode(secret);
 
 	await jwtVerify(jwt, bytes);
