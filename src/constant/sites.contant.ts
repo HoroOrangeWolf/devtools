@@ -42,3 +42,4 @@ export const NavItems = [
 		isReady: true,
 	}
 ] as const;
+// TODO: Poprawić tree view do jsona bo nie działa

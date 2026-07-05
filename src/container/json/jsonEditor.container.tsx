@@ -22,6 +22,7 @@ type PropsType = {
 	readOnly?: boolean;
 	treeSettings?: JsonTreeSettings;
 	onError?: (e: Error) => void;
+	defaultViewType?: ViewType;
 	tabCount?: number;
 	targetTransform?: ViewDataType;
 	displayMode?: JsonPrettyViewModeType;
@@ -52,6 +53,9 @@ const SUPPORTED_MODES: Record<ViewDataType, ViewType[]> = {
 	[ViewDataTypeConstant.XML]: [
 		ViewTypeConstant.CODE,
 		ViewTypeConstant.RAW
+	],
+	[ViewDataTypeConstant.TEXT]: [
+		ViewTypeConstant.RAW
 	]
 };
 
@@ -61,12 +65,13 @@ export const JsonEditorContainer = ({
 	readOnly = false,
 	treeSettings,
 	targetTransform = ViewDataTypeConstant.JSON,
+	defaultViewType = ViewTypeConstant.CODE,
 	tabCount = 2,
 	displayMode,
 	onError,
 	className,
 }: PropsType) => {
-	const [jsonViewType, setJsonViewType] = useState<ViewType>(ViewTypeConstant.CODE);
+	const [jsonViewType, setJsonViewType] = useState<ViewType>(defaultViewType);
 	const [targetValue, setTargetValue] = useState<string>(value);
 	const [lastKnowValidJson, setLastKnowValidJson] = useState<string>(value);
 	const lazyValue = useDebounceValue(value,500);
