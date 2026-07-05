@@ -27,6 +27,7 @@ type PropsType = {
 	targetTransform?: ViewDataType;
 	displayMode?: JsonPrettyViewModeType;
 	className?: string;
+	ariaLabel?: string;
 }
 
 const parseJson = (value: string) => {
@@ -70,6 +71,7 @@ export const JsonEditorContainer = ({
 	displayMode,
 	onError,
 	className,
+	ariaLabel = 'JSON editor',
 }: PropsType) => {
 	const [jsonViewType, setJsonViewType] = useState<ViewType>(defaultViewType);
 	const [targetValue, setTargetValue] = useState<string>(value);
@@ -170,12 +172,14 @@ export const JsonEditorContainer = ({
 						onChange={handleTextChange}
 						readOnly={readOnly}
 						targetTransform={targetTransform}
+						ariaLabel={ariaLabel}
 					/>
 				);
 			}
 			case ViewTypeConstant.RAW: {
 				return (
 					<Textarea
+						aria-label={ariaLabel}
 						className={className}
 						value={targetValue}
 						readOnly={readOnly}

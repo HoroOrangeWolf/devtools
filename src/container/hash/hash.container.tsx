@@ -133,6 +133,7 @@ export const HashContainer  = () => {
 
 		return (
 			<Textarea
+				aria-label="Content to hash"
 				placeholder="Type or drop file here..."
 				className={cn('h-full')}
 				value={value}
@@ -163,6 +164,7 @@ export const HashContainer  = () => {
 							Hash Type
 						</FieldLabel>
 						<SelectWrapper
+							ariaLabel="Hash type"
 							onChange={setHashType}
 							options={options}
 							defaultValue={hashType}
@@ -187,9 +189,11 @@ export const HashContainer  = () => {
 					</Button>
 				</div>
 				<Textarea
+					aria-label="Generated hash"
 					placeholder="Result..."
 					className={cn('min-h-64')}
 					value={hashValue}
+					readOnly={true}
 				/>
 			</div>
 			<BannerComponent

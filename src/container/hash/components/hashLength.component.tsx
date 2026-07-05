@@ -8,8 +8,10 @@ type PropsType = {
 
 export const HashLengthComponent = ({ value, onChange }: PropsType) => (
 	<Field>
-		<FieldLabel>Hash Length</FieldLabel>
+		<FieldLabel htmlFor="hash-length">Hash Length</FieldLabel>
 		<Input
+			id="hash-length"
+			type="number"
 			min={1}
 			value={value}
 			onChange={(e) => onChange(Number(e.target.value))}

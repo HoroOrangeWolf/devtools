@@ -39,6 +39,7 @@ export const SidebarHiddenButton = ({ localStorageKey, idsToClear }: PropsType) 
 
 	return (
 		<Button
+			aria-label={isHidden ? 'Show sidebar' : 'Hide sidebar'}
 			variant="ghost"
 			className={cn('h-full rounded-none')}
 			onClick={handleClick}

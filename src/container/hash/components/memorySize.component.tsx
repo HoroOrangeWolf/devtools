@@ -8,8 +8,9 @@ type PropsType = {
 
 export const MemorySizeComponent = ({ value, onChange }: PropsType) => (
 	<Field>
-		<FieldLabel>Memory Size</FieldLabel>
+		<FieldLabel htmlFor="hash-memory-size">Memory Size</FieldLabel>
 		<Input
+			id="hash-memory-size"
 			min={1}
 			type="number"
 			value={value}

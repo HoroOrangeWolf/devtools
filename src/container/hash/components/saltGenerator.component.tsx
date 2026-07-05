@@ -29,15 +29,17 @@ export const SaltGeneratorComponent = ({ value, onChange }: PropsType) => {
 
 	return (
 		<Field>
-			<FieldLabel>Salt</FieldLabel>
+			<FieldLabel htmlFor="hash-salt">Salt</FieldLabel>
 			<ButtonGroup>
 				<Input
+					id="hash-salt"
 					disabled={isLocked}
 					value={value}
 					minLength={1}
 					onChange={(e) => onChange(e.target.value)}
 				/>
 				<Button
+					aria-label="Generate a new salt"
 					disabled={isLocked}
 					variant="outline"
 					onClick={onRefresh}

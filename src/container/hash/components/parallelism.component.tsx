@@ -8,8 +8,9 @@ type PropsType = {
 
 export const ParallelismComponent = ({ value, onChange }: PropsType) => (
 	<Field>
-		<FieldLabel>Parallelism</FieldLabel>
+		<FieldLabel htmlFor="hash-parallelism">Parallelism</FieldLabel>
 		<Input
+			id="hash-parallelism"
 			type="number"
 			min={1}
 			value={value}

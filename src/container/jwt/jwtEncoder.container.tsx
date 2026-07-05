@@ -102,6 +102,7 @@ export const JwtEncoderContainer = () => {
 						</FieldLabel>
 						<FieldContent className="h-full">
 							<JsonEditorContainer
+								ariaLabel="JWT header"
 								className="h-full"
 								value={header}
 								onChange={handleHeaderChange}
@@ -131,6 +132,7 @@ export const JwtEncoderContainer = () => {
 							className="h-full"
 						>
 							<JsonEditorContainer
+								ariaLabel="JWT payload"
 								className="h-full"
 								value={payload}
 								onChange={setPayload}
@@ -146,6 +148,7 @@ export const JwtEncoderContainer = () => {
 							className="h-full"
 						>
 							<Textarea
+								aria-label="JWT signing secret or private key"
 								className="h-full"
 								onChange={(e) => setSecret(e.target.value)}
 								value={secret}
@@ -154,6 +157,7 @@ export const JwtEncoderContainer = () => {
 					</Field>
 				</div>
 				<Textarea
+					aria-label="Signed JWT"
 					value={result}
 					className="h-full"
 					placeholder="Signed JWT"

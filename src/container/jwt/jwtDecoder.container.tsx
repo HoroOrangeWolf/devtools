@@ -38,6 +38,7 @@ export const JwtDecoderContainer = () => {
 		<div className="flex flex-col gap-2">
 			<div className="grid grid-cols-2 gap-2">
 				<Textarea
+					aria-label="Encoded JWT"
 					value={originalJWT}
 					onChange={(e) => setOriginalJWT(e.target.value)}
 				/>
@@ -48,6 +49,7 @@ export const JwtDecoderContainer = () => {
 						</FieldLabel>
 						<FieldContent className="h-full">
 							<JsonEditorContainer
+								ariaLabel="Decoded JWT header"
 								className="h-full"
 								value={header}
 								defaultViewType={ViewTypeConstant.TREE}
@@ -65,6 +67,7 @@ export const JwtDecoderContainer = () => {
 							className="h-full"
 						>
 							<JsonEditorContainer
+								ariaLabel="Decoded JWT payload"
 								className="h-full"
 								value={payload}
 								defaultViewType={ViewTypeConstant.TREE}
@@ -80,6 +83,7 @@ export const JwtDecoderContainer = () => {
 							className="h-full"
 						>
 							<Textarea
+								aria-label="JWT verification secret or public key"
 								className="h-full"
 								onChange={(e) => setSecret(e.target.value)}
 								value={secret}

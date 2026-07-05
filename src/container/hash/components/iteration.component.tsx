@@ -8,8 +8,9 @@ type PropsType = {
 
 export const IterationComponent = ({ value, onChange }: PropsType) => (
 	<Field>
-		<FieldLabel>Iterations</FieldLabel>
+		<FieldLabel htmlFor="hash-iterations">Iterations</FieldLabel>
 		<Input
+			id="hash-iterations"
 			min={1}
 			type="number"
 			value={value}

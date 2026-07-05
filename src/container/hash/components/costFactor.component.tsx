@@ -8,8 +8,9 @@ type PropsType = {
 
 export const CostFactorComponent = ({ value, onChange }: PropsType) => (
 	<Field>
-		<FieldLabel>Cost Factor</FieldLabel>
+		<FieldLabel htmlFor="hash-cost-factor">Cost Factor</FieldLabel>
 		<Input
+			id="hash-cost-factor"
 			min={4}
 			max={31}
 			type="number"

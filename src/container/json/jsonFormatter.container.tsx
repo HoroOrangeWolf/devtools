@@ -86,6 +86,7 @@ const languageByType: Record<ViewDataType, string> = {
 	[ViewDataTypeConstant.JSON]: 'json',
 	[ViewDataTypeConstant.XML]: 'xml',
 	[ViewDataTypeConstant.CSV]: 'csv',
+	[ViewDataTypeConstant.TEXT]: 'txt'
 };
 
 export const JsonFormatterContainer = () => {
@@ -144,6 +145,7 @@ export const JsonFormatterContainer = () => {
 					onDropFile={onDropFile}
 				>
 					<JsonEditorContainer
+						ariaLabel="Source data"
 						className={cn('max-h-full h-full')}
 						value={value}
 						onError={onError}
@@ -173,6 +175,7 @@ export const JsonFormatterContainer = () => {
 								JSON tabs
 							</FieldLabel>
 							<SelectWrapper
+								ariaLabel="JSON indentation"
 								options={tabs}
 								onChange={setTabCount}
 								defaultValue={tabCount}
@@ -184,6 +187,7 @@ export const JsonFormatterContainer = () => {
 							Transform to
 						</FieldLabel>
 						<SelectWrapper
+							ariaLabel="Output format"
 							defaultValue={ViewDataTypeConstant.JSON}
 							options={convertOptions}
 							onChange={setTargetTransform}
@@ -197,6 +201,7 @@ export const JsonFormatterContainer = () => {
 					</Button>
 				</div>
 				<JsonEditorContainer
+					ariaLabel="Formatted output"
 					className={cn('max-w-full h-full')}
 					readOnly={true}
 					displayMode={jsonPrettyMode}

@@ -77,6 +77,7 @@ type PropsType = {
     readOnly?: boolean;
     onChange?: (value: string) => void;
     targetTransform?: ViewDataType;
+    ariaLabel?: string;
 }
 
 export const CodeMirrorWrapper = ({
@@ -84,6 +85,7 @@ export const CodeMirrorWrapper = ({
 	value,
 	readOnly,
 	onChange,
+	ariaLabel = 'JSON editor',
 	targetTransform = ViewDataTypeConstant.JSON
 }: PropsType) => {
 	return (
@@ -94,6 +96,7 @@ export const CodeMirrorWrapper = ({
 			onChange={onChange}
 			readOnly={readOnly}
 			extensions={[
+				EditorView.contentAttributes.of({ 'aria-label': ariaLabel }),
 				targetTransform === ViewDataTypeConstant.JSON ? json() : xml(),
 				syntaxHighlighting(jsonEditorHighlightStyle),
 			]}
