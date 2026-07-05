@@ -75,7 +75,7 @@ export const CsvContainer = () => {
 			return;
 		}
 
-		setCsvContent(uploadedContent);
+		setCsvContent(uploadedContent as string);
 	};
 
 	const handleFileDrop = async (file: File) => {
