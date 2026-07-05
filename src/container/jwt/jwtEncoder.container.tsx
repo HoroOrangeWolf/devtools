@@ -53,7 +53,7 @@ export const JwtEncoderContainer = () => {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="grid grid-cols-2 gap-2">
-				<div className="grid grid-rows-[repeat(3,minmax(15rem,1fr))] gap-2">
+				<div className="grid grid-rows-[repeat(fit-content,minmax(0,1fr))] gap-2">
 					<Field className="h-full">
 						<FieldLabel>
 							JWT Header

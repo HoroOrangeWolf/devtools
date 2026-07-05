@@ -41,7 +41,7 @@ export const JwtDecoderContainer = () => {
 					value={originalJWT}
 					onChange={(e) => setOriginalJWT(e.target.value)}
 				/>
-				<div className="grid grid-rows-[repeat(3,minmax(15rem,1fr))] gap-2">
+				<div className="grid grid-rows-[repeat(fit-content,minmax(0,1fr))] gap-2">
 					<Field className="h-full">
 						<FieldLabel>
 							Decoded Header
