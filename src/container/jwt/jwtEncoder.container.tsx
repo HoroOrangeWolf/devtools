@@ -12,6 +12,7 @@ import {
 	JWT_ALGORITHM_FIXTURES,
 	JwtAlgorithm,
 } from '@/container/jwt/fixture/jwtAlgorithm.fixture.ts';
+import { JwtEditor } from '@/container/jwt/jwtEditor.component.tsx';
 
 const JWT_PAYLOAD_EXAMPLE = `
 {
@@ -166,7 +167,7 @@ export const JwtEncoderContainer = () => {
 						Signed JWT
 					</FieldLabel>
 					<FieldContent>
-						<Textarea
+						<JwtEditor
 							id="signed_jwt"
 							aria-label="Signed JWT"
 							value={result}

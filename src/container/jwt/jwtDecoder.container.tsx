@@ -5,6 +5,7 @@ import { ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts
 import { BannerComponent } from '@/components/banner.component.tsx';
 import { useEffect, useState } from 'react';
 import { JwtService } from '@/container/jwt/service/jwt.service.ts';
+import { JwtEditor } from '@/container/jwt/jwtEditor.component.tsx';
 
 const EXAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsInJvbGVzIjpbInVzZXIiXSwiaXNzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSIsImF1ZCI6ImRldnRvb2xzLWFwcCIsImlhdCI6MTc4MzI0NTYwMCwibmJmIjoxNzgzMjQ1NjAwLCJqdGkiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAifQ._DlrqriXaV-q2HbqvhZ4SDnZ2D2HZUFiDlfgHShJrtg';
 
@@ -42,12 +43,12 @@ export const JwtDecoderContainer = () => {
 						JWT
 					</FieldLabel>
 					<FieldContent>
-						<Textarea
+						<JwtEditor
 							id="encoded_jwt"
 							className="h-full"
 							aria-label="Encoded JWT"
 							value={originalJWT}
-							onChange={(e) => setOriginalJWT(e.target.value)}
+							onChange={setOriginalJWT}
 						/>
 					</FieldContent>
 				</Field>
