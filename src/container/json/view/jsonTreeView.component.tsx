@@ -84,7 +84,12 @@ const getValueType = (value: JsonValue): JsonValueType => {
 const getDefaultValue = (val: JsonValue,type: JsonValueType): JsonValue => {
 	switch (type) {
 		case 'string': {
-			return JSON.stringify(val);
+			try {
+				return JSON.stringify(val);
+			} catch (error) {
+				console.error('Failed to stringify',error);
+				return '';
+			}
 		}
 		case 'number': {
 			const parsed = Number(val);
@@ -97,12 +102,7 @@ const getDefaultValue = (val: JsonValue,type: JsonValueType): JsonValue => {
 			return null;
 		}
 		case 'object': {
-			try {
-				return JSON.parse(val as string);
-			} catch (error) {
-				console.error(error);
-				return {};
-			}
+			return {};
 		}
 		case 'array': {
 			try {
