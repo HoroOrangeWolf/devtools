@@ -1,0 +1,61 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { CronRoot } from '@/container/cron/cron.root.tsx';
+
+const title = 'CSV Parser and JSON Export Tool | Dev Utils';
+const description =
+    'Parse CSV data, adjust delimiter and header options, preview rows, and export clean JSON locally in your browser without uploading files.';
+const keywords = [
+    'CSV parser',
+    'CSV to JSON',
+    'CSV converter',
+    'local CSV tool',
+    'browser CSV parser',
+    'developer CSV utility',
+    'CSV export JSON',
+    'Papa Parse tool',
+];
+---
+<Layout
+        title={title}
+        description={description}
+        keywords={keywords}
+        canonicalPath="/csv"
+        structuredData={{
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: 'CSV Parser and JSON Export Tool',
+            applicationCategory: 'DeveloperApplication',
+            operatingSystem: 'Any',
+            browserRequirements: 'Requires a modern browser with JavaScript enabled.',
+            description,
+            url: new URL('/csv', Astro.site ?? Astro.url.origin).toString(),
+            isAccessibleForFree: true,
+            featureList: [
+                'Parse CSV text in the browser',
+                'Change CSV parsing options',
+                'Preview parsed tabular data',
+                'Export parsed CSV data as JSON',
+                'Process data locally without server upload',
+            ],
+            offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+            },
+        }}
+>
+    <section class="space-y-6">
+        <div class="space-y-2">
+            <p class="text-primary text-sm font-medium">CSV</p>
+            <h2 class="text-2xl font-semibold tracking-tight">Utils</h2>
+            <p class="text-muted-foreground text-sm">
+                Parse CSV, change CSV options and export to JSON.
+            </p>
+        </div>
+
+        <div class="border-border bg-card text-card-foreground rounded-lg border p-4 sm:p-6">
+            <CronRoot client:load />
+        </div>
+    </section>
+</Layout>

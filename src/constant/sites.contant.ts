@@ -40,6 +40,37 @@ export const NavItems = [
 		label: 'JWT',
 		description: 'Debug and view JWT',
 		isReady: true,
+	},
+	{
+		href: '/cron',
+		label: 'Cron',
+		isReady: true,
+		description: 'Create and describe CRON',
+	},
+	{
+		href: '/lorem',
+		label: 'Lorem',
+		isReady: false
+	},
+	{
+		href: '/markdown',
+		label: 'Markdown Editor',
+		isReady: false
+	},
+	{
+		href: '/color',
+		label: 'Color Palette',
+		isReady: false,
+	},
+	{
+		href: '/urlParser',
+		label: 'URL Parser',
+		isReady: false,
+	},
+	{
+		href: '/unixTimestamp',
+		label: 'Unix Timestamp Converter',
+		isReady: false,
 	}
 ] as const;
 // TODO: Poprawić tree view do jsona bo nie działa
