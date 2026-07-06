@@ -94,13 +94,15 @@ export const JwtEncoderContainer = () => {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<div className="grid grid-cols-2 gap-2">
+			<div className="flex flex-col lg:grid lg:grid-cols-2 gap-2">
 				<div className="grid grid-rows-[repeat(fit-content,minmax(0,1fr))] gap-2">
-					<Field className="h-full">
+					<Field
+						className="min-w-0"
+					>
 						<FieldLabel>
 							JWT Header
 						</FieldLabel>
-						<FieldContent className="h-full">
+						<FieldContent>
 							<JsonEditorContainer
 								ariaLabel="JWT header"
 								className="h-full"
@@ -123,7 +125,7 @@ export const JwtEncoderContainer = () => {
 						</FieldContent>
 					</Field>
 					<Field
-						className="h-full"
+						className="min-w-0"
 					>
 						<FieldLabel>
 							JWT Payload
@@ -141,7 +143,7 @@ export const JwtEncoderContainer = () => {
 						</FieldContent>
 					</Field>
 					<Field
-						className="h-full"
+						className="min-w-0"
 					>
 						<FieldLabel>Secret / Private Key</FieldLabel>
 						<FieldContent
@@ -156,13 +158,24 @@ export const JwtEncoderContainer = () => {
 						</FieldContent>
 					</Field>
 				</div>
-				<Textarea
-					aria-label="Signed JWT"
-					value={result}
-					className="h-full"
-					placeholder="Signed JWT"
-					readOnly={true}
-				/>
+				<Field>
+					<FieldLabel
+						htmlFor="signed_jwt"
+						className="min-w-0"
+					>
+						Signed JWT
+					</FieldLabel>
+					<FieldContent>
+						<Textarea
+							id="signed_jwt"
+							aria-label="Signed JWT"
+							value={result}
+							className="h-full"
+							placeholder="Signed JWT"
+							readOnly={true}
+						/>
+					</FieldContent>
+				</Field>
 			</div>
 			<BannerComponent
 				variant={errorMessage ? 'destructive' : 'default'}

@@ -37,7 +37,7 @@ export const JwtDecoderContainer = () => {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="flex flex-col lg:grid lg:grid-cols-2 gap-2">
-				<Field>
+				<Field className="min-w-0">
 					<FieldLabel htmlFor="encoded_jwt">
 						JWT
 					</FieldLabel>
@@ -52,7 +52,7 @@ export const JwtDecoderContainer = () => {
 					</FieldContent>
 				</Field>
 				<div className="grid grid-rows-[repeat(fit-content,minmax(0,1fr))] gap-2">
-					<Field className="h-full">
+					<Field className="min-w-0">
 						<FieldLabel>
 							Decoded Header
 						</FieldLabel>
@@ -67,7 +67,7 @@ export const JwtDecoderContainer = () => {
 						</FieldContent>
 					</Field>
 					<Field
-						className="h-full"
+						className="min-w-0"
 					>
 						<FieldLabel>
 							Decoded Payload
