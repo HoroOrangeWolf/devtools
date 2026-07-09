@@ -3,8 +3,10 @@ import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
 import { TimestampDescriptorContainer } from '@/container/unix/timestampDescriptor.container.tsx';
 import { useState } from 'react';
 
+const date = Date.now();
+
 export const TimestampToDateContainer = () => {
-	const [timestamp, setTimestamp] = useState<number>(new Date().getDate());
+	const [timestamp, setTimestamp] = useState<number>(date);
 
 	return (
 		<>
