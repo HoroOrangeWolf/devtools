@@ -44,7 +44,7 @@ export const NavItems = [
 	{
 		href: '/cron',
 		label: 'Cron',
-		isReady: true,
+		isReady: false,
 		description: 'Create and describe CRON',
 	},
 	{
@@ -70,7 +70,7 @@ export const NavItems = [
 	{
 		href: '/unixTimestamp',
 		label: 'Unix Timestamp Converter',
-		isReady: false,
+		isReady: true,
 	}
 ] as const;
 // TODO: Poprawić tree view do jsona bo nie działa
