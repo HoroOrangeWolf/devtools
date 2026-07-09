@@ -30,6 +30,7 @@
     "astro": "^6.4.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.21",
     "fast-xml-builder": "^1.2.0",
     "fast-xml-parser": "^5.9.3",
     "hash-wasm": "^4.12.0",
