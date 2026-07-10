@@ -1,8 +1,8 @@
 import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
-import { SelectWrapper, type OptionType } from '@/components/select/selectWrapper.component.tsx';
 import { TooltipWrapper } from '@/components/tooltipWrapper.component.tsx';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
+import { ComboboxOption, ComboboxWrapper } from '@/components/comboboxWrapper.component.tsx';
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const timezones = (Intl.supportedValuesOf('timeZone') as string[]).toSorted();
@@ -13,7 +13,7 @@ type PropsType = {
 
 export const TimestampDescriptorContainer = ({ timestamp }: PropsType) => {
 	const [timezone, setTimezone] = useState('UTC');
-	const timezoneOptions = useMemo<OptionType[]>(
+	const timezoneOptions = useMemo<ComboboxOption[]>(
 		() => timezones.map((value) => ({ label: value, value })),
 		[],
 	);
@@ -34,12 +34,12 @@ export const TimestampDescriptorContainer = ({ timestamp }: PropsType) => {
 			<Field>
 				<FieldLabel htmlFor="timezone">Timezone</FieldLabel>
 				<FieldContent>
-					<SelectWrapper
+					<ComboboxWrapper
 						id="timezone"
 						ariaLabel="Timezone"
 						options={timezoneOptions}
 						value={timezone}
-						onChange={setTimezone}
+						onChange={(e) => setTimezone(e.value)}
 					/>
 				</FieldContent>
 			</Field>
