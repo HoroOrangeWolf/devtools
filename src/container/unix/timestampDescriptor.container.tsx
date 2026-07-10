@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
-const timezones = (Intl.supportedValuesOf('timeZone') as string[]).toSorted() as string[];
+const timezones = (Intl.supportedValuesOf('timeZone') as string[]).toSorted();
 
 type PropsType = {
     timestamp: number;
