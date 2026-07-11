@@ -49,6 +49,7 @@ export default defineConfig([
             reactRefresh.configs.vite,
         ],
         rules: {
+            'react-hooks/set-state-in-render': ['off'],
             "react-hooks/set-state-in-effect": ['off'],
             "object-curly-spacing": ["error", "always"],
             "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],

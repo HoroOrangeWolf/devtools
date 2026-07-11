@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useMemo, useState } from 'react';
 import { Field, FieldLabel } from '@/components/ui/field.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { Calendar } from '@/components/ui/calendar.tsx';
@@ -17,13 +17,39 @@ type PropsType = {
 
 export const DateTimePicker = ({ date, onChange, id, label }: PropsType) => {
 	const [currentDate, setCurrentDate] = useState<Date | undefined>(date);
+	const [hour, setHour] = useState<number>(10);
+	const [minute, setMinute] = useState<number>(30);
+	const [second, setSecond] = useState<number>(0);
 	const [open, setOpen] = useState(false);
 
 	const pickerDate = date ?? currentDate;
 
+	const timeDate = useMemo(()=>{
+		try {
+			if (!pickerDate){
+				return `${hour}:${minute}:${second}`;
+			}
+
+			const dateParsed = dayjs(pickerDate).tz('UTC', true);
+
+			setHour(dateParsed.hour());
+			setMinute(dateParsed.minute());
+			setSecond(dateParsed.second());
+
+			return dateParsed.format('HH:mm:ss');
+		}catch(error){
+			console.error('Failed to get date date', error);
+			return `${hour}:${minute}:${second}`;
+		}
+	},[pickerDate]);
+
 	const handleTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const [hour = 12, minute = 0, second = 0] = event.target.value.split(':')
 			.map(Number);
+
+		setHour(hour);
+		setMinute(minute);
+		setSecond(second);
 
 		const targetDate = dayjs(pickerDate ?? new Date())
 			.hour(hour)
@@ -33,6 +59,22 @@ export const DateTimePicker = ({ date, onChange, id, label }: PropsType) => {
 
 		setCurrentDate(targetDate);
 		onChange?.(targetDate);
+	};
+
+	const handleDateChange = (date?: Date) => {
+		if (!date) {
+			return;
+		}
+
+		const properDate = dayjs(date)
+			.hour(hour)
+			.minute(minute)
+			.second(second)
+			.toDate();
+
+		setCurrentDate(properDate);
+		onChange?.(properDate);
+		setOpen(false);
 	};
 
 	return (
@@ -52,13 +94,7 @@ export const DateTimePicker = ({ date, onChange, id, label }: PropsType) => {
 							selected={pickerDate}
 							captionLayout="dropdown"
 							defaultMonth={pickerDate}
-							onSelect={(changeDate) => {
-								setCurrentDate(changeDate);
-								if (onChange && changeDate) {
-									onChange(changeDate);
-								}
-								setOpen(false);
-							}}
+							onSelect={handleDateChange}
 						/>
 					</PopoverContent>
 				</Popover>
@@ -67,7 +103,7 @@ export const DateTimePicker = ({ date, onChange, id, label }: PropsType) => {
 					id={id && `${id}-time`}
 					step="1"
 					onChange={handleTimeChange}
-					defaultValue="10:30:00"
+					value={timeDate}
 					className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 				/>
 			</ButtonGroup>
