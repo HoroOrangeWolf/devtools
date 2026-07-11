@@ -7,28 +7,41 @@ const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 
 type PropsType = {
     timestamp: number;
+	isTimestampMode?: false
+} | {
+	isTimestampMode: true;
+	date?: Date;
 }
 
-export const TimestampDescriptorContainer = ({ timestamp }: PropsType) => {
+export const TimestampDescriptorContainer = (props: PropsType) => {
 	const [timezone, setTimezone] = useState('UTC');
 
-	const formattedUtc = dayjs(timestamp).utc().format(dateFormat);
-	const formattedDateInZone = dayjs(timestamp).tz(timezone).format(dateFormat);
+	const formatDate = (useTimezone: boolean) => {
+		try {
+			if (props.isTimestampMode) {
+				return useTimezone ? dayjs(props.date).tz(timezone, true).valueOf() : dayjs(props.date).valueOf();
+			}
 
-	// TODO: Poprawić to under line decoration.
+			return useTimezone ? dayjs(props.timestamp).tz(timezone).format(dateFormat) : dayjs(props.timestamp).utc().format(dateFormat);
+		} catch (error) {
+			console.error(`Failed to parse date=${props.isTimestampMode ? props.date : props.timestamp} format`, error);
+			return 'Invalid date';
+		}
+	};
+
 	return (
 		<div className="flex flex-col gap-2">
 			<TimezoneSelect onChange={setTimezone} />
 			<div>
 				UTC{' '}
 				<TooltipWrapper tooltip={dateFormat}>
-					<span className="cursor-help underline decoration-dotted underline-offset-4">{formattedUtc}</span>
+					<span className="cursor-help underline decoration-dotted underline-offset-4">{formatDate(false)}</span>
 				</TooltipWrapper>
 			</div>
 			<div>
 				{timezone}{' '}
 				<TooltipWrapper tooltip={dateFormat}>
-					<span className="cursor-help underline decoration-dotted underline-offset-4">{formattedDateInZone}</span>
+					<span className="cursor-help underline decoration-dotted underline-offset-4">{formatDate(true)}</span>
 				</TooltipWrapper>
 			</div>
 		</div>
