@@ -1,11 +1,9 @@
-import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
 import { TooltipWrapper } from '@/components/tooltipWrapper.component.tsx';
 import dayjs from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
-import { ComboboxOption, ComboboxWrapper } from '@/components/comboboxWrapper.component.tsx';
+import { useState } from 'react';
+import { TimezoneSelect } from '@/container/unix/components/timezoneSelect.component.tsx';
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
-const timezones = (Intl.supportedValuesOf('timeZone') as string[]).toSorted();
 
 type PropsType = {
     timestamp: number;
@@ -13,36 +11,14 @@ type PropsType = {
 
 export const TimestampDescriptorContainer = ({ timestamp }: PropsType) => {
 	const [timezone, setTimezone] = useState('UTC');
-	const timezoneOptions = useMemo<ComboboxOption[]>(
-		() => timezones.map((value) => ({ label: value, value })),
-		[],
-	);
-
-	useEffect(() => {
-		const localTimezone = dayjs.tz.guess();
-
-		if (timezones.includes(localTimezone)) {
-			setTimezone(localTimezone);
-		}
-	}, []);
 
 	const formattedUtc = dayjs(timestamp).utc().format(dateFormat);
 	const formattedDateInZone = dayjs(timestamp).tz(timezone).format(dateFormat);
 
+	// TODO: Poprawić to under line decoration.
 	return (
 		<div className="flex flex-col gap-2">
-			<Field>
-				<FieldLabel htmlFor="timezone">Timezone</FieldLabel>
-				<FieldContent>
-					<ComboboxWrapper
-						id="timezone"
-						ariaLabel="Timezone"
-						options={timezoneOptions}
-						value={timezone}
-						onChange={(e) => setTimezone(e.value)}
-					/>
-				</FieldContent>
-			</Field>
+			<TimezoneSelect onChange={setTimezone} />
 			<div>
 				UTC{' '}
 				<TooltipWrapper tooltip={dateFormat}>
