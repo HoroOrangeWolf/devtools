@@ -30,7 +30,7 @@ export const DateTimePicker = ({ date, onChange, id, label }: PropsType) => {
 				return `${hour}:${minute}:${second}`;
 			}
 
-			const dateParsed = dayjs(pickerDate).tz('UTC', true);
+			const dateParsed = dayjs(pickerDate);
 
 			setHour(dateParsed.hour());
 			setMinute(dateParsed.minute());
@@ -67,6 +67,7 @@ export const DateTimePicker = ({ date, onChange, id, label }: PropsType) => {
 		}
 
 		const properDate = dayjs(date)
+			.tz('UTC', true)
 			.hour(hour)
 			.minute(minute)
 			.second(second)

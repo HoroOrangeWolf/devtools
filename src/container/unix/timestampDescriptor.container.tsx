@@ -19,7 +19,7 @@ export const TimestampDescriptorContainer = (props: PropsType) => {
 	const formatDate = (useTimezone: boolean) => {
 		try {
 			if (props.isTimestampMode) {
-				return useTimezone ? dayjs(props.date).tz(timezone, true).valueOf() : dayjs(props.date).tz('UTC', true).valueOf();
+				return useTimezone ? dayjs(props.date).tz(timezone).toDate().getTime() : dayjs(props.date).tz('UTC', true).valueOf();
 			}
 
 			return useTimezone ? dayjs(props.timestamp).tz(timezone).format(dateFormat) : dayjs(props.timestamp).utc().format(dateFormat);
