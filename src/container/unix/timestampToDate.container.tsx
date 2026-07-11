@@ -12,7 +12,7 @@ export const TimestampToDateContainer = () => {
 		<>
 			<div>
 				<Field>
-					<FieldLabel htmlFor="timestamp_val">Timestamp</FieldLabel>
+					<FieldLabel htmlFor="timestamp_val">UNIX Timestamp</FieldLabel>
 					<FieldContent>
 						<Input
 							id="timestamp_val"
