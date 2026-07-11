@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { TimezoneSelect } from '@/container/unix/components/timezoneSelect.component.tsx';
 
-const dateFormat = 'YYYY-MM-DD HH:mm:ss';
+const dateFormat = 'DD/MMM/YYYY HH:mm:ss';
 
 type PropsType = {
     timestamp: number;
@@ -34,13 +34,13 @@ export const TimestampDescriptorContainer = (props: PropsType) => {
 			<TimezoneSelect onChange={setTimezone} />
 			<div>
 				UTC{' '}
-				<TooltipWrapper tooltip={dateFormat}>
+				<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
 					<span className="cursor-help underline decoration-dotted underline-offset-4">{formatDate(false)}</span>
 				</TooltipWrapper>
 			</div>
 			<div>
 				{timezone}{' '}
-				<TooltipWrapper tooltip={dateFormat}>
+				<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
 					<span className="cursor-help underline decoration-dotted underline-offset-4">{formatDate(true)}</span>
 				</TooltipWrapper>
 			</div>
