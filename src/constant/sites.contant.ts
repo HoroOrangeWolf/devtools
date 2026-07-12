@@ -50,7 +50,7 @@ export const NavItems = [
 	{
 		href: '/cron',
 		label: 'Cron',
-		isReady: false,
+		isReady: true,
 		description: 'Create and describe CRON',
 	},
 	{
