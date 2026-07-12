@@ -2,6 +2,7 @@ import { TooltipWrapper } from '@/components/tooltipWrapper.component.tsx';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { TimezoneSelect } from '@/container/unix/components/timezoneSelect.component.tsx';
+import { ClipboardWrapper } from '@/components/clipboardWrapper.component.tsx';
 
 const dateFormat = 'DD/MMM/YYYY HH:mm:ss';
 
@@ -14,7 +15,7 @@ type PropsType = {
 }
 
 export const TimestampDescriptorContainer = (props: PropsType) => {
-	const [timezone, setTimezone] = useState('UTC');
+	const [timezone, setTimezone] = useState<string>('UTC');
 
 	const formatDate = (useTimezone: boolean) => {
 		try {
@@ -29,20 +30,27 @@ export const TimestampDescriptorContainer = (props: PropsType) => {
 		}
 	};
 
+	const dateWithTimezone = formatDate(true);
+	const dateWithoutTimezone = formatDate(false);
+
 	return (
 		<div className="flex flex-col gap-2">
 			<TimezoneSelect onChange={setTimezone} />
 			<div>
 				{timezone}:&nbsp;
-				<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
-					<span className="cursor-help font-bold">{formatDate(true)}</span>
-				</TooltipWrapper>
+				<ClipboardWrapper text={dateWithTimezone}>
+					<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
+						<span className="cursor-help font-bold">{dateWithTimezone}</span>
+					</TooltipWrapper>
+				</ClipboardWrapper>
 			</div>
 			<div>
 				UTC:&nbsp;
-				<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
-					<span className="cursor-help font-bold">{formatDate(false)}</span>
-				</TooltipWrapper>
+				<ClipboardWrapper text={dateWithoutTimezone}>
+					<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
+						<span className="cursor-help font-bold">{dateWithoutTimezone}</span>
+					</TooltipWrapper>
+				</ClipboardWrapper>
 			</div>
 		</div>
 	);
