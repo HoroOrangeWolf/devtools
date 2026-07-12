@@ -38,7 +38,10 @@ export const TimestampDescriptorContainer = (props: PropsType) => {
 			<TimezoneSelect onChange={setTimezone} />
 			<div>
 				{timezone}:&nbsp;
-				<ClipboardWrapper text={dateWithTimezone}>
+				<ClipboardWrapper
+					text={dateWithTimezone}
+					displayButton={true}
+				>
 					<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
 						<span className="cursor-help font-bold">{dateWithTimezone}</span>
 					</TooltipWrapper>
@@ -46,7 +49,10 @@ export const TimestampDescriptorContainer = (props: PropsType) => {
 			</div>
 			<div>
 				UTC:&nbsp;
-				<ClipboardWrapper text={dateWithoutTimezone}>
+				<ClipboardWrapper
+					text={dateWithoutTimezone}
+					displayButton={true}
+				>
 					<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
 						<span className="cursor-help font-bold">{dateWithoutTimezone}</span>
 					</TooltipWrapper>

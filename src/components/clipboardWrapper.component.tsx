@@ -1,11 +1,14 @@
 import { ToastUtils } from '@/utils/toast.utils.ts';
+import { Button } from '@/components/ui/button.tsx';
+import { ClipboardCopy } from 'lucide-react';
 
 type PropsType = {
     text: string | number,
+	displayButton?: boolean,
     children: React.ReactNode,
 }
 
-export const ClipboardWrapper = ({ children, text }: PropsType) => {
+export const ClipboardWrapper = ({ children, text, displayButton }: PropsType) => {
 	const handleOnClick = async () => {
 		try {
 			await navigator.clipboard.writeText(`${text}`);
@@ -18,9 +21,17 @@ export const ClipboardWrapper = ({ children, text }: PropsType) => {
 
 	return (
 		<span
-			onClick={handleOnClick}
+			onClick={displayButton ? undefined : handleOnClick}
 		>
 			{children}
+			{displayButton && (
+				<Button
+					variant="ghost"
+					onClick={handleOnClick}
+				>
+					<ClipboardCopy />
+				</Button>
+			)}
 		</span>
 	);
 };
