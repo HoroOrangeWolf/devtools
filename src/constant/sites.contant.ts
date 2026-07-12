@@ -42,6 +42,12 @@ export const NavItems = [
 		isReady: true,
 	},
 	{
+		href: '/unixTimestamp',
+		label: 'Unix Timestamp Converter',
+		description: 'Convert Unix timestamp',
+		isReady: true,
+	},
+	{
 		href: '/cron',
 		label: 'Cron',
 		isReady: false,
@@ -66,11 +72,5 @@ export const NavItems = [
 		href: '/urlParser',
 		label: 'URL Parser',
 		isReady: false,
-	},
-	{
-		href: '/unixTimestamp',
-		label: 'Unix Timestamp Converter',
-		isReady: true,
 	}
 ] as const;
-// TODO: Poprawić tree view do jsona bo nie działa
