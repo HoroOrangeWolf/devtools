@@ -4,7 +4,7 @@ import { ViewDataType, ViewDataTypeConstant } from '@/container/json/constant/vi
 import { ViewType, ViewTypeConstant } from '@/container/json/constant/viewType.constant.ts';
 import { JsonTreeSettings, JsonTreeView, JsonValue } from '@/container/json/view/jsonTreeView.component.tsx';
 import { cn } from '@/lib/utils.ts';
-import { CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
+import { ClipboardCopy, CodeXml, LucideListTree, TextAlignStart } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
 import {
@@ -15,6 +15,8 @@ import { FileService } from '@/service/file.service.ts';
 import { FileDataTypeExtensionMapConstant } from '@/container/json/constant/fileDataTypeExtensionMap.constant.ts';
 import { useDebounceValue } from '@/hooks/useDebounce.hook.ts';
 import { CodeMirrorWrapper } from '@/container/json/view/codeMirrorWrapper.component.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { ClipboardWrapper } from '@/components/clipboardWrapper.component.tsx';
 
 type PropsType = {
 	value?: string;
@@ -210,12 +212,17 @@ export const JsonEditorContainer = ({
 				setIsFocused(false);
 			}}
 		>
-			<div className="flex flex-row justify-start">
+			<div className="flex flex-row justify-between">
 				<ButtonSelectWrapper
 					options={viewOptions}
 					value={jsonViewType}
 					onClick={setJsonViewType}
 				/>
+				<ClipboardWrapper text={targetValue}>
+					<Button variant="outline">
+						<ClipboardCopy />
+					</Button>
+				</ClipboardWrapper>
 			</div>
 			{getView()}
 		</div>
