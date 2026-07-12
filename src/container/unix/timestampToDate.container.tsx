@@ -1,12 +1,14 @@
 import { Input } from '@/components/ui/input.tsx';
 import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
 import { TimestampDescriptorContainer } from '@/container/unix/timestampDescriptor.container.tsx';
-import { useState } from 'react';
-
-const date = Date.now();
+import { useEffect, useState } from 'react';
 
 export const TimestampToDateContainer = () => {
-	const [timestamp, setTimestamp] = useState<number>(date);
+	const [timestamp, setTimestamp] = useState<number>(0);
+
+	useEffect(() => {
+		setTimestamp(Date.now());
+	}, []);
 
 	return (
 		<>

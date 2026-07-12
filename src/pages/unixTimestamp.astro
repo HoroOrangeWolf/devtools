@@ -3,41 +3,40 @@
 import Layout from '@/layouts/Layout.astro';
 import { UnixRoot } from '@/container/unix/unix.root.tsx';
 
-const title = 'CSV Parser and JSON Export Tool | Dev Utils';
+const title = 'Unix Timestamp Converter | Dev Utils';
 const description =
-    'Parse CSV data, adjust delimiter and header options, preview rows, and export clean JSON locally in your browser without uploading files.';
+    'Convert Unix timestamps to readable dates and times, or turn dates into Unix timestamps locally in your browser.';
 const keywords = [
-    'CSV parser',
-    'CSV to JSON',
-    'CSV converter',
-    'local CSV tool',
-    'browser CSV parser',
-    'developer CSV utility',
-    'CSV export JSON',
-    'Papa Parse tool',
+    'Unix timestamp converter',
+    'Unix time converter',
+    'epoch converter',
+    'timestamp to date',
+    'date to timestamp',
+    'epoch time converter',
+    'local timestamp tool',
+    'developer time utility',
 ];
 ---
 <Layout
         title={title}
         description={description}
         keywords={keywords}
-        canonicalPath="/csv"
+        canonicalPath="/unixTimestamp"
         structuredData={{
             '@context': 'https://schema.org',
             '@type': 'WebApplication',
-            name: 'CSV Parser and JSON Export Tool',
+            name: 'Unix Timestamp Converter',
             applicationCategory: 'DeveloperApplication',
             operatingSystem: 'Any',
             browserRequirements: 'Requires a modern browser with JavaScript enabled.',
             description,
-            url: new URL('/csv', Astro.site ?? Astro.url.origin).toString(),
+            url: new URL('/unixTimestamp', Astro.site ?? Astro.url.origin).toString(),
             isAccessibleForFree: true,
             featureList: [
-                'Parse CSV text in the browser',
-                'Change CSV parsing options',
-                'Preview parsed tabular data',
-                'Export parsed CSV data as JSON',
-                'Process data locally without server upload',
+                'Convert Unix timestamps to readable dates and times',
+                'Convert dates and times to Unix timestamps',
+                'Display timestamp details in a selected time zone',
+                'Process date and time values locally in the browser',
             ],
             offers: {
                 '@type': 'Offer',
