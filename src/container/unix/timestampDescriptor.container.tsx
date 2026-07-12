@@ -33,15 +33,15 @@ export const TimestampDescriptorContainer = (props: PropsType) => {
 		<div className="flex flex-col gap-2">
 			<TimezoneSelect onChange={setTimezone} />
 			<div>
-				UTC{' '}
+				{timezone}:&nbsp;
 				<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
-					<span className="cursor-help underline decoration-dotted underline-offset-4">{formatDate(false)}</span>
+					<span className="cursor-help font-bold">{formatDate(true)}</span>
 				</TooltipWrapper>
 			</div>
 			<div>
-				{timezone}{' '}
+				UTC:&nbsp;
 				<TooltipWrapper tooltip={props.isTimestampMode ? 'Timestamp' : dateFormat}>
-					<span className="cursor-help underline decoration-dotted underline-offset-4">{formatDate(true)}</span>
+					<span className="cursor-help font-bold">{formatDate(false)}</span>
 				</TooltipWrapper>
 			</div>
 		</div>
