@@ -1,10 +1,10 @@
 import {
-	Combobox,
+	Combobox, ComboboxChip, ComboboxChips, ComboboxChipsInput,
 	ComboboxContent,
 	ComboboxEmpty,
 	ComboboxInput,
 	ComboboxItem,
-	ComboboxList
+	ComboboxList, ComboboxValue
 } from '@/components/ui/combobox.tsx';
 
 export type ComboboxOption = {
@@ -13,23 +13,78 @@ export type ComboboxOption = {
 }
 
 type PropsType = {
-    options?: ComboboxOption[];
-    value?: string;
-    id?: string;
-    ariaLabel?: string;
-    onChange?: (value: ComboboxOption) => void;
-}
+	options?: ComboboxOption[];
+	id?: string;
+	isDisabled?: boolean;
+	ariaLabel?: string;
+	placeholder?: string;
+} & ({
+	multiple: true;
+	onChange?: (value: ComboboxOption[]) => void;
+	value?: string[];
+} | {
+	multiple?: false;
+	onChange?: (value: ComboboxOption) => void;
+	value?: string;
+})
 
-export const ComboboxWrapper = ({ options, value,onChange, id, ariaLabel }: PropsType) => {
+export const ComboboxWrapper = ({ options, value,onChange, id, ariaLabel, multiple, isDisabled, placeholder }: PropsType) => {
+	const getValue = () => {
+		if (multiple && Array.isArray(value)) {
+			return value.map((value) => ({ label: value, value }));
+		}
+
+		if (!multiple && !Array.isArray(value) && value) {
+			return ({ label: value, value });
+		}
+
+		return;
+	};
+
+	const renderProperSelection = () => {
+		if (multiple) {
+			const val = value ?? [];
+
+			return (
+				<ComboboxChips>
+					<ComboboxValue>
+						{val.map((item) => (
+							<ComboboxChip key={item}>{item}</ComboboxChip>
+						))}
+					</ComboboxValue>
+					<ComboboxChipsInput placeholder={placeholder} />
+				</ComboboxChips>
+			);
+		}
+
+		return 	<ComboboxInput placeholder={placeholder} aria-label={ariaLabel} />;
+	};
+
 	return (
 		<Combobox
 			items={options}
 			id={id}
-			value={value ? ({ label: value, value }) : undefined}
+			multiple={multiple}
+			disabled={isDisabled}
+			value={getValue()}
 			itemToStringValue={(option: ComboboxOption) => option.label}
-			onValueChange={(val) => val && onChange?.(val)}
+			onValueChange={(val: ComboboxOption | ComboboxOption[] | null) => {
+				if (!val) {
+					return;
+				}
+
+				if (multiple && Array.isArray(val)) {
+					onChange?.(val);
+					return;
+				}
+
+				if (!multiple && !Array.isArray(val)) {
+					onChange?.(val);
+					return;
+				}
+			}}
 		>
-			<ComboboxInput placeholder="Select a framework" aria-label={ariaLabel} />
+			{renderProperSelection()}
 			<ComboboxContent>
 				<ComboboxEmpty>No items found.</ComboboxEmpty>
 				<ComboboxList>

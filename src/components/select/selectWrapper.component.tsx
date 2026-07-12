@@ -20,12 +20,14 @@ type PropsType<T = string> = {
 	ariaLabel?: string;
     placeholder?: string;
     defaultValue?: string | number | boolean;
+	fullWidth?: boolean;
+	isDisabled?: boolean;
 	value?: T | '';
 	onChange?: (value: T) => void;
     options?: OptionType<T>[];
 }
 
-export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, value, placeholder, onChange }: PropsType<T>) => {
+export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, value, placeholder, onChange, fullWidth = true, isDisabled }: PropsType<T>) => {
 	const renderOptions = () => {
 		return options.map(({ label, value, tooltip, isDisabled }, index) => (
 			<SelectItem disabled={isDisabled} value={value as string} key={`option-${index}-${label}-${value}`}>
@@ -43,12 +45,14 @@ export const SelectWrapper = <T,>({ id, ariaLabel, options = [], defaultValue, v
 		<Select
 			onValueChange={onChange as any}
 			defaultValue={defaultValue as any}
+			disabled={isDisabled}
 			value={value as any}
 		>
 			<SelectTrigger
 				id={id}
+				disabled={isDisabled}
 				aria-label={ariaLabel}
-				className="w-full"
+				className={fullWidth ? 'w-full' : undefined}
 			>
 				<SelectValue placeholder={placeholder} />
 			</SelectTrigger>
