@@ -10,7 +10,7 @@ export const DateToTimestampContainer = () => {
 	}, []);
 
 	return (
-		<>
+		<div className="flex flex-col gap-2">
 			<DateTimePicker
 				label="Date"
 				onChange={setCurrentDate}
@@ -20,6 +20,6 @@ export const DateToTimestampContainer = () => {
 				isTimestampMode={true}
 				date={currentDate}
 			/>
-		</>
+		</div>
 	);
 };

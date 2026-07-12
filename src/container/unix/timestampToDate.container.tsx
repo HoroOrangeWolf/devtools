@@ -11,7 +11,7 @@ export const TimestampToDateContainer = () => {
 	}, []);
 
 	return (
-		<>
+		<div className="flex flex-col gap-2">
 			<div>
 				<Field>
 					<FieldLabel htmlFor="timestamp_val">UNIX Timestamp</FieldLabel>
@@ -29,6 +29,6 @@ export const TimestampToDateContainer = () => {
 				</Field>
 			</div>
 			<TimestampDescriptorContainer timestamp={timestamp} />
-		</>
+		</div>
 	);
 };
