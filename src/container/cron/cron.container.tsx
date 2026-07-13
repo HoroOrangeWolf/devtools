@@ -22,7 +22,7 @@ export const CronContainer = () => {
 	const [mode, setMode] = useState<CronTypes>(CronTypesConstant.UNIX);
 
 	return (
-		<div>
+		<div className="flex flex-col gap-2">
 			<ButtonSelectWrapper
 				onClick={setMode}
 				value={mode}

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
+import { CronViewComponent } from '@/container/cron/components/cronView.component.tsx';
 
 const options = [
 	CronModeConstant.MINUTE,
@@ -20,6 +21,7 @@ export const UnixCronContainer = () => {
 
 	return (
 		<div className="flex flex-col gap-2" >
+			<CronViewComponent cron="* * * * *" />
 			<ButtonSelectWrapper
 				value={cronMode}
 				options={options}
