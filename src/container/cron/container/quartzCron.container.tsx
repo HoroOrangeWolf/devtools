@@ -4,6 +4,9 @@ import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { ComboboxOption, ComboboxWrapper } from '@/components/comboboxWrapper.component.tsx';
+import { CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
+import { CronWeekDaysConstant } from '@/container/cron/constant/cronWeekDays.constant.ts';
+import { CronMonthsConstant } from '@/container/cron/constant/cronMonths.constant.ts';
 
 type CheckboxProps = {
 	checked?: boolean;
@@ -37,32 +40,45 @@ type QuartzChangeModelType<T = number> = {
 }
 
 type PropsType = {
-	id?: string;
-
+	mode: CronModeType;
 }
 
-export const QuartzCronContainer = ({ id }: PropsType) => {
+const RANGES: Record<CronModeType, string[]> = {
+	MINUTE: Array.from({ length: 60 }, (_, index)=>`${index + 1}`),
+	SECOND: Array.from({ length: 60 },(_,index)=>`${index + 1}`),
+	HOUR: Array.from({ length: 24 }, (_, index)=>`${index + 1}`),
+	DAY: Array.from({ length: 31 }, (_, index)=>`${index + 1}`),
+	WEEK_DAY: Object.values(CronWeekDaysConstant),
+	MONTH: Object.values(CronMonthsConstant),
+	YEAR: Array.from({ length: 129 },(_, index)=>`${index + 1971}`), // 1970-2099
+} as const;
+
+export const QuartzCronContainer = ({ mode }: PropsType) => {
+	const rawOptions = RANGES[mode];
+	const id = `${mode}`;
+
 	const [every, setEvery] = useState<boolean>(true);
-	const [range, setRange] = useState<[number, number]>([1,31]);
+	const [range, setRange] = useState<[string, string]>([rawOptions[0], rawOptions.at(-1) as string]);
 	const [useRange, setUseRange] = useState<boolean>(false);
 	const [useSelected, setUseSelected] = useState<boolean>(false);
 	const [useStep, setUseStep] = useState<boolean>(false);
 	const [step, setStep] = useState<number>(1);
-	const [selected, setSelected] = useState<string[]>(['1', '3']);
+	const [selected, setSelected] = useState<string[]>([rawOptions[0]]);
 
-	const rangeOptions = useMemo((): OptionType<number>[] => {
-		return Array.from({ length: 31 }, (_, i): OptionType<number> => ({
-			label: `${i + 1}`,
-			value: i + 1
+	const rangeOptions = useMemo((): OptionType<string>[] => {
+		return rawOptions.map((val): OptionType<string> => ({
+			label: val,
+			value: val
 		}));
-	}, []);
+	}, [rawOptions]);
 
-	const selectedOptions = useMemo((): ComboboxOption[] => (
-	 Array.from({ length: 31 }, (_, i): ComboboxOption => ({
-			label: `${i + 1}`,
-			value: `${i + 1}`
-		}))),
-		 []
+	const selectedOptions = useMemo((): ComboboxOption[] => {
+		return rawOptions.map((val): ComboboxOption => ({
+			label: val,
+			value: val
+		}));
+	},
+		 [rawOptions]
 	);
 	const handleEveryChange = (value: boolean) => {
 		setEvery(value);
@@ -76,11 +92,11 @@ export const QuartzCronContainer = ({ id }: PropsType) => {
 		setEvery(false);
 	};
 
-	const handleBeginRange = (value: number) => {
+	const handleBeginRange = (value: string) => {
 		setRange([value, range[1]]);
 	};
 
-	const handleEndRange = (value: number) => {
+	const handleEndRange = (value: string) => {
 		setRange([range[0], value]);
 	};
 
