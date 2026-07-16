@@ -1,6 +1,6 @@
 import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { ComboboxOption, ComboboxWrapper } from '@/components/comboboxWrapper.component.tsx';
@@ -32,15 +32,17 @@ const QuartzCreatorCheckbox = ({ checked, onChange, id, label, children, isDisab
 	</Field>
 );
 
-type QuartzChangeModelType<T = number> = {
+type QuartzValueType = {
 	every: boolean;
-	range?: [T, T];
-	selected?: T[];
+	range?: [string, string];
+	selected?: string[];
 	step?: number;
 }
 
 type PropsType = {
 	mode: CronModeType;
+	value?: QuartzValueType;
+	onChange?: (value: QuartzValueType) => void;
 }
 
 const RANGES: Record<CronModeType, string[]> = {
@@ -53,7 +55,7 @@ const RANGES: Record<CronModeType, string[]> = {
 	YEAR: Array.from({ length: 129 },(_, index)=>`${index + 1971}`), // 1970-2099
 } as const;
 
-export const QuartzBuilderContainer = ({ mode }: PropsType) => {
+export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => {
 	const rawOptions = RANGES[mode];
 	const id = `${mode}`;
 
@@ -64,6 +66,37 @@ export const QuartzBuilderContainer = ({ mode }: PropsType) => {
 	const [useStep, setUseStep] = useState<boolean>(false);
 	const [step, setStep] = useState<number>(1);
 	const [selected, setSelected] = useState<string[]>([rawOptions[0]]);
+
+	useEffect(() => {
+		if (!value) {
+			return;
+		}
+
+		if (value.step && !value.selected) {
+			setUseStep(!!value.step);
+			setStep(value.step);
+		}
+
+		setEvery(value.every);
+
+		if (value.every) {
+			setUseRange(false);
+			setUseSelected(false);
+			 return;
+		}
+
+		setUseSelected(!!value.selected);
+		if (value.selected) {
+			setSelected(value.selected);
+			setUseRange(false);
+			return;
+		}
+
+		setUseRange(!!value.range);
+		if (value.range) {
+			setRange(value.range);
+		}
+	},[value]);
 
 	const rangeOptions = useMemo((): OptionType<string>[] => {
 		return rawOptions.map((val): OptionType<string> => ({
@@ -80,6 +113,9 @@ export const QuartzBuilderContainer = ({ mode }: PropsType) => {
 	},
 		 [rawOptions]
 	);
+	
+	const emitOnChange = (partial: Partial<any>)
+	
 	const handleEveryChange = (value: boolean) => {
 		setEvery(value);
 		setUseRange(false);
