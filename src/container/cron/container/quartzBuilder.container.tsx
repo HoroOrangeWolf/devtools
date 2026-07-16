@@ -32,7 +32,7 @@ const QuartzCreatorCheckbox = ({ checked, onChange, id, label, children, isDisab
 	</Field>
 );
 
-type QuartzValueType = {
+export type QuartzValueType = {
 	every: boolean;
 	range?: [string, string];
 	selected?: string[];
