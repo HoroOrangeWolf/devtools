@@ -113,54 +113,111 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 	},
 		 [rawOptions]
 	);
-	
-	const emitOnChange = (partial: Partial<any>)
-	
+
+	const setupEvery = () => {
+		setEvery(true);
+		setUseSelected(false);
+		setUseRange(false);
+		onChange?.({
+			every: true,
+			step: useStep ? step : undefined
+		});
+	};
+
 	const handleEveryChange = (value: boolean) => {
+		if (!value) {
+			return;
+		}
+
+		onChange?.({
+			every: value
+		});
+
 		setEvery(value);
 		setUseRange(false);
 		setUseSelected(false);
 	};
 
+
 	const handleRangeChange = (value: boolean) => {
+		if (!value && !useSelected) {
+			setupEvery();
+			return;
+		}
+
+		onChange?.({
+			every: false,
+			range,
+			step: useStep && value ? step : undefined
+		});
+
 		setUseRange(value);
 		setUseSelected(false);
 		setEvery(false);
 	};
 
 	const handleBeginRange = (value: string) => {
-		setRange([value, range[1]]);
+		const newRange: [string, string] = [value, range[1]];
+
+		setRange(newRange);
+		onChange?.({
+			every: false,
+			step: useStep ? step : undefined,
+			range: newRange
+		});
 	};
 
 	const handleEndRange = (value: string) => {
-		setRange([range[0], value]);
+		const newRange: [string, string] = [range[0], value];
+
+		setRange(newRange);
+
+		onChange?.({
+			every: false,
+			step: useStep ? step : undefined,
+			range: newRange
+		});
 	};
 
 	const handleStepChange = (value: boolean) => {
 		setUseStep(value);
 		setUseSelected(false);
+		setEvery(!useRange);
 
-		if (useRange) {
-			return;
-		}
-
-		setEvery(true);
+		onChange?.({
+			every: every || !useRange,
+			range: useRange ? range : undefined,
+			step: value ? step : undefined,
+			selected: useSelected ? selected : undefined
+		});
 	};
 
 	const handleEnableSelected = (value: boolean) => {
 		setUseSelected(value);
 
 		if (!value) {
+			setEvery(true);
+			onChange?.({
+				every: true,
+			});
 			return;
 		}
 
 		setEvery(false);
 		setUseRange(false);
 		setUseStep(false);
+		onChange?.({
+			every: false,
+			selected
+		});
 	};
 
 	const handleChangeSelected = (value: ComboboxOption[]) => {
 	  const selected = 	[...new Set<string>(value.map(({ value })=>value))];
+	  onChange?.({
+		  every: false,
+		  selected
+	  });
 	  setSelected(selected);
 	};
 
