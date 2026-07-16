@@ -52,12 +52,12 @@ export const ComboboxWrapper = ({ options, value,onChange, id, ariaLabel, multip
 							<ComboboxChip key={item}>{item}</ComboboxChip>
 						))}
 					</ComboboxValue>
-					<ComboboxChipsInput placeholder={placeholder} />
+					<ComboboxChipsInput disabled={isDisabled} placeholder={placeholder} />
 				</ComboboxChips>
 			);
 		}
 
-		return 	<ComboboxInput placeholder={placeholder} aria-label={ariaLabel} />;
+		return <ComboboxInput disabled={isDisabled} placeholder={placeholder} aria-label={ariaLabel} />;
 	};
 
 	return (
