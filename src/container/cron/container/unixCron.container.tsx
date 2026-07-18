@@ -1,10 +1,11 @@
 import { QuartzBuilderContainer, QuartzValueType } from '@/container/cron/container/quartzBuilder.container.tsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
-import { CronViewComponent } from '@/container/cron/components/cronView.component.tsx';
+import { CronInput } from '@/container/cron/components/cronInput.tsx';
 import { CronBuilderService } from '@/container/cron/service/cronBuilder.service.ts';
+import { BannerComponent } from '@/components/banner.component.tsx';
 
 const modes: CronModeType[] =  [
 	CronModeConstant.MINUTE,
@@ -25,6 +26,8 @@ const defaultState: QuartzValueType = {
 
 export const UnixCronContainer = () => {
 	const [cronMode, setCronMode] = useState<CronModeType>(CronModeConstant.MINUTE);
+	const [cron, setCron] = useState<string>('* * * * * *');
+	const [errorMessage, setErrorMessage] = useState<string>();
 	const [buildState, setBuilderState] = 	useState<QuartzValueType[]>(() => Array.from({ length: modes.length }, ()=>defaultState));
 
 	const currentIndex = modes.indexOf(cronMode);
@@ -38,12 +41,19 @@ export const UnixCronContainer = () => {
 		setBuilderState(buffState);
 	};
 
-	// TODO: dodać errory
-	const cron =	useMemo(() => CronBuilderService.buildCron(buildState), [buildState]);
-
+	useEffect(() => {
+		try {
+			const builtCron = CronBuilderService.buildCron(buildState);
+			setCron(builtCron);
+		} catch (error) {
+			console.error('Failed to create cron', error);
+			setErrorMessage('Failed to parse current build state');
+		}
+	}, [buildState]);
+	
 	return (
 		<div className="flex flex-col gap-2" >
-			<CronViewComponent cron={cron} />
+			<CronInput cron={cron} />
 			<ButtonSelectWrapper
 				value={cronMode}
 				options={options}
@@ -55,6 +65,12 @@ export const UnixCronContainer = () => {
 				value={currentStateValue}
 				onChange={onChange}
 			/>
+			<BannerComponent
+				title="Error"
+				className={errorMessage ? 'opacity-100' : 'opacity-0'}
+			>
+				{errorMessage}
+			</BannerComponent>
 		</div>
 	);
 };
