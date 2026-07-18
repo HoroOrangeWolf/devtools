@@ -1,10 +1,10 @@
-import { Field, FieldContent, FieldLabel } from '@/components/ui/field.tsx';
+import { Field, FieldContent, FieldDescription, FieldLabel } from '@/components/ui/field.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { ComboboxOption, ComboboxWrapper } from '@/components/comboboxWrapper.component.tsx';
-import { CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
+import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { CronWeekDaysConstant } from '@/container/cron/constant/cronWeekDays.constant.ts';
 import { CronMonthsConstant } from '@/container/cron/constant/cronMonths.constant.ts';
 
@@ -12,12 +12,13 @@ type CheckboxProps = {
 	checked?: boolean;
 	onChange?: (value: boolean) => void;
 	isDisabled?: boolean;
+	description?: string;
 	id?: string;
 	label?: React.ReactNode;
 	children?: React.ReactNode;
 }
 
-const QuartzCreatorCheckbox = ({ checked, onChange, id, label, children, isDisabled }: CheckboxProps) => (
+const QuartzCreatorCheckbox = ({ checked, onChange, id, label, children, isDisabled, description }: CheckboxProps) => (
 	<Field orientation="horizontal">
 		<Checkbox
 			id={id}
@@ -27,6 +28,11 @@ const QuartzCreatorCheckbox = ({ checked, onChange, id, label, children, isDisab
 		/>
 		<FieldContent>
 			<FieldLabel htmlFor={id}>{label}</FieldLabel>
+			{description && (
+				<FieldDescription>
+					{description}
+				</FieldDescription>
+			)}
 			{children}
 		</FieldContent>
 	</Field>
@@ -34,6 +40,7 @@ const QuartzCreatorCheckbox = ({ checked, onChange, id, label, children, isDisab
 
 export type QuartzValueType = {
 	every: boolean;
+	isPositionBased: boolean;
 	range?: [string, string];
 	selected?: string[];
 	step?: number;
@@ -55,10 +62,18 @@ const RANGES: Record<CronModeType, string[]> = {
 	YEAR: Array.from({ length: 129 },(_, index)=>`${index + 1971}`), // 1970-2099
 } as const;
 
+const CAN_USE_POSITION_BASE: CronModeType[] = [
+	CronModeConstant.MONTH,
+	CronModeConstant.WEEK_DAY
+] as const;
+
 export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => {
 	const rawOptions = RANGES[mode];
 	const id = `${mode}`;
 
+	const canUsePositionBase = CAN_USE_POSITION_BASE.includes(mode);
+
+	const [usePositionBase, setUsePositionBase] = useState<boolean>(!!value?.isPositionBased && canUsePositionBase);
 	const [every, setEvery] = useState<boolean>(true);
 	const [range, setRange] = useState<[string, string]>([rawOptions[0], rawOptions.at(-1) as string]);
 	const [useRange, setUseRange] = useState<boolean>(false);
@@ -71,6 +86,8 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		if (!value) {
 			return;
 		}
+
+		setUsePositionBase(!!value?.isPositionBased && canUsePositionBase);
 
 		if (value.step && !value.selected) {
 			setUseStep(!!value.step);
@@ -98,8 +115,8 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		}
 	},[value]);
 
-	const rangeOptions = useMemo((): OptionType<string>[] => {
-		return rawOptions.map((val): OptionType<string> => ({
+	const rangeOptions = useMemo((): OptionType[] => {
+		return rawOptions.map((val): OptionType => ({
 			label: val,
 			value: val
 		}));
@@ -119,6 +136,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		setUseSelected(false);
 		setUseRange(false);
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: true,
 			step: useStep ? step : undefined
 		});
@@ -130,6 +148,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		}
 
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: value
 		});
 
@@ -146,6 +165,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		}
 
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: false,
 			range,
 			step: useStep && value ? step : undefined
@@ -161,6 +181,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 
 		setRange(newRange);
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: false,
 			step: useStep ? step : undefined,
 			range: newRange
@@ -173,6 +194,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		setRange(newRange);
 
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: false,
 			step: useStep ? step : undefined,
 			range: newRange
@@ -185,6 +207,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		setEvery(!useRange);
 
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: every || !useRange,
 			range: useRange ? range : undefined,
 			step: value ? step : undefined,
@@ -198,6 +221,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		if (!value) {
 			setEvery(true);
 			onChange?.({
+				isPositionBased: usePositionBase,
 				every: true,
 			});
 			return;
@@ -207,6 +231,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 		setUseRange(false);
 		setUseStep(false);
 		onChange?.({
+			isPositionBased: usePositionBase,
 			every: false,
 			selected
 		});
@@ -215,6 +240,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 	const handleChangeSelected = (value: ComboboxOption[]) => {
 	  const selected = 	[...new Set<string>(value.map(({ value })=>value))];
 	  onChange?.({
+		  isPositionBased: usePositionBase,
 		  every: false,
 		  selected
 	  });
@@ -223,6 +249,17 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 
 	return (
 		<div className="flex flex-col gap-2">
+			{canUsePositionBase && (
+				<QuartzCreatorCheckbox
+					label="Position Base"
+					description={'Some Cron parsers might not support names like (e.g. day of week Mon,Wed,Thu...), instead they might require it\'s position.'}
+					id={id && `${id}-position-base`}
+					onChange={(e) => {
+						setUsePositionBase(e);
+					}}
+					checked={usePositionBase}
+				/>
+			)}
 			<QuartzCreatorCheckbox
 				label="Every Second"
 				id={id && `${id}-every`}

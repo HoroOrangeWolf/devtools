@@ -1,9 +1,9 @@
 import { QuartzBuilderContainer, QuartzValueType } from '@/container/cron/container/quartzBuilder.container.tsx';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
-import { CronInput } from '@/container/cron/components/cronInput.tsx';
+import { CronInput } from '@/container/cron/container/cronInput.container.tsx';
 import { CronBuilderService } from '@/container/cron/service/cronBuilder.service.ts';
 import { BannerComponent } from '@/components/banner.component.tsx';
 
@@ -16,12 +16,13 @@ const modes: CronModeType[] =  [
 ];
 
 const options = modes.map((opt): OptionType<CronModeType> => ({
-	label: opt,
+	label: opt.replace('_', ' '),
 	value: opt
 }));
 
 const defaultState: QuartzValueType = {
 	every: true,
+	isPositionBased: false,
 };
 
 export const UnixCronContainer = () => {
@@ -50,6 +51,8 @@ export const UnixCronContainer = () => {
 			setErrorMessage('Failed to parse current build state');
 		}
 	}, [buildState]);
+
+	// TODO: Dodać parsowanie cronów
 	
 	return (
 		<div className="flex flex-col gap-2" >

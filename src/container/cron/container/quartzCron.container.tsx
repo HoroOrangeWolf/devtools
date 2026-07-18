@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
-import { CronViewComponent } from '@/container/cron/components/cronView.component.tsx';
+import { CronInput } from '@/container/cron/container/cronInput.container.tsx';
 
 const options = [
 	CronModeConstant.SECOND,
@@ -23,7 +23,7 @@ export const QuartzCronContainer = () => {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<CronViewComponent cron="* * * * * * 2015" isQuartz />
+			<CronInput cron="* * * * * * 2015" isQuartz />
 			<ButtonSelectWrapper
 				options={options}
 				onClick={setCronMode}

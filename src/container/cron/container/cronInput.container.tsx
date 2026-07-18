@@ -58,7 +58,7 @@ export const CronInput = ({ cron, isQuartz, onChange }: PropsType) => {
 	const buildFragments = () => {
 		return fragments.map((fragment, index) => (
 			<Input
-				className="block overflow-x-auto rounded-lg border bg-muted/50 px-4 py-3 text-center font-mono text-2xl font-semibold tracking-wide text-foreground sm:text-3xl"
+				className="block overflow-x-auto rounded-lg border bg-muted/50 p-2 text-center font-mono text-2xl font-semibold tracking-wide text-foreground sm:text-3xl w-10 min-w-0"
 				key={index}
 				value={fragment}
 				onChange={(e) => emitChangeEvent(e.target.value, index)}
