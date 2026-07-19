@@ -60,7 +60,7 @@ const CAN_USE_POSITION_BASE: CronModeType[] = [
 	CronModeConstant.WEEK_DAY
 ] as const;
 
-export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => {
+export const QuartzFragmentContainer = ({ mode, value, onChange }: PropsType) => {
 	const rawOptions = QuartzRangesConstant[mode];
 	const id = `${mode}`;
 

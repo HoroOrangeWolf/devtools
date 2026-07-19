@@ -1,4 +1,4 @@
-import { QuartzValueWithModeType } from '@/container/cron/container/quartzBuilder.container.tsx';
+import { QuartzValueWithModeType } from '@/container/cron/container/quartzFragment.container.tsx';
 import { QuartzRangesConstant } from '@/container/cron/constant/quartzRanges.constant.ts';
 
 const getCronPartValue = (quartzValuePart: QuartzValueWithModeType) => {

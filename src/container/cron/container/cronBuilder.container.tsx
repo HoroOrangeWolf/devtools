@@ -1,9 +1,9 @@
 import {
-	QuartzBuilderContainer,
+	QuartzFragmentContainer,
 	QuartzValueType,
 	QuartzValueWithModeType
-} from '@/container/cron/container/quartzBuilder.container.tsx';
-import { useEffect, useState } from 'react';
+} from '@/container/cron/container/quartzFragment.container.tsx';
+import { useEffect, useMemo, useState } from 'react';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
@@ -20,21 +20,40 @@ const modes: CronModeType[] =  [
 	CronModeConstant.WEEK_DAY
 ];
 
-const options = modes.map((opt): OptionType<CronModeType> => ({
-	label: opt.replace('_', ' '),
-	value: opt
-}));
+const quartzModes: CronModeType[] = [
+	CronModeConstant.SECOND,
+	CronModeConstant.MINUTE,
+	CronModeConstant.HOUR,
+	CronModeConstant.DAY,
+	CronModeConstant.MONTH,
+	CronModeConstant.WEEK_DAY,
+	CronModeConstant.YEAR,
+] as const;
 
 const defaultState: QuartzValueType = {
 	every: true,
 	isPositionBased: false,
 };
 
-export const UnixCronContainer = () => {
+type PropsType = {
+	isQuartz: boolean;
+}
+
+const QUARTZ_DEFAULT = '* * * * * * *';
+const UNIX_DEFAULT = '* * * * *';
+
+export const CronBuilder = ({ isQuartz }: PropsType) => {
+	const options =	useMemo(() => (isQuartz ? quartzModes : modes).map((opt): OptionType<CronModeType> => ({
+		label: opt.replace('_', ' '),
+		value: opt
+	})),
+	[isQuartz]
+	);
+
 	const [cronMode, setCronMode] = useState<CronModeType>(CronModeConstant.MINUTE);
-	const [cron, setCron] = useState<string>('* * * * * *');
+	const [cron, setCron] = useState<string>(isQuartz ? QUARTZ_DEFAULT : UNIX_DEFAULT);
 	const [errorMessage, setErrorMessage] = useState<string>();
-	const [buildState, setBuilderState] = 	useState<QuartzValueType[]>(() => Array.from({ length: modes.length }, ()=>defaultState));
+	const [buildState, setBuilderState] = 	useState<QuartzValueType[]>(() => Array.from({ length: options.length }, ()=>defaultState));
 
 	const currentIndex = modes.indexOf(cronMode);
 
@@ -78,13 +97,13 @@ export const UnixCronContainer = () => {
 	
 	return (
 		<div className="flex flex-col gap-2" >
-			<CronInput cron={cron} onChange={onInputChange} />
+			<CronInput cron={cron} isQuartz={isQuartz} onChange={onInputChange} />
 			<ButtonSelectWrapper
 				value={cronMode}
 				options={options}
 				onClick={setCronMode}
 			/>
-			<QuartzBuilderContainer
+			<QuartzFragmentContainer
 				key={cronMode}
 				mode={cronMode}
 				value={currentStateValue}

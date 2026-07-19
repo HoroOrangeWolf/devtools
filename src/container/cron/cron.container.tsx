@@ -2,8 +2,7 @@ import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.com
 import { OptionType } from '@/components/select/selectWrapper.component.tsx';
 import { CronTypes, CronTypesConstant } from '@/container/cron/constant/cronTypes.constant.ts';
 import { useState } from 'react';
-import { UnixCronContainer } from '@/container/cron/container/unixCron.container.tsx';
-import { QuartzCronContainer } from '@/container/cron/container/quartzCron.container.tsx';
+import { CronBuilder } from '@/container/cron/container/cronBuilder.container.tsx';
 
 type ButtonOptionType = OptionType<CronTypes>;
 
@@ -28,8 +27,8 @@ export const CronContainer = () => {
 				value={mode}
 				options={options}
 			/>
-			{mode === CronTypesConstant.QUARTZ && <QuartzCronContainer />}
-			{mode === CronTypesConstant.UNIX && <UnixCronContainer />}
+			{mode === CronTypesConstant.QUARTZ && <CronBuilder isQuartz={true}  />}
+			{mode === CronTypesConstant.UNIX && <CronBuilder isQuartz={false} />}
 		</div>
 	);
 };

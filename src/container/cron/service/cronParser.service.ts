@@ -1,4 +1,4 @@
-import type { QuartzValueWithModeType } from '@/container/cron/container/quartzBuilder.container.tsx';
+import type { QuartzValueWithModeType } from '@/container/cron/container/quartzFragment.container.tsx';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { QuartzRangesConstant } from '@/container/cron/constant/quartzRanges.constant.ts';
 
