@@ -81,11 +81,22 @@ export const CronBuilder = ({ isQuartz }: PropsType) => {
 		}
 	}, [buildState]);
 
-	const onInputChange = (cron: string) => {
+	const onInputChange = (cronValue: string) => {
 		try {
+			const newCron = cronValue.split(' ');
+			const oldCron = cron.split(' ');
+
+			for (const [index, element] of newCron.entries()) {
+				if (element === oldCron[index]) {
+					continue;
+				}
+
+				setCronMode(options[index].value);
+			}
+
 			setErrorMessage(undefined);
-			setCron(cron);
-			const parsedCron =	CronParserService.parseCron(cron, false);
+			setCron(cronValue);
+			const parsedCron =	CronParserService.parseCron(cronValue, isQuartz);
 
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			setBuilderState(parsedCron.map(({ mode, ...fragment }): QuartzValueType => fragment));
