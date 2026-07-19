@@ -1,4 +1,8 @@
-import { QuartzBuilderContainer, QuartzValueType } from '@/container/cron/container/quartzBuilder.container.tsx';
+import {
+	QuartzBuilderContainer,
+	QuartzValueType,
+	QuartzValueWithModeType
+} from '@/container/cron/container/quartzBuilder.container.tsx';
 import { useEffect, useState } from 'react';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
 import { ButtonSelectWrapper } from '@/components/select/buttonSelectWrapper.component.tsx';
@@ -44,15 +48,18 @@ export const UnixCronContainer = () => {
 
 	useEffect(() => {
 		try {
-			const builtCron = CronBuilderService.buildCron(buildState);
+			const withModes = modes.map((mode, index): QuartzValueWithModeType => ({
+				mode,
+				...buildState[index]
+			}));
+
+			const builtCron = CronBuilderService.buildCron(withModes);
 			setCron(builtCron);
 		} catch (error) {
 			console.error('Failed to create cron', error);
 			setErrorMessage('Failed to parse current build state');
 		}
 	}, [buildState]);
-
-	// TODO: Dodać parsowanie cronów
 	
 	return (
 		<div className="flex flex-col gap-2" >

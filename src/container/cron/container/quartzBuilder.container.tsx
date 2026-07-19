@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input.tsx';
 import { OptionType, SelectWrapper } from '@/components/select/selectWrapper.component.tsx';
 import { ComboboxOption, ComboboxWrapper } from '@/components/comboboxWrapper.component.tsx';
 import { CronModeConstant, CronModeType } from '@/container/cron/constant/cronMode.constant.ts';
-import { CronWeekDaysConstant } from '@/container/cron/constant/cronWeekDays.constant.ts';
-import { CronMonthsConstant } from '@/container/cron/constant/cronMonths.constant.ts';
+import { QuartzRangesConstant } from '@/container/cron/constant/quartzRanges.constant.ts';
 
 type CheckboxProps = {
 	checked?: boolean;
@@ -46,21 +45,15 @@ export type QuartzValueType = {
 	step?: number;
 }
 
+export type QuartzValueWithModeType = QuartzValueType & {
+	mode: CronModeType;
+}
+
 type PropsType = {
 	mode: CronModeType;
 	value?: QuartzValueType;
 	onChange?: (value: QuartzValueType) => void;
 }
-
-const RANGES: Record<CronModeType, string[]> = {
-	MINUTE: Array.from({ length: 60 }, (_, index)=>`${index + 1}`),
-	SECOND: Array.from({ length: 60 },(_,index)=>`${index + 1}`),
-	HOUR: Array.from({ length: 24 }, (_, index)=>`${index + 1}`),
-	DAY: Array.from({ length: 31 }, (_, index)=>`${index + 1}`),
-	WEEK_DAY: Object.values(CronWeekDaysConstant),
-	MONTH: Object.values(CronMonthsConstant),
-	YEAR: Array.from({ length: 129 },(_, index)=>`${index + 1971}`), // 1970-2099
-} as const;
 
 const CAN_USE_POSITION_BASE: CronModeType[] = [
 	CronModeConstant.MONTH,
@@ -68,7 +61,7 @@ const CAN_USE_POSITION_BASE: CronModeType[] = [
 ] as const;
 
 export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => {
-	const rawOptions = RANGES[mode];
+	const rawOptions = QuartzRangesConstant[mode];
 	const id = `${mode}`;
 
 	const canUsePositionBase = CAN_USE_POSITION_BASE.includes(mode);
@@ -247,6 +240,23 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 	  setSelected(selected);
 	};
 
+	const changePositionBase = (val: boolean) => {
+		setUsePositionBase(val);
+
+		if (value) {
+			onChange?.({
+				...value,
+				isPositionBased: val,
+			});
+			return;
+		}
+
+		onChange?.({
+			isPositionBased: val,
+			every: true
+		});
+	};
+
 	return (
 		<div className="flex flex-col gap-2">
 			{canUsePositionBase && (
@@ -254,9 +264,7 @@ export const QuartzBuilderContainer = ({ mode, value, onChange }: PropsType) => 
 					label="Position Base"
 					description={'Some Cron parsers might not support names like (e.g. day of week Mon,Wed,Thu...), instead they might require it\'s position.'}
 					id={id && `${id}-position-base`}
-					onChange={(e) => {
-						setUsePositionBase(e);
-					}}
+					onChange={changePositionBase}
 					checked={usePositionBase}
 				/>
 			)}
