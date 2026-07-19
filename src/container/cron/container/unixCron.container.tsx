@@ -10,6 +10,7 @@ import { OptionType } from '@/components/select/selectWrapper.component.tsx';
 import { CronInput } from '@/container/cron/container/cronInput.container.tsx';
 import { CronBuilderService } from '@/container/cron/service/cronBuilder.service.ts';
 import { BannerComponent } from '@/components/banner.component.tsx';
+import { CronParserService } from '@/container/cron/service/cronParser.service.ts';
 
 const modes: CronModeType[] =  [
 	CronModeConstant.MINUTE,
@@ -60,10 +61,24 @@ export const UnixCronContainer = () => {
 			setErrorMessage('Failed to parse current build state');
 		}
 	}, [buildState]);
+
+	const onInputChange = (cron: string) => {
+		try {
+			setErrorMessage(undefined);
+			setCron(cron);
+			const parsedCron =	CronParserService.parseCron(cron, false);
+
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			setBuilderState(parsedCron.map(({ mode, ...fragment }): QuartzValueType => fragment));
+		} catch(error) {
+			console.error('Failed to parse cron', error);
+			setErrorMessage(`Failed to parse cron, due to: ${(error as Error).message}`);
+		}
+	};
 	
 	return (
 		<div className="flex flex-col gap-2" >
-			<CronInput cron={cron} />
+			<CronInput cron={cron} onChange={onInputChange} />
 			<ButtonSelectWrapper
 				value={cronMode}
 				options={options}
