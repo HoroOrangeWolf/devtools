@@ -58,7 +58,7 @@ export const CronInput = ({ cron, isQuartz, onChange }: PropsType) => {
 	const buildFragments = () => {
 		return fragments.map((fragment, index) => (
 			<Input
-				className="block overflow-x-auto rounded-lg border bg-muted/50 p-2 text-center font-mono text-2xl font-semibold tracking-wide text-foreground sm:text-3xl w-10 min-w-0"
+				className="block overflow-x-auto rounded-lg border bg-muted/50 p-2 text-center font-mono text-2xl font-semibold tracking-wide text-foreground sm:text-3xl min-w-0"
 				key={index}
 				value={fragment}
 				onChange={(e) => emitChangeEvent(e.target.value, index)}
@@ -72,8 +72,8 @@ export const CronInput = ({ cron, isQuartz, onChange }: PropsType) => {
 			aria-live="polite"
 		>
 			<div className="space-y-4 px-4 py-5 sm:px-5">
-				<div className="w-full flex flex-row justify-center">
-					<div className={cn('grid gap-2', isQuartz ? 'grid-cols-8' : 'grid-cols-6')}>
+				<div className="w-full flex flex-row justify-center items-center">
+					<div className={cn('grid gap-2', isQuartz ? 'grid-cols-7' : 'grid-cols-5')}>
 						{buildFragments()}
 					</div>
 				</div>
