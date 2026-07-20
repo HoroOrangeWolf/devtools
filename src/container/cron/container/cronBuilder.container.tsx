@@ -87,11 +87,10 @@ export const CronBuilder = ({ isQuartz }: PropsType) => {
 			const oldCron = cron.split(' ');
 
 			for (const [index, element] of newCron.entries()) {
-				if (element === oldCron[index]) {
-					continue;
+				if (element !== oldCron[index]) {
+					setCronMode(options[index].value);
+					break;
 				}
-
-				setCronMode(options[index].value);
 			}
 
 			setErrorMessage(undefined);
