@@ -3,9 +3,9 @@ import { CronWeekDaysConstant } from '@/container/cron/constant/cronWeekDays.con
 import { CronMonthsConstant } from '@/container/cron/constant/cronMonths.constant.ts';
 
 export const QuartzRangesConstant: Record<CronModeType, string[]> = {
-	MINUTE: Array.from({ length: 60 }, (_, index) => `${index + 1}`),
-	SECOND: Array.from({ length: 60 }, (_, index) => `${index + 1}`),
-	HOUR: Array.from({ length: 24 }, (_, index) => `${index + 1}`),
+	MINUTE: Array.from({ length: 60 }, (_, index) => `${index }`),
+	SECOND: Array.from({ length: 60 }, (_, index) => `${index}`),
+	HOUR: Array.from({ length: 24 }, (_, index) => `${index}`),
 	DAY: Array.from({ length: 31 }, (_, index) => `${index + 1}`),
 	WEEK_DAY: Object.values(CronWeekDaysConstant),
 	MONTH: Object.values(CronMonthsConstant),
