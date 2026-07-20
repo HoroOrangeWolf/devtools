@@ -12,7 +12,7 @@ import { CronBuilderService } from '@/container/cron/service/cronBuilder.service
 import { BannerComponent } from '@/components/banner.component.tsx';
 import { CronParserService } from '@/container/cron/service/cronParser.service.ts';
 
-const modes: CronModeType[] =  [
+const unixModes: CronModeType[] =  [
 	CronModeConstant.MINUTE,
 	CronModeConstant.HOUR,
 	CronModeConstant.DAY,
@@ -43,11 +43,13 @@ const QUARTZ_DEFAULT = '* * * * * * *';
 const UNIX_DEFAULT = '* * * * *';
 
 export const CronBuilder = ({ isQuartz }: PropsType) => {
-	const options =	useMemo(() => (isQuartz ? quartzModes : modes).map((opt): OptionType<CronModeType> => ({
+	const modes = isQuartz ? quartzModes : unixModes;
+
+	const options =	useMemo(() => modes.map((opt): OptionType<CronModeType> => ({
 		label: opt.replace('_', ' '),
 		value: opt
 	})),
-	[isQuartz]
+	[modes]
 	);
 
 	const [cronMode, setCronMode] = useState<CronModeType>(CronModeConstant.MINUTE);
