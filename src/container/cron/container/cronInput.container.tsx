@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 import cronstrue from 'cronstrue';
 import { Input } from '@/components/ui/input.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
+import { ToastUtils } from '@/utils/toast.utils.ts';
+import { ClipboardCopy } from 'lucide-react';
 
 type PropsType = {
     cron: string;
@@ -55,9 +58,20 @@ export const CronInput = ({ cron, isQuartz, onChange }: PropsType) => {
 		onChange?.(rawCron);
 	};
 
+	const copyCron = async () => {
+		try {
+			await navigator.clipboard.writeText(cron);
+			ToastUtils.info('Cron trigger has been copied to clipboard');
+		} catch (error) {
+			console.error('Failed to copy cron trigger to clipboard', error);
+			ToastUtils.error('Could not copy cron trigger');
+		}
+	};
+
 	const buildFragments = () => {
 		return fragments.map((fragment, index) => (
 			<Input
+				aria-label={`Cron fragment ${index + 1} of ${expectedSize}`}
 				className="block overflow-x-auto rounded-lg border bg-muted/50 p-2 text-center font-mono text-2xl font-semibold tracking-wide text-foreground sm:text-3xl min-w-0"
 				key={index}
 				value={fragment}
@@ -72,9 +86,22 @@ export const CronInput = ({ cron, isQuartz, onChange }: PropsType) => {
 			aria-live="polite"
 		>
 			<div className="space-y-4 px-4 py-5 sm:px-5">
-				<div className="w-full flex flex-row justify-center items-center">
-					<div className={cn('grid gap-2', isQuartz ? 'grid-cols-7' : 'grid-cols-5')}>
-						{buildFragments()}
+				<div className="flex flex-col gap-2">
+					<div className="flex flex-row justify-end">
+						<Button
+							type="button"
+							variant="outline"
+							onClick={copyCron}
+						>
+							<ClipboardCopy />
+							Copy trigger
+						</Button>
+					</div>
+					<p className="text-sm font-medium text-muted-foreground">Cron trigger</p>
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+						<div className={cn('grid min-w-0 flex-1 gap-2', isQuartz ? 'grid-cols-7' : 'grid-cols-5')}>
+							{buildFragments()}
+						</div>
 					</div>
 				</div>
 				<div>
