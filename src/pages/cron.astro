@@ -2,41 +2,43 @@
 import Layout from '@/layouts/Layout.astro';
 import { CronRoot } from '@/container/cron/cron.root.tsx';
 
-const title = 'CSV Parser and JSON Export Tool | Dev Utils';
+const title = 'Cron Expression Generator for Unix and Quartz | Dev Utils';
 const description =
-    'Parse CSV data, adjust delimiter and header options, preview rows, and export clean JSON locally in your browser without uploading files.';
+    'Build, edit, validate, and explain Unix and Quartz cron expressions in your browser, with an execution preview coming soon.';
 const keywords = [
-    'CSV parser',
-    'CSV to JSON',
-    'CSV converter',
-    'local CSV tool',
-    'browser CSV parser',
-    'developer CSV utility',
-    'CSV export JSON',
-    'Papa Parse tool',
+    'cron expression generator',
+    'cron schedule builder',
+    'cron expression parser',
+    'Unix cron generator',
+    'Quartz cron generator',
+    'cron expression validator',
+    'cron expression editor',
+    'cron expression explainer',
+    'cron execution preview',
 ];
 ---
 <Layout
         title={title}
         description={description}
         keywords={keywords}
-        canonicalPath="/csv"
+        canonicalPath="/cron"
         structuredData={{
             '@context': 'https://schema.org',
             '@type': 'WebApplication',
-            name: 'CSV Parser and JSON Export Tool',
+            name: 'Cron Expression Generator for Unix and Quartz',
             applicationCategory: 'DeveloperApplication',
             operatingSystem: 'Any',
             browserRequirements: 'Requires a modern browser with JavaScript enabled.',
             description,
-            url: new URL('/csv', Astro.site ?? Astro.url.origin).toString(),
+            url: new URL('/cron', Astro.site ?? Astro.url.origin).toString(),
             isAccessibleForFree: true,
             featureList: [
-                'Parse CSV text in the browser',
-                'Change CSV parsing options',
-                'Preview parsed tabular data',
-                'Export parsed CSV data as JSON',
-                'Process data locally without server upload',
+                'Build Unix cron expressions',
+                'Build Quartz cron expressions',
+                'Edit and validate individual cron fields',
+                'Convert cron expressions into readable descriptions',
+                'Copy generated cron expressions to the clipboard',
+                'Upcoming preview of scheduled execution times',
             ],
             offers: {
                 '@type': 'Offer',
@@ -47,10 +49,11 @@ const keywords = [
 >
     <section class="space-y-6">
         <div class="space-y-2">
-            <p class="text-primary text-sm font-medium">CSV</p>
-            <h2 class="text-2xl font-semibold tracking-tight">Utils</h2>
+            <p class="text-primary text-sm font-medium">Generator</p>
+            <h2 class="text-2xl font-semibold tracking-tight">Cron Expression Generator</h2>
             <p class="text-muted-foreground text-sm">
-                Parse CSV, change CSV options and export to JSON.
+                Build, validate, and explain Unix and Quartz cron expressions. Execution preview is
+                coming soon.
             </p>
         </div>
 
