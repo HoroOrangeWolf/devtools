@@ -62,7 +62,7 @@ const getCronPartValue = (isQuartz: boolean, quartzValuePart: QuartzValueWithMod
 };
 
 const buildCron = (isQuartz: boolean, quartzValues: QuartzValueWithModeType[]) => {
-	return quartzValues.map((quartzValue) => getCronPartValue(quartzValue)).join(' ');
+	return quartzValues.map((quartzValue) => getCronPartValue(isQuartz,quartzValue)).join(' ');
 };
 
 export const CronBuilderService = {
