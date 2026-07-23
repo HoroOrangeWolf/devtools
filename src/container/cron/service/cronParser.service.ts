@@ -33,7 +33,8 @@ const invalidField = (mode: CronModeType, fragment: string, reason: string): Err
 const normalizeValues = (
 	rawValues: string[],
 	mode: CronModeType,
-	fragment: string
+	fragment: string,
+	isQuartz: boolean
 ): ParsedValuesType => {
 	const allowedValues = QuartzRangesConstant[mode];
 	const canBePositionBased = POSITION_BASED_MODES.has(mode);
@@ -46,6 +47,16 @@ const normalizeValues = (
 	if (canBePositionBased && numericValues.every(Boolean)) {
 		const values = rawValues.map((value) => {
 			const position = Number(value);
+
+			if (mode === CronModeConstant.WEEK_DAY && !isQuartz) {
+				if (!Number.isSafeInteger(position) || position < 0 || position > allowedValues.length) {
+					throw invalidField(mode, fragment, `position must be between 0 and ${allowedValues.length}`);
+				}
+
+				return position === 0 || position === allowedValues.length
+					? allowedValues[0]
+					: allowedValues[position];
+			}
 
 			if (!Number.isSafeInteger(position) || position < 1 || position > allowedValues.length) {
 				throw invalidField(mode, fragment, `position must be between 1 and ${allowedValues.length}`);
@@ -102,7 +113,11 @@ const parseStep = (fragment: string, mode: CronModeType): { value: string; step?
 	return { value, step };
 };
 
-const parseFragment = (fragment: string, mode: CronModeType): QuartzValueWithModeType => {
+const parseFragment = (
+	fragment: string,
+	mode: CronModeType,
+	isQuartz: boolean
+): QuartzValueWithModeType => {
 	const { value, step } = parseStep(fragment, mode);
 
 	if (value === '*') {
@@ -125,7 +140,7 @@ const parseFragment = (fragment: string, mode: CronModeType): QuartzValueWithMod
 			throw invalidField(mode, fragment, 'selected values cannot be empty');
 		}
 
-		const parsed = normalizeValues(rawValues, mode, fragment);
+		const parsed = normalizeValues(rawValues, mode, fragment, isQuartz);
 
 		return {
 			mode,
@@ -142,7 +157,7 @@ const parseFragment = (fragment: string, mode: CronModeType): QuartzValueWithMod
 			throw invalidField(mode, fragment, 'invalid range syntax');
 		}
 
-		const parsed = normalizeValues(rawRange, mode, fragment);
+		const parsed = normalizeValues(rawRange, mode, fragment, isQuartz);
 
 		return {
 			mode,
@@ -157,7 +172,7 @@ const parseFragment = (fragment: string, mode: CronModeType): QuartzValueWithMod
 		throw invalidField(mode, fragment, 'a step requires "*" or a range');
 	}
 
-	const parsed = normalizeValues([value], mode, fragment);
+	const parsed = normalizeValues([value], mode, fragment, isQuartz);
 
 	return {
 		mode,
@@ -178,7 +193,7 @@ const parseCron = (cron: string, isQuartz: boolean): QuartzValueWithModeType[] =
 		);
 	}
 
-	return modes.map((mode, index) => parseFragment(fragments[index], mode));
+	return modes.map((mode, index) => parseFragment(fragments[index], mode, isQuartz));
 };
 
 export const CronParserService = {
