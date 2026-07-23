@@ -75,7 +75,7 @@ export const CronBuilder = ({ isQuartz }: PropsType) => {
 				...buildState[index]
 			}));
 
-			const builtCron = CronBuilderService.buildCron(withModes);
+			const builtCron = CronBuilderService.buildCron(isQuartz, withModes);
 			setCron(builtCron);
 		} catch (error) {
 			console.error('Failed to create cron', error);
